@@ -191,11 +191,11 @@ link_directories(${Boost_LIBRARY_DIRS})
 #
 # Setup automatic version numbering
 #
-find_package(Subversion REQUIRED)
+#find_package(Subversion REQUIRED)
 
 # grab the current repository version
-Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} ER)
-set(SUBVERSION_REVISION ${ER_WC_REVISION})
+#Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} ER)
+#set(SUBVERSION_REVISION ${ER_WC_REVISION})
 
 set(GLOBAL_REV notset)
 
