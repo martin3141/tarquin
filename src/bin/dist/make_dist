@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# script to run statifier on compiled binaries and
+# create a tar.gz archive for distribution
+
+# remove the previous build
+rm ./tarquin_linux.tar.gz
+
+# run statifier on the c/l and gui versions
+#statifier ../tarquin ./tarquin
+#statifier ../tgui ./tgui
+
+# run ermine on the c/l and gui versions
+ErmineProTrial.i386 ../tarquin --output=./tarquin
+ErmineProTrial.i386 ../tgui --output=./tgui
+
+# tar it up to save space
+tar -cf ./tarquin_linux.tar ./tarquin ./tgui
+gzip ./tarquin_linux.tar
+
+# tidy up
+rm ./tarquin
+rm ./tgui

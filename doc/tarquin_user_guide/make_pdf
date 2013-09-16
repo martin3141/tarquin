@@ -1,0 +1,5 @@
+#!/bin/bash
+
+texfile=tarquin_user_guide
+
+pdflatex -output-directory ./pdf $texfile && bibtex ./pdf/$texfile && pdflatex -output-directory ./pdf $texfile && pdflatex -output-directory ./pdf $texfile

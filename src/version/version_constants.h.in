@@ -1,0 +1,14 @@
+#ifndef VERSION_CONSTANTS_INCLUDED
+#define VERSION_CONSTANTS_INCLUDED
+
+//
+// The cmake build system will automatically generate "version_constants.h" from "version_constants.h.in"
+// with the version numbers as in the top level CMakeLists.txt - so there is no need to edit this file.
+//
+
+#define SVN_REVISION          "${SUBVERSION_REVISION}"
+
+#define TARQUIN_MAJOR_VERSION "${TARQUIN_MAJOR_VERSION}"
+#define TARQUIN_MINOR_VERSION "${TARQUIN_MINOR_VERSION}"
+
+#endif // VERSION_CONSTANTS_INCLUDED

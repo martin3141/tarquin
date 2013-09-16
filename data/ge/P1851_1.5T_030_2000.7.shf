@@ -1,0 +1,391 @@
+# SAGE Data Header (sdbm)
+# =======================
+
+# Revision Information
+# --------------------
+SAGE Header Version 2.1
+
+# Data File Information
+# ---------------------
+# This section tells SAGE certain basic information about the
+# corresponding data file.  Fields are:
+#   header_name:       Header Name, any string, used for title and annotation.
+#   data_file_name:    Name of the associated data file.
+#   data_type:         Data Type, either Real or Complex.
+#   data_precision:    Data precision (Byte, 16 Bit, 32 Bit, Float).
+#   offset_to_data:    Offset to the start of the data in bytes.
+#                      Includes header size + baseline, if any.
+#   signa_data_format: Signa data format (for information only).
+#   signa_rdb_hdr_rev: Signa Raw/Recon Header Revision.
+#   header_creator:    Program that created this file.
+sagekey_datafiles
+
+header_name     P25088.7
+data_file_name  P25088.7
+data_type       Complex
+data_precision  32 Bit
+offset_to_data  77848
+signa_data_format  Raw LX 11.0 PROBE
+signa_rdb_hdr_rev  9.000000
+header_creator     sdbm 3.2 12/17/2003
+
+# Patient Information
+# -------------------
+# Principally for annotation, this section is also used for
+# crosschecking tables.  The file conversion program `sdbm'
+# stores converted files in the GINX directory format
+# ($SAGE_DATABASE/site/patient_id/study/series), so some of this
+# information is required for file conversion.
+sagekey_patient
+
+site           QMC MRI Centre
+patient_id     1656/05
+study_number   4488
+series_number  17
+patient_name   localisation
+patient_age    65
+patient_sex    1
+time_acquired  18:51
+date_acquired  06/16/2005
+
+# Pulse Sequence Information
+# --------------------------
+# This is information about the pulse sequence used to acquire
+# the data.  Fields are:
+#   psd_name:   PSD Sequence Name.
+#   TR, TE, TI: Times in milliseconds.
+#   TM:         Mix time for STEAM, 'G' files only.
+#   TG:         Transmitter Gain.
+#   R1, R2:     Receiver settings.
+#   OPNEX:      Number of excitations.
+#   is_chopped: Is data chopped, Yes/No.
+sagekey_sequence
+
+psd_name  probe-p
+TR  2000
+TE  30
+TI  0
+TM  0
+TG  148
+R1  13
+R2  30
+OPNEX  2
+is_chopped  No
+
+# Display Information
+# -------------------
+# This section gives information about how the data is to be
+# displayed when first loaded into SAGE.  Each data set can have
+# from zero to four displays of any one channel.  Fields are:
+#   display_type:    Display Type.  Allowed values are:
+#                    Spectrum, Image, Grid, Stack, Description, None.
+#   display_channel: Display Channel.  Allowed values are:
+#                    Real, Imaginary, Magnitude, Power, Phase.
+sagekey_display
+
+display_type  Spectrum
+display_type  None
+display_type  None
+display_type  None
+display_channel  Real
+
+# Data Information
+# ----------------
+# This section contains miscellaneous info about the data.
+# Fields are:
+#   center_freq: Center frequency in MHz.
+#   ppm_offset:  ppm offset from 0 Hz (e.g. 4.7 for protons).
+#   header_tag:  Header Tag value (rhuser5).
+#   scan_mode:   Scan Mode (rhuser3), 1=spectro, 0=image.
+#   freq_mode:   Frequency Mode (rhuser15).
+#   swappf:      Swap Phase/Frequency axis.
+#   plane:       Plane, 2=Axial, 4=Sagittal, 8=Coronal.
+#   rotation:    Rotation, where 0=0, 1=90, 2=180, 3=270.
+#   transpose:   Transpose, where 0=No, 3=Yes.
+#   ampl_norm:   Amplitude normalization factor.
+#   temperature: Temperature (degrees C).
+#   num_coils:   Number of Coils.
+#   coil_name:   Coil Name.
+#   coil_type:   Coil Type.
+#   surface_coil_type:   Surface Coil Type.
+#   extremity_coil_flag: Extremity Coil Flag.
+sagekey_datainfo
+
+center_freq  63.872622
+ppm_offset   4.7
+header_tag   4
+scan_mode    1
+freq_mode    2
+swappf       0
+plane        16
+rotation     0
+transpose    0
+ampl_norm    5.48246e-06
+temperature  37
+num_coils    1
+coil_name    HEAD
+coil_type    1
+surface_coil_type    0
+extremity_coil_flag  0
+
+# PROBE Information
+# -----------------
+# This section contains information specific to PROBE data.
+# Fields are:
+#   quant_source:       Source of Quant info.
+#   num_sig_frames:     Number of Signal Frames.
+#   num_ref_frames:     Number of Water Reference Frames.
+#   ref_moiety_num:     Reference Moiety number 0-5 in order next line.
+# For each of 6 Quants: NA, Cr, Ch, mI, H20, Noise.
+#   mach_code_xx:       6 each Quant machine codes.
+#   mach_val_xx:        6 each Quant machine values.
+#   ratio_code_xx:      6 each Quant ratio codes.
+#   ratio_val_xx:       6 each Quant ratio values.
+# Note: For Noise, mach_val_noise is RMS, ratio_val_noise is 1/SNR.
+sagekey_probe
+
+quant_source    Signa Header
+num_sig_frames  16
+num_ref_frames  8
+ref_moiety_num  1
+mach_code_na      0
+mach_code_cr      0
+mach_code_ch      0
+mach_code_mi      0
+mach_code_h2o     0
+mach_code_noise   0
+mach_val_na       0
+mach_val_cr       0
+mach_val_ch       0
+mach_val_mi       0
+mach_val_h2o      0
+mach_val_noise    0
+ratio_code_na     0
+ratio_code_cr     0
+ratio_code_ch     0
+ratio_code_mi     0
+ratio_code_h2o    0
+ratio_code_noise  0
+ratio_val_na      0
+ratio_val_cr      0
+ratio_val_ch      0
+ratio_val_mi      0
+ratio_val_h2o     0
+ratio_val_noise   0
+
+# OPUSER Fields
+# -------------
+# This section contains opuser values from the image header.
+# Fields are:
+#   num_opuserfields:    Number of opuser fields
+#   For each field line: Field_name  Field_value
+sagekey_opuserinfo
+
+num_opuserfields  49
+opuser0   2500
+opuser1   2048
+opuser2   1
+opuser3   1
+opuser4   32
+opuser5   1
+opuser6   1
+opuser7   1
+opuser8   12.122
+opuser9   11.9789
+opuser10  12
+opuser11  4.69309
+opuser12  27.264
+opuser13  -0.108252
+opuser14  0
+opuser15  37
+opuser16  0
+opuser17  1
+opuser18  7
+opuser19  0
+opuser20  0
+opuser21  0
+opuser22  0
+opuser23  0
+opuser24  0
+opuser25  -0
+opuser26  0
+opuser27  0
+opuser28  -0
+opuser29  0
+opuser30  0
+opuser31  -0
+opuser32  -0
+opuser33  0
+opuser34  0
+opuser35  0
+opuser36  -0
+opuser37  0
+opuser38  -0
+opuser39  0
+opuser40  -0
+opuser41  0
+opuser42  0
+opuser43  0
+opuser44  -0
+opuser45  -0
+opuser46  -0
+opuser47  -0
+opuser48  -0
+
+# RHUSER Fields
+# -------------
+# This section contains rhuser values from the recon header.
+# Fields are:
+#   num_rhuserfields:    Number of rhuser fields
+#   For each field line: Field_name  Field_value
+sagekey_rhuserinfo
+
+num_rhuserfields  49
+rhuser0   2500
+rhuser1   2048
+rhuser2   1
+rhuser3   1
+rhuser4   32
+rhuser5   4
+rhuser6   1
+rhuser7   37
+rhuser8   17
+rhuser9   -3
+rhuser10  -3
+rhuser11  -3
+rhuser12  -3
+rhuser13  -3
+rhuser14  4
+rhuser15  2
+rhuser16  0
+rhuser17  0
+rhuser18  0
+rhuser19  8
+rhuser20  0
+rhuser21  0
+rhuser22  0
+rhuser23  0
+rhuser24  0
+rhuser25  0
+rhuser26  0
+rhuser27  0
+rhuser28  0
+rhuser29  0
+rhuser30  0
+rhuser31  0
+rhuser32  0
+rhuser33  0
+rhuser34  0
+rhuser35  0
+rhuser36  0
+rhuser37  0
+rhuser38  -0.6
+rhuser39  4.9
+rhuser40  4.7
+rhuser41  0
+rhuser42  0
+rhuser43  0
+rhuser44  0
+rhuser45  0
+rhuser46  0
+rhuser47  0
+rhuser48  0
+
+# Dimension Information
+# ---------------------
+# This section contains information about each of the dimensions.
+# For each dimension, the fields are:
+#   dimen_num: Number of the dimension 0, 1, 2 or 3.
+#   domain:    Domain. The allowed values are:
+#              Time, Space, Frequency, Kspace, None
+#   num_pts:   Number of data points.
+#   width:     The total width of the dimension. Measured in Hz for
+#              Time and Frequency, mm for Space and Kspace and
+#              points for None. The FOV for spatial dims.
+#   direction: Direction, only used by Space and Kspace dimensions.
+#              Allowed values are RL, AP, SI, or NA (not applicable).
+#   zero_time: Zero time. The time/kspace offset from the lower edge
+#              to the first point, in units of seconds or 1/mm.
+#   zero_freq: Zero freq. The frequency/space offset from the center
+#              of the pixel with index 0 to the zero frequency point.
+#              Measured in Hz or mm. The FOV location for spatial dims.
+#   pc_time:   Time phase correction, the phase correction to be
+#              applied before the FFT when transforming time->freq or
+#              kspace->space.
+#   pc_freq:   Frequency phase correction, the phase correction to be
+#              applied after the fft when transforming time->freq or
+#              kspace->space.
+# The following two fields hold the RF localized position within the
+# dimension, rather than the phase encode position.
+#   sl_loc:    Slice/ROI location. The center of the RF excited region
+#              in width units.
+#   sl_thick:  Slice/ROI thickness. The width of the RF excited region
+#              in width units.
+
+# dimension 0
+# -----------
+sagekey_dimension
+
+dimen_num  0
+domain     Time
+num_pts    2048
+width      2500
+direction  NA
+zero_time  0
+zero_freq  1250
+pc_time    1024
+pc_freq    0
+sl_loc     0
+sl_thick   0
+
+# dimension 1
+# -----------
+sagekey_dimension
+
+dimen_num  1
+domain     None
+num_pts    24
+width      240
+direction  RL
+zero_time  0
+zero_freq  120
+pc_time    0
+pc_freq    0
+sl_loc     -27.264
+sl_thick   11.9789
+
+# dimension 2
+# -----------
+sagekey_dimension
+
+dimen_num  2
+domain     None
+num_pts    1
+width      1
+direction  AP
+zero_time  0
+zero_freq  0
+pc_time    0
+pc_freq    0
+sl_loc     4.69309
+sl_thick   12.122
+
+# dimension 3
+# -----------
+sagekey_dimension
+
+dimen_num  3
+domain     None
+num_pts    1
+width      12
+direction  IS
+zero_time  0
+zero_freq  -0.108252
+pc_time    0
+pc_freq    0
+sl_loc     -0.108252
+sl_thick   12
+
+# End of File Tag
+# ---------------
+sagekey_endfile

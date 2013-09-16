@@ -1,0 +1,10 @@
+Some useful commands I tend to forget...
+
+tagging a new release:
+
+svn copy https://tarquin.svn.sourceforge.net/svnroot/tarquin/trunk https://tarquin.svn.sourceforge.net/svnroot/tarquin/tags/release-x.y.z -m "tagging a new release"
+
+exporting source for distribution:
+
+svn export ./ ~/Desktop/TARQUIN_Src_x.y.z
+tar -pczf name_of_your_archive.tar.gz ~/Desktop/TARQUIN_Source_x.y.z 

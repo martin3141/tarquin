@@ -1,0 +1,147 @@
+package sln;
+
+message results {
+    optional fid fidraw = 1;
+    optional fid fidproc = 2;
+	optional fid fidwater = 3;
+	optional basis basis = 4;
+    optional options options = 5;
+    repeated comp_vec yhat = 6;
+    repeated vec amplitudes = 7;
+    repeated comp_mat matgroups = 8;
+    repeated comp_mat matbasis = 9;
+    repeated double lm_opts = 10;
+    repeated vec lm_info = 11;
+    repeated double norm_val = 12;
+    repeated vec crlbs = 13;
+    repeated double q = 14;
+	repeated vec amp_norm = 15;
+	repeated vec crlbs_norm = 16;
+}
+
+message fid {
+    optional string strfilename = 1;
+    optional double fs = 2;
+    optional bool bsamplingfrequencyknown = 3;
+    optional double ft = 4;
+    optional bool btransmitterfrequencyknown = 5;
+    optional string strsequence = 6;
+    optional bool pulsesequenceknown = 7;
+    optional int32 naverages = 8;
+    optional bool baveragesknown = 9;
+    repeated double phi0 = 10;
+    repeated bool bzeroorderphaseknown = 11;
+    repeated double phi1 = 12;
+    repeated bool bfirstorderphaseknown = 13;
+    repeated double ref = 14;
+    repeated bool breferenceknown = 15;
+    optional double tau = 16;
+    optional bool bechoknown = 17;
+    repeated double snr = 18;
+    repeated bool bsnrknown = 19;
+    optional int32 npoints = 20;
+    repeated comp_vec fids = 21;
+    optional double norm_val = 22; // TODO remove this, isn't used anywhere?
+	optional int32 rows = 23;
+	optional int32 cols = 24;
+	optional int32 slices = 25;
+	optional bool voxel_dim_known = 26;
+	repeated double voxel_dim = 27;
+	optional bool voi_dim_known = 28;
+	repeated double voi_dim = 29;
+	optional bool pos_known = 30;
+	repeated double pos = 31;
+	optional bool row_dirn_known = 32;
+	repeated double row_dirn = 33;
+	optional bool col_dirn_known = 34;
+	repeated double col_dirn = 35;
+}
+
+message coord {
+    optional int32 row = 1;
+    optional int32 col = 2;
+    optional int32 slice = 3;
+}
+
+message comp_point {
+    optional double real = 1;
+    optional double imag = 2;
+}
+
+message comp_vec {
+    repeated comp_point comp_point = 1;
+}
+
+message comp_mat {
+    repeated comp_vec comp_vec = 1;
+}
+
+message vec {
+    repeated double point = 1;
+}
+
+message signal {
+    repeated fid fid_vec = 1;
+}
+
+message basis {
+    optional string strbasispath = 1;
+    repeated string vecsignalfiles = 2;
+    repeated signal signals = 3;
+    repeated bool broad_sig = 4;
+}
+
+message options {
+    optional fidformat format = 1;
+    optional string strbasispath = 2;
+    optional bool buseprecompiled = 3;
+    optional int32 nstart = 4;
+    optional int32 nend = 5;
+    optional double phi0_lower = 6;
+    optional double phi0_upper = 7;
+    optional double phi0_typ = 8;
+    optional double phi1_lower = 9;
+    optional double phi1_upper = 10;
+    optional double phi1_typ = 11;
+    repeated constraints cons = 12;
+    optional string stroutputxmlpath = 13;
+    optional string strfile = 14;
+    optional string strfilewater = 15;
+    optional string strfileoutimag = 16;
+    optional string strfileouttxt = 17;
+    optional string strfileoutcsv = 18;
+    optional int32 conv_window_width = 19;
+    optional int32 water_window = 20;
+    optional bool bautophase = 21;
+    optional bool bautoref = 22;
+    optional bool bShowPreprocessed = 23;
+    optional double ref = 24;
+    optional double ref_spec = 25;
+    repeated coord fit_list = 26;
+
+    enum fidformat { DANGER = 0; 
+                     SIEMENS = 1;
+                     PHILIPS = 2;
+                     GE = 3;
+                     RDA = 4;
+                     LCM = 5;
+                     SHF = 6;
+                     VARIAN = 7;
+                     BRUKER = 8;
+                     DCM = 9;
+                     PHILIPS_DCM = 10;
+                     JMRUI_TXT = 11;
+                     NOTSET = 12; }
+}
+
+message constraints {
+    optional double minalpha = 1;
+    optional double maxalpha = 2;
+    optional double typalpha = 3;
+    optional double minbeta = 4;
+    optional double maxbeta = 5;
+    optional double typbeta = 6;
+    optional double minshifthz = 7;
+    optional double maxshifthz = 8;
+    optional double typshifthz = 9;
+}

@@ -1,0 +1,3 @@
+#./MCSimulation
+#../common/tarquin --basis_xml ../../basis/phd.xml --input ../../data/simulated/1.dpt --format dpt --echo 0.03 --output_xml TARQUINresults.xml --auto_ref true --auto_phase true  --show_pre true --start_pnt 1 --end_pnt 1024 
+../common/tarquin --basis_xml ../../basis/phd.xml --input ../../data/simulated/1.dpt --format dpt --echo 0.03 --output_xml TARQUINresults.xml --show_pre true --start_pnt 3

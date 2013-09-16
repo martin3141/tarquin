@@ -1,0 +1,210 @@
+****************************************************
+* Outstanding features/fixes for the next releases *
+****************************************************
+
+Version 4.3.1
+- 2D MRSI gui visualisation is much improved:
+    - New interactive grid display.
+    - SVS and 2D MRSI VOI's can now be overlayed with MRI. This should work for Philips/Siemens DICOM and Siemens IMA.
+    - Simple metabolite ratio maps can now be displayed.
+
+This is a significant change and is very likely to have introduced some bugs. Please do not trust the geometry or make any important decisions based on the display. There may be all kinds of incorrect left-right-up-down swaps, shifts and rotations. 
+
+- Water removal has been improved for spectra where the water peak is not at 0Hz.
+- Eddy current correction is now applied before water removal, this improves the water removal quality in some cases.
+- Fitting is now approx. 4x faster.
+
+Version 4.2.11
+- Added the option to export and read LCModel basis files
+- Bug fix for DICOM MRS with explicit sequence lengths.
+- Corrected peak shift output to be the correct sign.
+- Added some QA type parameters to csv output.
+- Updated eigen to version 3.1.1.
+- Tuned soft constraints to give an improved baseline for some short TE spectra.
+- Bug fix for reading Bruker data where the data file is not called "fid" - thanks to Bartosz Kossowski for spotting this.
+- Bug fix for old Philips SPAR/SDAT files with "SUN_dim1_ext" style parameter names.
+- Added svs_only parameter to c/l. When set to true, TARQUIN will exit rather than try and fit data where more than one fid is in the file. This can be handy when MRSI datasets mistakenly end up in SVS batch jobs.
+- Added write_raw_w option to c/l. This allows automated generation of ascii format SVS data.
+- Added final Phi0 and Phi1 values to pdf and csv output
+- Increased default Phi1 limit to 20 deg/PPM
+- Added a new internal basis set "proton_brain_full" including standard metabolites plus PCr and PEth
+
+- Fix linux binary for new versions of Ubuntu - TODO
+
+- Added option to write LCModel para files - TODO
+- Added option to write LCModel RAW files - TODO
+- Bug fix for GUI Phi1 phasing for FID with odd number of data pts - TODO
+- Fix Windows export jpg bug - TODO
+- Upgrade QT to 4.7 - TODO
+- Upgrade QWT - TODO
+- Export multi-page PDFs for dynamic scans - TODO
+
+TODO next version +1
+- Better nStart basline point av estimation, make an array, important for SE CSI 
+- Define new txt based basis format inc groups and dynamics?
+- Add DC offset correction option (apply in preprocessing part of analysis)
+- Add options for HSVD water removal (bool), filter water removal (bool) and auto inital beta guess (bool)
+- Add option to multiply first point of FID by 0.5 (default no)
+- Have voxel display showing current voxel and fit-list voxels in particular colors, changing the slice box should change the slice shown in voxel display
+- add export gnuplot fit to gui?
+- Look at 3D CSI data
+- Check full echo-data and swap row columns features for 3D and col != row cases
+- Siemens DICOM MRS needs swap row col for WS and WUS?
+
+Version 4.2.10
+- A TARQUIN application bundle has been developed for Mac OS X, see the documentation for how to use the command-line version in OS X. Big thanks to Andreas Bartsch, Adrian Garcia and Paul Mullins for testing.
+- Basis set shifts and dampings are now exported in the CSV results file.
+- Dynamic frequency shifts are now exported in the CSV results file when correction is performed.
+- Regression fix where an odd number of dynamic FIDs could not be loaded.
+- Regression fix where jmrui txt files could not be loaded.
+- Crash fix for k-space zero-filling a non-square acquisition.
+- Better error handling for bad CSV basis files.
+- DICOM MRS Columns and Rows tags now take precedence over SpectroscopyAcuisitionColumns and SpectroscopyAcuisitionRows.
+- Once data has been successfully loaded in the gui, a new data set can not be loaded "over the top". This should prevent some crashes.
+- gnuplot_cex command line parameter added. For some reason font sizes are differed between gnuplot 4.4 and 4.6 so this option has been added. A character expansion (cex) of 2 looks good for version 4.6.
+- Windows bug fix where some RDA files don't load.
+
+
+Version 4.2.9
+- Added editing for PRESS TE1, STEAM TM and CPMG pulse number parameters.
+- Bug fix for incorrect DC offset correction for Varian data.
+- Crash fix for DCM MRSI data that contains a water file.
+- Added options to perform dynamic frequency correction.
+- Bug fix for phasing water unsuppressed data.
+- Added WUS freq to output.
+- GE SVS "frames" are now treated as dynamic scans and can be fit individually or just averaged and fit as normal.
+- When there is a mismatch between the number of water suppressed and water unsuppressed FIDs the water unsuppressed FIDs are averaged and then duplicated to match the number of water suppressed FIDs.
+
+
+Version 4.2.8
+- Spectra can now be manually phased and ppm referenced in the gui after the preprocessing phase
+- Automatic phasing and referencing can be disabled in the advanced fit dialogue
+- Increased the precision of the sampling frequency, transmitter frequency and echo time options from 6 to 12 digits in the advanced fit dialogue. This fixes minor fitting differences between the quick fit and advanced fit dialogues.
+- Added row, col and slice controls to the gui for improved navigation of CSI data
+- All CSI voxels can now be viewed and selected/deselected for subsequent analysis
+- Added line-broadening, zero-filling and baseline smoothing options to the gui and command line options. These now influence the exported csv spectra and gnuplot pdf exports. Note - these are postprocessing parameters only and will not change quantitation results.
+- The Philips DICOM MRS reader has been improved for dynamic and non-localised data
+- A rare bug causing TARQUIN can hang in the NNLS part of the algorithm has been fixed, thanks to Antonin Skoch for helping out with this
+- Added ext_pdf option for outputting pdf plots of individual fitted basis signals
+- Bug fix for some spectra where initial phasing was 180 degrees out
+- Preprocessing phasing code should be more robust to poor data
+- The first data point for the simulated signals is now divided by 0.5, reducing the distance between the data and baseline. (see Otting et al 1986 JMR 66, 187-193 for details).
+- Eddy current correction is now appied after water removal (when selected) and an option has been added to the gui.
+
+Version 4.2.7
+- Predefined basis sets, referencing peaks and dynamic averaging schemes have been decoupled from the pulse sequence descriptions giving much more flexibility for non 1H brain applications
+- Windows and Linux versions should now give consistent fitting results
+- Bug where the initial shift was wrong by 1/8 * fs / N has been corrected
+- Bug fix where manually changing the sampling frequency wasn't applied
+- x and y limits are rescaled when new data is imported
+- Bug fix for swapping rows and columns option when rows are different to cols
+- Default ref changed from 4.7 to 4.65
+
+Version 4.2.6
+- Init_beta estimate has been improved
+- Initial shift search resolution has been increased
+- Initial shift is now plotted in the gui
+- Zero-filling factor can now be changed in the GUI
+- x and y scales are preserved when moving between voxels and other options
+- Zero-filling can now be applied to k-space for 2D CSI
+- Text format spectra can now be exported prior to fitting
+- Water unsuppressed linewidth is now exported
+
+Version 4.2.5
+- Lots more fitting/preprocessing options can now be changed in the GUI
+- GUI option to plot corresponding water data
+- Improved advanced fit dialogue
+- Added reader for jMRUI txt files
+- Improved support for DICOM 2D CSI
+- Bug fix for 2D CSI where parameters from the previous voxel were used as the starting point for the next voxel
+- Bug fix for SNR calculation for data with significant baseline problems
+- CSV of fits can be exported from the GUI
+- Increased default max iterations to 75
+- Added lipid filtering option (useful for CSI with contamination)
+- Added the gui options to export jpeg and png plots
+- Improved gui plotting for selecting real, imaginary or absolute signal components
+- Added the option to change xaxis units to data points
+- Added mega-press-neg and press-all-neg pulse sequence options for working with data from editing sequences (Philips SPAR/SDAT only)
+
+Version 4.2.4
+- Make the default nStart=10 for mega-press, press-even, press-odd. Cl and gui - done
+- Fix for problem with Siemens ima, skyra platform - done
+- Support for old Philips SUNSPEC format data - done
+- Add support for Ralphs MEGA-PRESS sequence - done
+- Bug fix for csv output on the command line - done
+- Fixed version number in pdf output - done
+- Added version number to txt output - done
+- CSI bug fix for c/l fitting - done
+- Add the option for line broadening in the GUI version - done
+
+Version 4.2.3
+- Add a fit button to the input dialog - done
+- Impove the lineshape of MM@0.9 for MEGA-PRESS - done
+- Fix seg fault when fitting with no data - done
+- Fix GE echo time bug - done
+- No scaling when water file not specified - done
+
+Version 4.2.2
+- add ideal MEGA-PRESS sequence, changes nstart, changes basis set, changes the way philips MRS is processed - done
+- allow extended basis set to be selected - done
+- add the option to perform baseline subtraction - done
+- bug fix for autodetecting ima data - done
+- bug fix for quick fit of DICOM SVS with unsupressed data included in the file - done
+- Philips dynamic scans for standard PRESS - done
+- MEGA-PRESS basic basis set - done
+- Felix bug - done
+
+Version 4.2.3
+- abstract the code for plotting fit results
+- add the option to apply line broadening to fit results
+- start DICOM export
+- GE MEGA-PRESS
+- add an option to view the data details
+- parse out patient name, scan date/time, hospital number, dob...
+- check soft constraint behaviour as number of signals decrease
+- Calculate WUS linewidths during preprocessing
+- Allow csv export of fit data
+
+****************************************************
+* Non critical issues                              *
+****************************************************
+
+- check/fix final point distortions for phi1 changes - MW
+- factor out each stage into functional objects - GMR
+- use singleton for log - GMR
+- factor out optimiser - GMR
+- add eddy current correction to preprocessing options - GMR
+- test GE phased array combination, scale fids to unsuppressed water noise level, fix bug where coils are missed depending on which shf file is selected
+- add max_dref option and ref_file to GUI
+- check that phi1 is applied to the full basis matrix (1:N) rather than (nstart:nend) during optimisation (if not, wrap around will occour with large phi1)
+- Changing logging object to use Greggy's new paradigm - GMR
+- add an exit code for poor fitting (i.e. all zero amplitudes) 
+- serialization of GEOptions structure - MW
+- valgrind --leak-check=yes on everything - GMR
+- add time update call to metabolite simulator
+- make c/l args override autodetected ones to allow incorrect para eval
+- investigate effects of phasing on last few points (testing shows that not including the last few points can have a huge positive influence on the residual, this should be investigated) - MW
+
+
+************************ OLD TODOs *********************
+
+Note - version 4.1.x does not do basis compression by default in the gui whereas version 4.2.0 does.
+
+Version 4.2.0 (commit 1150)
+- 2D CSI reader for Siemens ima+RDA, Philips SPAR, GE p-file and DICOM - done
+- Allow user to cycle through fits in the GUI - done
+- Update data structures and fit saving / loading code for CSI - done
+- Improve fitting speed - done
+- Add crlbs and snr to csv export - done
+- Fix GE reader for older header versions where byteswapping is required - done
+- Fix error in GE-pfile TE determination - done
+- upgrade to eigen3 stable version - done
+- Allow user to set voxels to be fit in gui - done
+- Allow user to set voxels to be fit in cl version - done
+- Fix txt export in the gui for multi-voxel data - done
+
+22-06-11 - TARQUIN version 4.2.1 has been released for Windows and Linux with the following new features and fixes:
+-Basic functionality for 2D CSI data fitting. Should work for Siemens IMA+RDA, Philips SPAR/SDAT, GE P-files and DICOM MRS.
+-The main scanner manufactures data formats should be automatically detected.
+-Updated documentation.
+-Various bug fixes.

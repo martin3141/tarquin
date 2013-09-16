@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd html
+rm *
+cp ../main.bib ./
+htlatex ../tarquin_user_guide.tex
+bibtex ./tarquin_user_guide
+htlatex ../tarquin_user_guide.tex
+htlatex ../tarquin_user_guide.tex
+cd ..

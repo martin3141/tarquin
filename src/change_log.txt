@@ -1,0 +1,2 @@
+-Improvements in plotting speed
+-Bug fix for signals < 0 ppm

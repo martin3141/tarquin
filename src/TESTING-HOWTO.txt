@@ -1,0 +1,17 @@
+The testing suite is just a program, built like any other program in the build tree. So first you need to build everything:
+
+mkdir build
+cd build
+cmake ..
+make -j 8
+
+Then you need to "make install", to build a tree of files which is placed in "build/redist". This rule will copy all the files used for testing.
+
+make install
+
+Finally, you have to run the tests
+
+cd redist
+./tarquin_tests
+
+

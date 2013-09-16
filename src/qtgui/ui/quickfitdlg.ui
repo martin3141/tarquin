@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>quickfitdlg</class>
+ <widget class="QDialog" name="quickfitdlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>651</width>
+    <height>195</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Quick Fit</string>
+  </property>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>631</width>
+     <height>96</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="WSlabel">
+      <property name="text">
+       <string>Water Suppressed</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="WUlabel">
+      <property name="text">
+       <string>Water Unsuppressed</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="btnOpenWS">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../resources/tarquingui.qrc">
+        <normaloff>:/standardbutton-open-32.png</normaloff>:/standardbutton-open-32.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QToolButton" name="btnOpenWU">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../resources/tarquingui.qrc">
+        <normaloff>:/standardbutton-open-32.png</normaloff>:/standardbutton-open-32.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="txtWU">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="txtWS"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>631</width>
+     <height>66</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>498</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QToolButton" name="btnCancel">
+      <property name="minimumSize">
+       <size>
+        <width>64</width>
+        <height>64</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../resources/tarquingui.qrc">
+        <normaloff>:/standardbutton-close-32.png</normaloff>:/standardbutton-close-32.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextUnderIcon</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QToolButton" name="btnLoad">
+      <property name="minimumSize">
+       <size>
+        <width>64</width>
+        <height>64</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Fit</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../resources/tarquingui.qrc">
+        <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextUnderIcon</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../resources/tarquingui.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>btnLoad</sender>
+   <signal>clicked()</signal>
+   <receiver>quickfitdlg</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>607</x>
+     <y>152</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>quickfitdlg</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>535</x>
+     <y>152</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

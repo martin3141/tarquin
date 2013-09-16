@@ -1,0 +1,1 @@
+../common/tarquin --basis_xml ../../basis/phd.xml --input ../../data/testing_data/1.dpt --format dpt --echo 0.03 --output_xml TARQUINresults.xml --start_pnt 1

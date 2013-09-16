@@ -1,0 +1,28 @@
+#! /bin/bash
+
+# this script searches for result and amplitude csv files in the directory name 
+# suppied as an argument
+
+# check for the correct number of arguments
+if [ $# -ne 1 ]
+then
+    printf "%b" "Error. Incorrect number of arguments.\n" >&2
+    printf "%b" "usage: generate_summary dir.\n" >&2
+else
+    echo "Simulated amplitude table" > $1_summary.csv
+
+    ls $1/amplitudes/*_amp.csv | sed 's\'$1'/\\' | sort -n | sed 's\^\'$1'/\' | xargs awk '(NR==1 || (NR % 2) == 0) {if (NR>1) {print FILENAME","$0} else {print "," $0}}' >> $1_summary.csv
+
+    echo "" >> $1_summary.csv
+    echo "TARQUIN fitted amplitude table" >> $1_summary.csv
+
+    ls $1/TARQUIN/*_results.csv | sed 's\'$1'/\\' | sort -n | sed 's\^\'$1'/\' | xargs awk '(NR==1 || (NR % 2) == 0) {if (NR>1) {print FILENAME","$0} else {print "," $0}}' >> $1_summary.csv
+    
+    echo "" >> $1_summary.csv
+    echo "LCModel fitted amplitude table" >> $1_summary.csv
+
+    #ls $1/LCModel/*_results.csv | sed 's\'$1'/\\' | sort -n | head -1 | sed 's\^\'$1'/\' | xargs awk -F ',' '{ print ","$3,$6,$9,$12,$15,$18,$21,$24,$27,$30,$33,$36,$39,$42,$45,$48,$51,$54,$57,$60,$63,$66,$69,$72,$75}' >> $1_summary.csv
+
+    ls $1/LCModel/*_results.csv | sed 's\'$1'/\\' | sort -n | sed 's\^\'$1'/\' | xargs awk -F ',' '(NR==1 || (NR % 2) == 0) {if (NR>1) { OFS=","; print FILENAME","$3,$6,$9,$12,$15,$18,$21,$24,$27,$30,$33,$66,$60,$63,$72,$69,$78,$81,$84,$75,$36,$39,$42,$45,$48} else { OFS=","; print ","$3,$6,$9,$12,$15,$18,$21,$24,$27,$30,$33,$66,$60,$63,$72,$69,$78,$81,$84,$75,$36,$39,$42,$45,$48}}' >> $1_summary.csv
+
+fi

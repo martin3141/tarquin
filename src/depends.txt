@@ -1,0 +1,93 @@
+On Win32 get the following MinGW distribution:
+
+http://nuwen.net/mingw.html
+
+You will need to build fftw3 and get the "technology preview" of gfortran, which then requires some buggering about to make it work (renaming, etc.)
+
+You will need the following Ubuntu packages to build:
+
+fftw3 dev                [for DFTs]
+lapack3 dev              [for general linear algebra - this automagically gets BLAS as well]
+boost filesystem-dev     [for parsing the directories containing the basis set]
+boost dev                [for the tokenizer and other handy things]
+boost thead-dev
+freeglut3 dev            [for the dependencies of this package, you don't actually need the package]
+libwxgtk2.8 dev		 [for the GUI]
+libwxbase2.8 dev         [probably don't need it currently, but you almost certainly will at any time in the future]
+gfortran
+gnuplot                  [for plotting]
+colorgcc                 [for nice colour compilation errors]
+libfreetype6-dev         [for the GUI]
+
+This command should do it from a fresh Ubuntu install (tested 
+with version 8.04.2)
+
+sudo apt-get install -y build-essential lapack3-dev gfortran fftw3-dev libboost-filesystem-dev freeglut-dev libwxgtk2.8-dev libboost-serialization-dev gnuplot colorgcc libfreetype6-dev libboost-thread-dev
+
+This command should do it from a fresh Ubuntu install (tested 
+with version 10.04)
+sudo apt-get install -y build-essential liblapack-dev gfortran libf2c2-dev libfftw3-dev libprotobuf-dev gnuplot libwxgtk2.8-dev libboost-filesystem-dev libboost-thread-dev freeglut3-dev libfreetype6-dev
+
+11.04
+sudo apt-get install -y build-essential cmake liblapack-dev gfortran libf2c2-dev libfftw3-dev libprotobuf-dev gnuplot libboost-filesystem-dev libboost-thread-dev libboost-test-dev libqt4-dev libqwt5-qt4-dev
+
+Linux mint 12
+sudo apt-get install -y build-essential cmake liblapack-dev gfortran libf2c2-dev libfftw3-dev gnuplot libboost-filesystem-dev libboost-thread-dev libboost-test-dev libqt4-dev libqwt5-qt4-dev
+
+also need to manually install protobuf 2.3.0, install into /usr to avoid messing about
+./configure --prefix=/usr
+
+Linux mint 14
+sudo apt-get install -y build-essential cmake liblapack-dev gfortran libf2c2-dev libfftw3-dev gnuplot libboost-filesystem-dev libboost-thread-dev libboost-test-dev libqt4-dev libqwt5-qt4-dev
+
+also need to manually install protobuf 2.3.0, install into /usr to avoid messing about
+./configure --prefix=/usr
+
+
+
+Installation on OSX snow leopard (new instructions)
+---------------------------------------------------
+install xcode from DVD
+install cmake
+install gfortran from R package
+install protobuf (2.3.0)
+install boost - download the tar.gz uncompress:
+    ./bootstrap.sh
+    ./bjam
+    sudo ./bjam install
+install QT libs (build and interface tools)
+install fftw3
+install QWT (5.2.1 works)
+
+
+Installation on OSX snow leopard (old instructions)
+
+install xcode from DVD
+compile F2C instructions from : http://hpc.sourceforge.net/ 
+change levmar makefile to use f2c rather than g2c
+download gfortran from mac hpc
+install fftw3 from http://www.fftw.org/download.html
+install google protocol buffers
+
+install boost+boost-build via macports
+add export CPLUS_INCLUDE_PATH=/opt/local/include to bashrc
+make sure BOOST vars are as follows in the main Makefile
+# Flags for the components of Boost TARQUIN uses.
+BOOST_PATH    = /opt/local/include
+BOOST_LIB     = /opt/local/lib
+BOOST_CFLAGS  = -I$(BOOST_PATH)
+BOOST_LDFLAGS = -L$(BOOST_LIB)
+BOOST_LDFLAGS += -lboost_filesystem-mt -undefined dynamic_lookup
+
+
+For the GUI...
+install mesa
+sudo port install mesa
+
+install freetype
+sudo port install freetype
+sudo ln -s /opt/local/include/freetype2/freetype /opt/local/include/freetype
+sudo port install ftgl <- may not be needed
+
+install wxwidgets
+sudo port install wxWidgets-devel

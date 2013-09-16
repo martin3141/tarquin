@@ -1,0 +1,7 @@
+#./tarquin --input ../../data/magda/120208_1630_scan1.SDAT --format philips --echo 30e-3 --fs 2000 --ft 63.3684e6 --basis_xml ../../basis/PhilipsPhd.xml --output_txt results.txt --output_csv results.csv --output_image plot.eps
+
+#./tarquin --input ../../data/caroline/280708_1232SV1_raw_act.SDAT --format philips --echo 30e-3 --fs 2000 --ft 63.3684e6 --basis_xml ../../basis/PhilipsPhd.xml --output_txt results.txt --output_csv results.csv --output_image plot.eps
+
+./tarquin --input ../../data/caroline/280708_1232SV1_raw_act.SDAT --format philips --echo 30e-3 --fs 2000 --ft 63.3684e6 --basis_csv ../../basis/phd --output_basis ../../basis/PhilipsPhd2000.xml --output_txt results.txt --output_csv results.csv --output_image plot.eps
+
+# ./tarquin --input ../../data/magda/120208_1630_scan1.SDAT --format philips --echo 30e-3 --fs 2000 --ft 63.3684e6 --basis_csv ../../basis/phd --output_basis ../../basis/PhilipsPhd.xml --output_txt results.txt --output_csv results.csv --output_image plot.eps

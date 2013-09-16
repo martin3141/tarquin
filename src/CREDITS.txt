@@ -1,0 +1,37 @@
+TARQUIN uses many dependencies, each of these has their own licence and copyrights. 
+
+TARQUIN is GPL licensed because it uses several GPL only libraries.
+
+cvmlib
+======
+ Copyright (c) Sergei Nikolaev, 1992-2008
+
+levmar
+======
+ Copyright (c) Manolis Lourakis
+ 
+ Institute of Computer Science
+ Foundation for Research and Technology - Hellas
+ Heraklion, Crete, Greece
+
+BLAS and LAPACK
+===============
+  Copyright (c) 1992-2007 The University of Tennessee.  All rights reserved.
+
+FFTW
+====
+ Copyright (c) 2003 Matteo Frigo 
+ Copyright (c) 2003 Massachusetts Institute of Technology.
+ MIT
+
+FreeType
+========
+Copyright 2006, 2007 by David Turner, Robert Wilhelm, and Werner Lemberg.
+
+wxWidgets
+=========
+Copyright (c) 1998 Julian Smart, Robert Roebling, et al.
+
+TARQUIN
+=======
+Copyright (c) 2006-2008 Greg Reynolds and Martin Wilson.

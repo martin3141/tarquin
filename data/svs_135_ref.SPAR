@@ -1,0 +1,216 @@
+!--------------------------------------------------------------------
+
+!
+
+!
+
+!      CAUTION - Investigational device.
+
+!      Limited by Federal Law to investigational use.
+
+!
+
+!
+
+!      GYROSCAN spectro parameter file for FITMASTERS and SUNSPEC1
+
+!      Last revised 07-jul-2004.
+
+!--------------------------------------------------------------------
+
+!   This file contains time domain data in the spectral dimension.
+
+!   S15/ACS: set of *.SPAR and *.SDAT files is created, (dataformat: VAX CPX floats)
+
+!--------------------------------------------------------------------
+
+examination_name : training
+
+scan_id : Brain      1VOI_27_exc
+
+scan_date : 2007.02.16 17:33:00.71000
+
+patient_name : CCLG phantom
+
+patient_birth_date : 1980.12.21
+
+patient_position : "head_first"
+
+patient_orientation : "supine"
+
+samples : 2048
+
+rows : 1
+
+synthesizer_frequency : 127788256.000000
+
+offset_frequency : 0.000000
+
+sample_frequency : 2000
+
+echo_nr : 1
+
+mix_number : 1
+
+nucleus : 1H
+
+t0_mu1_direction : 0.000000
+
+echo_time : 135.000000
+
+repetition_time : 1500.000000
+
+averages : 16    
+
+volume_selection_enable : "yes"
+
+volumes : 1
+
+ap_size : 30.000000
+
+lr_size : 30.000000
+
+cc_size : 30.000000
+
+ap_off_center : -16.304348
+
+lr_off_center : 0.000000
+
+cc_off_center : -9.197325
+
+ap_angulation : 0.000000
+
+lr_angulation : 0.000000
+
+cc_angulation : 0.000000
+
+volume_selection_method : 1
+
+t1_measurement_enable : "no"
+
+t2_measurement_enable : "no"
+
+time_series_enable : "no"
+
+phase_encoding_enable : "yes"
+
+nr_phase_encoding_profiles : 1
+
+si_ap_off_center : -169999997607218210000000000000000000000.000000
+
+si_lr_off_center : -169999997607218210000000000000000000000.000000
+
+si_cc_off_center : 169999997607218210000000000000000000000.000000
+
+si_ap_off_angulation : 0.000000
+
+si_lr_off_angulation : 90.000000
+
+si_cc_off_angulation : 0.000000
+
+t0_kx_direction : 50.000000
+
+t0_ky_direction : 50.000000
+
+nr_of_phase_encoding_profiles_ky : 1
+
+phase_encoding_direction : "trans"
+
+phase_encoding_fov : 0.000000
+
+slice_thickness : 0.000000
+
+Spec.image in plane transf : "minB-plusA"
+
+!---------------------------------------------
+
+! Parameters to meet SUNSPEC data conventions 
+
+!---------------------------------------------
+
+spec_data_type : cf
+
+spec_sample_extension :[V]
+
+!--------------------
+
+! Column parameters 
+
+!--------------------
+
+spec_num_col : 2048
+
+spec_col_lower_val : 0.135000
+
+spec_col_upper_val : 1.159000
+
+spec_col_extension :[sec]
+
+!-----------------
+
+! Row parameters 
+
+!-----------------
+
+spec_num_row : 1
+
+spec_row_lower_val : 1
+
+spec_row_upper_val : 1
+
+spec_row_extension :[index]
+
+!-------------------------------------------------
+
+! Extra parameters in order to make data transfer 
+
+! possible between S15/ACS and SUNSPEC: 
+
+!-------------------------------------------------
+
+SUN_num_dimensions : 3
+
+!-------------------------------------------------
+
+SUN_dim1_ext       :[sec]
+
+SUN_dim1_pnts : 2048
+
+SUN_dim1_low_val : 0.135000
+
+SUN_dim1_step : 0.000500
+
+SUN_dim1_direction : mu1
+
+SUN_dim1_t0_point : 0.000000
+
+!-----------------------------------------------------
+
+SUN_dim2_ext :[num]
+
+SUN_dim2_pnts : 1
+
+SUN_dim2_low_val : 1.000000
+
+SUN_dim2_step : 1.000000
+
+SUN_dim2_direction : x
+
+SUN_dim2_t0_point : 50.000000
+
+!-----------------------------------------------------
+
+SUN_dim3_ext :[num]
+
+SUN_dim3_pnts : 1
+
+SUN_dim3_low_val : 1.000000
+
+SUN_dim3_step : 1.000000
+
+SUN_dim3_direction : y
+
+SUN_dim3_t0_point : 50.000000
+
+!---------------------------------------------------
+

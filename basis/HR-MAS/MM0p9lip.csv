@@ -1,0 +1,10 @@
+group,independance,T1,lineshape,alpha,beta
+1,1,0,l,16.59,0
+2,1,0,l,17.84,0
+3,1,0,l,16.43,0
+group,symmetry,spin,"chem shift",,
+1,0.21,0.5,0.9080,0,
+group,symmetry,spin,"chem shift",,
+2,0.54,0.5,0.8970,0,
+group,symmetry,spin,"chem shift",,
+3,0.24,0.5,0.8860,0,

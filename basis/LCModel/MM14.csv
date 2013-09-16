@@ -1,0 +1,4 @@
+group,independance,T1,lineshape,alpha,beta
+1,1,0,g,0,417.8
+group,symmetry,spin,"chem shift",,
+1,2,0.5,1.43,0,

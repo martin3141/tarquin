@@ -1,0 +1,72 @@
+Build TARQUIN for Source on Win32
+=================================
+Building on Windows is painful - the dependencies are complex and a moving target.
+
+It is not currently possible to use the "g++" compiler to compile TARQUIN on Windows. TARQUIN makes use of the "Boost Serialization" library, which will
+segfault at runtime if compiled on windows with g++.
+
+Therefore, the only "free" alternative is to use Microsoft Visual C++ Express Edition 2008.
+
+Provided with the TARQUIN source is the "nmake" makefile, which you can use to build TARQUIN from a "Microsoft Visual Studio Command Prompt", as follows:
+
+nmake /f Makefile.vc
+
+Before you can do this, you will need to build/obtain the dependencies.
+
+Note: With the exception of cvmlib and fftw, everything is built statically, i.e. no CRT runtime dependency.
+
+Obtaining cvmlib (an excellent wrapper LAPACK)
+==============================================
+
+1. Get it from "http://www.cvmlib.com". You will need "cvmlib.5.6.1.mk.ia32.zip" at the time of writing. 
+2. Unzip. You may or may not need to get "cvm.h" from somewhere (e.g. the source tarball, or the TARQUIN source tree). This needs to go in the same directory as the libraries.
+
+Building wxWidgets (a cross-platform GUI toolkit)
+=================================================
+
+1. Obtain the "wxMSW" package from "http://www.wxwidgets.org/downloads".
+2. Run the installer.
+3. From a VC++ command prompt:
+   cd c:\wxWidgets-2.8.6\build\msw
+   Edit the "config.vc", change the target to "release", set "USE_OPENGL=1", "RUNTIME_LIBS=static".
+   Compile wxWidgets with the following line:
+     nmake /f makefile.vc SHARED=0
+
+Build FreeType (a cross-platform font library)
+==============================================
+
+1. Obtain the source from "http://www.boostpro.com/boost_1_35_0_setup.exe".
+2. Open the shipped project with VC++ and build it in release mode (multithreaded, static, i.e. with /MT).
+
+Obtain fftw (for doing FFTs)
+============================
+
+1. Get it from google.
+2. Follow the instructions on the FFTW web page to build the tree ".lib" files.
+
+Obtaing clapack (for doing linear algebra)
+==========================================
+
+Note: this is only for levmar. CVMLIB wraps Intel's implementation of LAPACK, the Math Kernel Library.
+
+1. Obtain the source tarball from: "http://www.netlib.org/clapack/CLAPACK-3.1.1-VisualStudio.zip".
+2. Build it inside Visual C++. There are many targets, I built the release targets (IA32 only).
+
+
+Obtain lemvar (for solving non-linear least squares fitting problems)
+=====================================================================
+
+1. Get it from "http://www.ics.forth.gr/~lourakis/levmar".
+2. You will need to edit Makefile.vc and fix the dependencies for "clapack". My changes look like this:
+
+LAPACKLIBS_PATH=c:\gmr\vcprojects\tarquin\build\win32\clapack\LIB\Win32 
+LAPACKLIBS=clapack.lib BLAS_nowrap.lib libf2c.lib f77blaswrap.lib 
+
+3. Build it by using "nmake /f Makefile.vc"
+
+Obtain Boost (useful C++ libraries for many, many things)
+=========================================================
+
+1. Get the installer from "http://www.boostpro.com/boost_1_35_0_setup.exe".
+2. Easy option: install everything, else just the static run-time things.
+

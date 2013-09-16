@@ -1,0 +1,14 @@
+Plan for adding multi-voxel fitting support:
+
+1. Make m_cvmFID a vector and make sure that SVS analysis still works. - done
+2. Write CSI preprocessing code for Siemens ima data. - done
+3. Allow one voxel from a CSI grid to be selected for analysis. - done
+4. Allow multiple voxels to be selected for analysis and results to be retrieved. Lots of things will need to be turned into vectors here. - in progress.
+5. Make sure that the scaling of results is correct. - done
+6. Allow csv export of multivoxel fitting results. - done
+7. Allow the user to view the fit results for different voxels.
+8. Allow the user to specify which voxels are to be analysed via the gui using text boxes.
+9. Parallelise the fitting code for multi-voxel analysis.
+10. Make a nice gui grid representation for selecting the voxels to be analysed/fit results shown.
+11. Make sure GE, Philips and DICOM MRS can be analysed.
+12. Generate color metabolite maps and display with dicom MRI - external application may best here SIVIC?

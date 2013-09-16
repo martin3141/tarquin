@@ -1,0 +1,24 @@
+<RCC>
+  <qresource prefix="/">
+    <file>print.png</file>
+    <file>ok.png</file>
+    <file>tarquinicon.png</file>
+    <file>tarquin_logo.png</file>
+    <file>exit.png</file>
+    <file>standardbutton-open-32.png</file>
+    <file>standardbutton-open-128.png</file>
+    <file>standardbutton-open-16.png</file>
+    <file>zoom-in-24.png</file>
+    <file>zoom-out-32.png</file>
+    <file>zoom-out-24.png</file>
+    <file>zoom-in-32.png</file>
+    <file>standardbutton-ok-128.png</file>
+    <file>standardbutton-save-128.png</file>
+    <file>standardbutton-save-32.png</file>
+    <file>standardbutton-save-16.png</file>
+    <file>standardbutton-ok-32.png</file>
+    <file>standardbutton-ok-16.png</file>
+    <file>tarquin.bmp</file>
+    <file>standardbutton-close-32.png</file>
+  </qresource>
+</RCC>

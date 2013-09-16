@@ -1,0 +1,63 @@
+#include <stdlib.h>
+#include "../common/CBasis.hpp"
+#include "../common/common.hpp"
+
+#include <stdlib.h>
+#include <algorithm>
+#include <complex>
+#include <sstream>
+
+using namespace tarquin;
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+	// create the dummy FID object
+	CFID fid;
+
+	fid.SetSamplingFrequency(1000.0);
+	fid.SetTransmitterFrequency(6.3866e7);
+	fid.SetEchoTime(30e-3);
+	fid.SetPPMRef(4.65);
+	fid.SetNumberOfPoints(1024);
+
+	// create the basis object
+	CBasis basis;
+
+	// simulate a basis to match this FID
+	basis.Simulate("../../basis/phd/", fid);
+	//basis.Simulate("basis\\phd", fid);
+
+	// serialise result
+	// convert cvm to stl
+	basis.GenerateSTLstruc();
+	save_xml(basis, "../../basis/phd2.xml");
+	//save_xml(basis, "phd1000.xml");
+
+	// CBasis de_basis;
+	// deserialise result
+	// convert stl to cvm 
+	// load_xml(de_basis, "../../basis/basis_faster.xml");
+	// basis.GenerateNonSTLstruc();
+
+
+	// deserialise basis
+	//load_xml(basis, "../../basis/basis_faster.xml");
+	//basis.GenerateNonSTLstruc();
+
+	// define matrix of signals (no groups) S 
+	cvm::cmatrix S = basis.GetBasisMatrix();
+
+	// get labels for plotting	
+	std::vector < std::string > signal_names = basis.GetSignalNames();	
+	// do fft
+	cvm::cmatrix freq_sig(fft(S));
+	// fftshift	
+	freq_sig = fftshift(freq_sig);
+	// get PPM scale
+	cvm::rvector freq_scale = fid.GetPPMScale();
+	// and plot
+	plot(freq_scale, freq_sig, signal_names);
+
+	return 0;
+}

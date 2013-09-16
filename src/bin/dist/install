@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# script to uncompress tarquin and install to $target_dir
+# also runs the c/l vesrion to check for problems
+# MW Dec 2009
+
+#target_dir=/usr/local/bin
+target_dir=$HOME/bin
+
+install_error="\nError : there was a problem with your installation, you may have the wrong binary version for your architecture."
+install_success="\nTARQUIN was installed successfully.\n\nType \"tgui\" to run the graphical interface, or \"tarquin --help\" for a list of command-line options."
+
+# attempt to write to the target directory
+touch $target_dir
+
+# didn't work, ask to retry as root
+#echo "Error : You don't have permissions to install to the target directory, retry as root."
+
+echo -n "Uncompressing..."
+tar -xzf ./tarquin_linux.tar.gz 
+echo "Done."
+chmod +x ./tarquin
+chmod +x ./tgui
+mv ./tarquin $target_dir
+mv ./tgui $target_dir
+
+# try to run tarquin c/l version
+$target_dir/tarquin --help > /dev/null
+if [ 1 -eq 0 ]
+then
+    echo -e $install_success
+else
+    # if it fails check the status of the kernel randomization
+    val=$(cat /proc/sys/kernel/randomize_va_space)
+    # if it is incompatible change and try again
+    if [ 1 -eq 0 ]
+    then
+        $target_dir/tarquin --help > /dev/null
+        if [ 1 -eq 1 ]
+        then
+            echo -e "\nWarning : a kernel option had to be changed to run TARQUIN."
+            echo -e $install_success
+        else
+            # reset the kernel option back to val and print an error
+            echo -e $install_error
+        fi
+    else
+        echo -e $install_error
+    fi
+fi

@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1171</width>
+    <height>612</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>TARQUIN</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter_main">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
+          <item>
+           <widget class="QToolButton" name="phi0">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>φ0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="phi1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>φ1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="set_pivot">
+            <property name="text">
+             <string>Set pivot</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="cal_ppm">
+            <property name="text">
+             <string>Calibrate PPM</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>R:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinRows">
+            <property name="readOnly">
+             <bool>false</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::PlusMinus</enum>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>C:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinCols">
+            <property name="readOnly">
+             <bool>false</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::PlusMinus</enum>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>S:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinSlices">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="readOnly">
+             <bool>false</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::PlusMinus</enum>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="check_box_fit">
+            <property name="text">
+             <string>Fit</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="sel_all">
+            <property name="text">
+             <string>Select all</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="sel_none">
+            <property name="text">
+             <string>Select none</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="plot_frame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QSplitter" name="splitter_map">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="topMargin">
+            <number>4</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QToolButton" name="load_mri">
+             <property name="text">
+              <string>Load MRI</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="close_mri">
+             <property name="text">
+              <string>Close MRI</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="set_trans">
+             <property name="text">
+              <string>Opacity</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="hide_grid">
+             <property name="text">
+              <string>Hide grid</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="hide_mri">
+             <property name="text">
+              <string>Hide MRI</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="ww_wl">
+             <property name="text">
+              <string>WW/WL</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QFrame" name="grid_frame">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Slice</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="slice_slider">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="slice_spin"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QFrame" name="map_frame">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Map numerator</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="listWidget_numer"/>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Map denominator</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="listWidget_denom"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1171</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuExport_plot_pdf">
+     <property name="title">
+      <string>Export plot</string>
+     </property>
+     <addaction name="actionPDF"/>
+     <addaction name="actionPNG"/>
+     <addaction name="actionJPEG"/>
+    </widget>
+    <widget class="QMenu" name="menuExport_localisation">
+     <property name="title">
+      <string>Export localisation</string>
+     </property>
+     <addaction name="action_localisation_PDF"/>
+     <addaction name="action_localisation_PNG"/>
+     <addaction name="action_localisation_JPEG"/>
+    </widget>
+    <addaction name="actionQuick_Fit"/>
+    <addaction name="actionOpen_FID"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_fit"/>
+    <addaction name="actionSave_fit"/>
+    <addaction name="separator"/>
+    <addaction name="menuExport_plot_pdf"/>
+    <addaction name="menuExport_localisation"/>
+    <addaction name="actionExport_window"/>
+    <addaction name="actionPrint_Plot"/>
+    <addaction name="actionPrint_Localisation"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuAnalysis">
+    <property name="title">
+     <string>Analysis</string>
+    </property>
+    <addaction name="actionRun_TARQUIN"/>
+    <addaction name="actionPreprocess"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>Plot</string>
+    </property>
+    <widget class="QMenu" name="menuComplex_mode">
+     <property name="title">
+      <string>Complex mode</string>
+     </property>
+     <addaction name="actionReal"/>
+     <addaction name="actionImaginary"/>
+     <addaction name="actionAbsolute"/>
+    </widget>
+    <addaction name="actionFID_seconds"/>
+    <addaction name="actionFID_points"/>
+    <addaction name="actionSpectrum_PPM"/>
+    <addaction name="actionSpectrum_Hz"/>
+    <addaction name="actionSpectrum_points"/>
+    <addaction name="separator"/>
+    <addaction name="menuComplex_mode"/>
+    <addaction name="actionAuto_scale_x_axis"/>
+    <addaction name="actionAuto_scale_y_axis"/>
+    <addaction name="separator"/>
+    <addaction name="actionNext_fit"/>
+    <addaction name="actionPrevious_fit"/>
+    <addaction name="actionGotoCenterVoxel"/>
+    <addaction name="separator"/>
+    <addaction name="actionPlot_WUS_data"/>
+    <addaction name="separator"/>
+    <addaction name="actionSet_line_broadening"/>
+    <addaction name="actionSet_zero_filling_factor"/>
+    <addaction name="actionSet_baseline_smoothing"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_raw_data"/>
+    <addaction name="actionSubtract_baseline"/>
+    <addaction name="actionSet_left_ppm_limit"/>
+    <addaction name="actionSet_right_ppm_limit"/>
+    <addaction name="separator"/>
+    <addaction name="actionAAToggle"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuResults">
+    <property name="title">
+     <string>Results</string>
+    </property>
+    <addaction name="actViewAmplitudes"/>
+    <addaction name="actExport_TXT"/>
+    <addaction name="actExport_CSV"/>
+    <addaction name="actExport_CSV_fit"/>
+    <addaction name="actExport_CSV_spectra"/>
+    <addaction name="actExport_CSV_spectra_mag"/>
+    <addaction name="actExport_DPT_raw"/>
+    <addaction name="actExport_DPT_proc"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuAnalysis"/>
+   <addaction name="menuView"/>
+   <addaction name="menuResults"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/exit.png</normaloff>:/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionOpen_FID">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/standardbutton-open-16.png</normaloff>:/standardbutton-open-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Advanced fit...</string>
+   </property>
+   <property name="shortcut">
+    <string>A</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionOpen_fit">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/standardbutton-open-32.png</normaloff>:/standardbutton-open-32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open fit...</string>
+   </property>
+   <property name="shortcut">
+    <string>O</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSave_fit">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/standardbutton-save-128.png</normaloff>:/standardbutton-save-128.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save fit...</string>
+   </property>
+   <property name="shortcut">
+    <string>S</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionExport_FID_data">
+   <property name="text">
+    <string>Export FID data...</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRun_TARQUIN">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/tarquinicon.png</normaloff>:/tarquinicon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run TARQUIN</string>
+   </property>
+   <property name="softKeyRole">
+    <enum>QAction::NoSoftKey</enum>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionFID_seconds">
+   <property name="text">
+    <string>FID (seconds)</string>
+   </property>
+  </action>
+  <action name="actionSpectrum_PPM">
+   <property name="text">
+    <string>Spectrum (ppm)</string>
+   </property>
+  </action>
+  <action name="actionSpectrum_Hz">
+   <property name="text">
+    <string>Spectrum (Hz)</string>
+   </property>
+  </action>
+  <action name="actionPrint_Plot">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/print.png</normaloff>:/print.png</iconset>
+   </property>
+   <property name="text">
+    <string>Print plot...</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actViewAmplitudes">
+   <property name="text">
+    <string>Fitted amplitudes...</string>
+   </property>
+  </action>
+  <action name="actExport_TXT">
+   <property name="text">
+    <string>Export TXT results...</string>
+   </property>
+  </action>
+  <action name="actExport_CSV">
+   <property name="text">
+    <string>Export CSV results...</string>
+   </property>
+  </action>
+  <action name="actionQuick_Fit">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/standardbutton-open-32.png</normaloff>:/standardbutton-open-32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quick fit...</string>
+   </property>
+   <property name="shortcut">
+    <string>Q</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionNext_fit">
+   <property name="text">
+    <string>Next fit</string>
+   </property>
+   <property name="iconText">
+    <string>Next fit</string>
+   </property>
+   <property name="shortcut">
+    <string>N</string>
+   </property>
+  </action>
+  <action name="actionPrevious_fit">
+   <property name="text">
+    <string>Previous fit</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
+   </property>
+  </action>
+  <action name="actionSubtract_baseline">
+   <property name="text">
+    <string>Subtract baseline</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
+   </property>
+  </action>
+  <action name="actionPreprocess">
+   <property name="text">
+    <string>Preprocess</string>
+   </property>
+  </action>
+  <action name="actionSet_line_broadening">
+   <property name="text">
+    <string>Set line broadening</string>
+   </property>
+   <property name="shortcut">
+    <string>L</string>
+   </property>
+  </action>
+  <action name="actionSet_left_ppm_limit">
+   <property name="text">
+    <string>Set left ppm limit</string>
+   </property>
+  </action>
+  <action name="actionSet_right_ppm_limit">
+   <property name="text">
+    <string>Set right ppm limit</string>
+   </property>
+  </action>
+  <action name="actionSet_baseline_smoothing">
+   <property name="text">
+    <string>Set baseline smoothing</string>
+   </property>
+  </action>
+  <action name="actExport_CSV_fit">
+   <property name="text">
+    <string>Export CSV fits...</string>
+   </property>
+  </action>
+  <action name="actionExport_JPEG">
+   <property name="text">
+    <string>Export plot (jpeg)...</string>
+   </property>
+  </action>
+  <action name="actionReal">
+   <property name="text">
+    <string>Real</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
+  </action>
+  <action name="actionImaginary">
+   <property name="text">
+    <string>Imaginary</string>
+   </property>
+   <property name="shortcut">
+    <string>I</string>
+   </property>
+  </action>
+  <action name="actionAbsolute">
+   <property name="text">
+    <string>Magnitude</string>
+   </property>
+   <property name="shortcut">
+    <string>M</string>
+   </property>
+  </action>
+  <action name="actionPDF">
+   <property name="text">
+    <string>PDF</string>
+   </property>
+  </action>
+  <action name="actionJPEG">
+   <property name="text">
+    <string>JPEG</string>
+   </property>
+  </action>
+  <action name="actionPNG">
+   <property name="text">
+    <string>PNG</string>
+   </property>
+  </action>
+  <action name="actionFID_points">
+   <property name="text">
+    <string>FID (points)</string>
+   </property>
+  </action>
+  <action name="actionSpectrum_points">
+   <property name="text">
+    <string>Spectrum (points)</string>
+   </property>
+  </action>
+  <action name="actionAAToggle">
+   <property name="text">
+    <string>Toggle aniti-aliasing</string>
+   </property>
+  </action>
+  <action name="actionPlot_WUS_data">
+   <property name="text">
+    <string>Plot WUS data</string>
+   </property>
+   <property name="shortcut">
+    <string>W</string>
+   </property>
+  </action>
+  <action name="actionAuto_scale_x_axis">
+   <property name="text">
+    <string>Auto scale x-axis</string>
+   </property>
+   <property name="shortcut">
+    <string>X</string>
+   </property>
+  </action>
+  <action name="actionAuto_scale_y_axis">
+   <property name="text">
+    <string>Auto scale y-axis</string>
+   </property>
+   <property name="shortcut">
+    <string>Y</string>
+   </property>
+  </action>
+  <action name="actionSet_zero_filling_factor">
+   <property name="text">
+    <string>Set zero-filling factor</string>
+   </property>
+   <property name="shortcut">
+    <string>Z</string>
+   </property>
+  </action>
+  <action name="actionGotoCenterVoxel">
+   <property name="text">
+    <string>Go to center voxel</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
+  </action>
+  <action name="actionShow_raw_data">
+   <property name="text">
+    <string>Show raw data</string>
+   </property>
+  </action>
+  <action name="actExport_DPT_raw">
+   <property name="text">
+    <string>Export raw signal (dpt)...</string>
+   </property>
+  </action>
+  <action name="actExport_DPT_proc">
+   <property name="text">
+    <string>Export processed signal (dpt)</string>
+   </property>
+  </action>
+  <action name="actExport_CSV_spectra">
+   <property name="text">
+    <string>Export CSV spectra...</string>
+   </property>
+  </action>
+  <action name="actExport_CSV_spectra_mag">
+   <property name="text">
+    <string>Export CSV spectra (magnitude)...</string>
+   </property>
+  </action>
+  <action name="action_localisation_PDF">
+   <property name="text">
+    <string>PDF</string>
+   </property>
+  </action>
+  <action name="action_localisation_PNG">
+   <property name="text">
+    <string>PNG</string>
+   </property>
+  </action>
+  <action name="action_localisation_JPEG">
+   <property name="text">
+    <string>JPEG</string>
+   </property>
+  </action>
+  <action name="actionPrint_Localisation">
+   <property name="icon">
+    <iconset resource="../resources/tarquingui.qrc">
+     <normaloff>:/print.png</normaloff>:/print.png</iconset>
+   </property>
+   <property name="text">
+    <string>Print localisation</string>
+   </property>
+  </action>
+  <action name="actionExport_window">
+   <property name="text">
+    <string>Export window</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../resources/tarquingui.qrc"/>
+ </resources>
+ <connections/>
+</ui>
