@@ -331,6 +331,23 @@ void tarquin::Preprocessor::operator() ()
         std::cout << new_ref << std::endl;
         */
         
+        // are we doing convolution based water removal?
+		if( options.GetConvWindowWidth()>0 ) 
+		{
+			Task progress(m_log, "water removal");
+
+			// estimated water signal
+			cvm::cvector yw(y.size());
+			int K = options.GetConvWindowWidth();
+
+			// make the model of the water yw
+			td_conv_ws(y, yw, K, 16);
+
+			// subtract the water
+			y = y - yw;
+		}
+
+        
         // are we doing a pre SVD based removal?
 		if( options.GetPreHSVD() ) 
 		{
@@ -384,7 +401,7 @@ void tarquin::Preprocessor::operator() ()
 
 
 		// are we doing water SVD based removal?
-		if( options.GetWaterWindow() > 0 ) 
+		if( options.GetWaterWindow() != 0 ) 
 		{
 			cvm::rvector frequencies;
 			cvm::rvector dampings;
@@ -461,22 +478,7 @@ void tarquin::Preprocessor::operator() ()
 
 		}
 
-		// are we doing convolution based water removal?
-		if( options.GetConvWindowWidth()>0 ) 
-		{
-			Task progress(m_log, "water removal");
-
-			// estimated water signal
-			cvm::cvector yw(y.size());
-			int K = options.GetConvWindowWidth();
-
-			// make the model of the water yw
-			td_conv_ws(y, yw, K, 16);
-
-			// subtract the water
-			y = y - yw;
-		}
-        
+		        
         // now the water supression has been done
         // try and figure out nEnd if necessary
         if ( options.GetRangeEnd() == -1 )

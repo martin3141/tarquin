@@ -1567,11 +1567,14 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         double delta_x = m_start_pos_x - pos.x();
         m_start_pos_y = pos.y();
         m_start_pos_x = pos.x();
+        
+        double range = m_session->image.get_max_val() - m_session->image.get_min_val();
 
-        double new_ww = m_session->image.get_ww() - delta_x*20;
-        double new_wc = m_session->image.get_wc() + delta_y*20;
+        double new_ww = m_session->image.get_ww() - delta_x/range*5000.0;
+        double new_wc = m_session->image.get_wc() + delta_y/range*5000.0;
 
         //std::cout << "New ww : " << new_ww << std::endl;
+        //std::cout << "New wc : " << new_wc << std::endl;
 
         m_session->image.set_ww(new_ww);
         m_session->image.set_wc(new_wc);

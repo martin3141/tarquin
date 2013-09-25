@@ -29,10 +29,10 @@ std::string tarquin::version::minor_version()
 
 std::string tarquin::version::version_string()
 {
-	return major_version() + "." + minor_version() + "." + revision();
+	return major_version() + "." + minor_version(); //+ "." + revision();
 }
 
 std::string tarquin::version::copyright()
 {
-	return "(c) Copyright 2006-2012 Greg Reynolds and Martin Wilson.";
+	return "(c) Copyright 2006-2013 Greg Reynolds and Martin Wilson.";
 }
