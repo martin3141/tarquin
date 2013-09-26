@@ -323,7 +323,7 @@ void tarquin::Preprocessor::operator() ()
         {
             AutoReferenceCorr(*i, options, fidproc, false, true, true, m_log);
             new_ref = fidproc.GetPPMRef(*i);
-            fidproc.ShiftRef( old_ref, voxel_num-1);
+            fidproc.ShiftRef( old_ref, *i);
         }
         
         /*

@@ -181,9 +181,9 @@ void td_conv_ws(const cvm::cvector& S, cvm::cvector& L, const int K, const int M
 		// generate gaussian window function
 		for ( int k = -K; k < K + 1; k++ ) {
             // gaussian
-			//wind_fun(k+K+1) = exp(-4.0 * std::pow(treal(k),2.0) / std::pow(treal(K),2.0));
+			wind_fun(k+K+1) = exp(-4.0 * std::pow(treal(k),2.0) / std::pow(treal(K),2.0));
             // sin bell
-			wind_fun(k+K+1) = cos(k*M_PI / (2.0*K+2.0));
+			//wind_fun(k+K+1) = cos(k*M_PI / (2.0*K+2.0));
             // hamming
 			//wind_fun(k+K+1) = 0.54 + 0.46*cos(k*M_PI / (2.0*K));
 		}

@@ -282,6 +282,36 @@ class CFID
 			//std::cout << "dt:" << dt << std::endl;
 			//std::cout << "N:" << N << std::endl;
 		}
+        
+        inline void ShiftRef(treal new_ref, const coord& voxel)
+		{
+
+	        int v = vox2ind(voxel);
+			assert( m_ref[v].second == true );
+			assert( m_sampling_frequency.second == true );
+			assert( m_transmitter_frequency.second == true );
+
+			treal shift_ref = m_ref[v].first - new_ref;
+			integer N = m_nPoints;
+
+			treal dt = 1.0 / m_sampling_frequency.first;
+			tcomplex j(0, 1);
+			tcomplex omega;
+			omega = 2.0 * M_PI * -shift_ref * m_transmitter_frequency.first / 1e6;
+
+			// shift the FID by shift_ref 
+			for(integer n = 0; n < N; n++)
+			{
+				treal t = n*dt;
+				m_cvmFID[v](n+1) = m_cvmFID[v](n+1)*exp(j*omega*t);
+			}
+
+			m_ref[v] = std::make_pair(new_ref, true);
+			//std::cout << "shifting basis by:" << omega << std::endl;
+			//std::cout << "dt:" << dt << std::endl;
+			//std::cout << "N:" << N << std::endl;
+		}
+
 
 		inline void SetNumberOfPoints(integer n)
 		{
