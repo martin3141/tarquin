@@ -32,7 +32,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
 	std::cout << "\n\t--max_phi1          the value of phi1_max/fs/2";
 	std::cout << "\n\t--ref_file          CSV file containing reference peak list";
-	std::cout << "\n\t--ref_signals       {1h_naa_cr_cho_lip | 1h_naa_cho | 1h_naa_cr_cho | 1h_cr_cho | 1h_naa | 1h_cr | 1h_cho | 1h_h2o | 31p_pcr | 31p_pcr_gammaapt}";
+	std::cout << "\n\t--ref_signals       {1h_naa_cr_cho_lip | 1h_naa_cho | 1h_naa_cr_cho | 1h_cr_cho | 1h_naa | 1h_cr | 1h_cho | 1h_h2o | 1h_lip | 31p_pcr | 31p_pcr_gammaapt}";
 	std::cout << "\n\t--dref_signals      reference signals for dynamic frequency correction, options as above";
 	std::cout << "\n\t--fs                sampling frequency in Hz";
 	std::cout << "\n\t--ft                transmitter frequency in Hz";
@@ -230,6 +230,9 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 			else if( strVal == "1h_h2o" ) 
 				options.m_ref_signals = tarquin::PROTON_H2O;
+
+			else if( strVal == "1h_lip" ) 
+				options.m_ref_signals = tarquin::PROTON_LIP;
 
 			else if( strVal == "1h_naa" ) 
 				options.m_ref_signals = tarquin::PROTON_NAA;

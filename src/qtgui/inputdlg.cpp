@@ -43,6 +43,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     m_ui.cmbRefMode->addItem("1H Cr",                QVariant(tarquin::PROTON_CR));
     m_ui.cmbRefMode->addItem("1H Cho",               QVariant(tarquin::PROTON_CHO));
     m_ui.cmbRefMode->addItem("1H H2O",               QVariant(tarquin::PROTON_H2O));
+    m_ui.cmbRefMode->addItem("1H Lip",               QVariant(tarquin::PROTON_LIP));
     m_ui.cmbRefMode->addItem("31P PCr",              QVariant(tarquin::PHOSPH_PCR));
     m_ui.cmbRefMode->addItem("31P PCr gamma-ATP",    QVariant(tarquin::PHOSPH_PCR_GAMMAATP));
 
@@ -54,6 +55,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     m_ui.cmbDynRefMode->addItem("1H Cr",                QVariant(tarquin::PROTON_CR));
     m_ui.cmbDynRefMode->addItem("1H Cho",               QVariant(tarquin::PROTON_CHO));
     m_ui.cmbDynRefMode->addItem("1H H2O",               QVariant(tarquin::PROTON_H2O));
+    m_ui.cmbDynRefMode->addItem("1H Lip",               QVariant(tarquin::PROTON_LIP));
     m_ui.cmbDynRefMode->addItem("31P PCr",              QVariant(tarquin::PHOSPH_PCR));
     m_ui.cmbDynRefMode->addItem("31P PCr gamma-ATP",    QVariant(tarquin::PHOSPH_PCR_GAMMAATP));
 

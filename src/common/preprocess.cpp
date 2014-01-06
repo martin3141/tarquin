@@ -1853,6 +1853,12 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
             {
                 points.push_back( RefPoint(4.65, 1, 0, 1) ); // H2O
             }
+            else if ( options.GetRefSignals() == PROTON_LIP )
+            {
+                points.push_back( RefPoint(1.28, 1, 0, 0) ); // Lip
+                if ( pre_ws_shift )
+                    points.push_back( RefPoint(4.65, 1, 0, 1) ); // H2O
+            }
             else if ( options.GetRefSignals() == PHOSPH_PCR )
             {
                 points.push_back( RefPoint(0, 1, 0, 1) ); // PCR

@@ -38,6 +38,7 @@ namespace tarquin
 		PROTON_CR,
 		PROTON_CHO,
 		PROTON_H2O,
+		PROTON_LIP,
 		PHOSPH_PCR,
 		PHOSPH_PCR_GAMMAATP
 	};
