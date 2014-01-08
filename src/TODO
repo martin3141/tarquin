@@ -3,9 +3,9 @@
 ****************************************************
 
 Version 4.3.3
-- Bug fix for GE MRI loading - TODO
 - Improvements to GE shf reading - TODO
 - 3D MRSI for Siemens and Philips is not supported - TODO
+- Bug fix for GE MRI loading
 - Lipid signal at 1.3PPM can be used to automatically reference the PPM axis (useful for liver 1H MRS)
 
 Version 4.3.1
