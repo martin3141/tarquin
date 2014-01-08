@@ -175,6 +175,35 @@ bool MRI::load_from_file(std::string strFilename)
     }
     else
         return false;
+    
+    
+    // find bits allocated tag
+    long bytes_ba = file.MoveToTag("0028", "0100"); 
+    if( -1 != bytes_ba )
+    {
+        uint16_t ba = 0;
+        file.GetFileStream().read((char*)&ba, 2);
+        this->ba = static_cast<size_t>(ba);
+    }
+    else
+        return false;
+
+    if ( this->ba != 16 )
+        std::cout << "Warning, DICOM bits allocated is not expected, MRI may not load correctly" << std::endl;
+
+    // find bits stored tag
+    long bytes_bs = file.MoveToTag("0028", "0101"); 
+    if( -1 != bytes_bs )
+    {
+        uint16_t bs = 0;
+        file.GetFileStream().read((char*)&bs, 2);
+        this->bs = static_cast<size_t>(bs);
+    }
+    else
+        return false;
+        
+
+
 
     // find frames tag
     long frame_bytes = file.MoveToTag("0028", "0008"); 
@@ -345,7 +374,7 @@ bool MRI::load_from_file(std::string strFilename)
                 file.GetFileStream().read((char*)&pixel, 2);
                 
                 // bit mask up to 12 bits
-                pixel = pixel & ((1 << 12)-1);
+                pixel = pixel & ((1 << this->ba)-1);
 
                 this->pixel_data[slice][row][col] = static_cast<double>(pixel);
                 if ( static_cast<double>(pixel) > this->max_val )

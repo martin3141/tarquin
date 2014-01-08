@@ -28,6 +28,9 @@ class MRI
         size_t cols;
         size_t slices;
 
+        size_t ba;
+        size_t bs;
+
         double row_dim;
         double col_dim;
         double slice_dim;
@@ -205,6 +208,8 @@ class MRI
             std::cout << "Row dim   : " << this->row_dim << std::endl;
             std::cout << "Col dim   : " << this->col_dim << std::endl;
             std::cout << "Slice dim : " << this->slice_dim << std::endl;
+            std::cout << "Bits all. : " << this->ba << std::endl;
+            std::cout << "Bits sto. : " << this->bs << std::endl;
         }
 };
 
