@@ -32,7 +32,7 @@ class CFIDReaderGE : public CFIDReader
 		 * Use this function if the SHF files are provided, give it the name of the
 		 * first SHF file.
 		 */
-		void LoadSHF(std::string strFilename, const Options& opts, bool WS);
+		void LoadSHF(std::string strFilename, const Options& opts, bool WS, CBoswell& log);
 		
 		/*!
 		 * If these options are set from the command line, initialise the structure
@@ -47,7 +47,7 @@ class CFIDReaderGE : public CFIDReader
 		void DiscoverOptions(std::string strFilename, CBoswell& log); 
 
 		//! Turns the token stream into the options structure (if loading SHF files).
-		void EatTokens();
+		void EatTokens(CBoswell& log);
 
 		//! This is called once the options structure has been initialised.
 		void LoadFromOptions(std::string strFilename, const Options& opts, bool WS);

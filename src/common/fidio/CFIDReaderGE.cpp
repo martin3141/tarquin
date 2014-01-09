@@ -330,7 +330,7 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
 	m_options.nEchoes      = necho;
 }
 
-void tarquin::CFIDReaderGE::LoadSHF(std::string strFilename, const Options& opts, bool WS)
+void tarquin::CFIDReaderGE::LoadSHF(std::string strFilename, const Options& opts, bool WS, CBoswell& log)
 {
 	// use the boost tokenizer that keeps things like strings in quotes intact
 	// middle argument is token separator 
@@ -338,7 +338,7 @@ void tarquin::CFIDReaderGE::LoadSHF(std::string strFilename, const Options& opts
 
 	Lex(strFilename, sep);
 
-	EatTokens(); 
+	EatTokens(log); 
 
 	// this just assumes that the data file is the same name as the SHF
 	// file but without the name
@@ -354,7 +354,7 @@ void tarquin::CFIDReaderGE::LoadSHF(std::string strFilename, const Options& opts
 	LoadFromOptions(strFilenameFull.substr(0,pos) + strFilenameShort, opts, WS);
 }
 
-void tarquin::CFIDReaderGE::EatTokens()
+void tarquin::CFIDReaderGE::EatTokens(CBoswell& log)
 {
 	// we want the number of points in the time domain
 	std::string strDomain = "None";
@@ -362,6 +362,7 @@ void tarquin::CFIDReaderGE::EatTokens()
 	for( TokenList::iterator it = m_tokens.begin(); it+1 != m_tokens.end(); ++it ) 
 	{
 		std::string strKey = it->first;
+
 
 		// value may actually be the next key, unless we we recognise the key
 		std::istringstream strmValue;
@@ -372,10 +373,12 @@ void tarquin::CFIDReaderGE::EatTokens()
 		if( strKey == "offset_to_data" ) 
 		{
 			strmValue >> m_options.nOffset;
+	        log.LogMessage(LOG_INFO, "Offset to data : %i",m_options.nOffset);
 		}
 		else if( strKey == "signa_rdb_hdr_rev" ) 
         {
             strmValue >> m_options.nHeaderRev;
+	        log.LogMessage(LOG_INFO, "Rdb reader rev : %f",m_options.nHeaderRev);
         }
 		else if( strKey == "domain" ) 
 		{
@@ -384,10 +387,12 @@ void tarquin::CFIDReaderGE::EatTokens()
 		else if( strKey == "num_sig_frames" ) 
 		{
 			strmValue >> m_options.nWSFrames;
+            log.LogMessage(LOG_INFO, "Water sup frames : %i",m_options.nWaterFrames);
 		}
 		else if( strKey == "num_ref_frames" ) 
 		{
 			strmValue >> m_options.nWaterFrames;
+	        log.LogMessage(LOG_INFO, "Water ref frames : %i",m_options.nWaterFrames);
 		}
 		else if( strKey == "num_pts" ) 
 		{
@@ -398,7 +403,10 @@ void tarquin::CFIDReaderGE::EatTokens()
 		}
 		else if( strKey == "num_coils" ) 
 		{
+            //std::cout << strKey << std::endl;
+            //std::cout << strmValue << std::endl;
 			strmValue >> m_options.nCoils;
+	        log.LogMessage(LOG_INFO, "Number of coils : %i",m_options.nCoils);
 		}
 
         else if( strKey == "data_format" ) 
@@ -445,6 +453,11 @@ void tarquin::CFIDReaderGE::EatTokens()
 
 
 	}
+    
+    //m_fid.SetRows(16); // TODO check these
+    //m_fid.SetCols(16); // TODO check these
+    //m_fid.SetSlices(1);
+
 }
 
 void tarquin::CFIDReaderGE::LoadFromOptionsCSI(std::string strFilename) 

@@ -423,7 +423,7 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
 	else if( tarquin::SHF == options.GetFormat() ) 
 	{
 		CFIDReaderGE reader(*this, log);
-		reader.LoadSHF(strFilename, options, true);
+		reader.LoadSHF(strFilename, options, true, log);
 	}
 	else if( tarquin::LCM == options.GetFormat() ) 
 	{
@@ -709,7 +709,7 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
 	else if( tarquin::SHF == options.GetFormat() ) 
 	{
 		CFIDReaderGE reader(*this, log);
-		reader.LoadSHF(strFilename, options, false);
+		reader.LoadSHF(strFilename, options, false, log);
 	}
     else if( tarquin::DCM == options.GetFormat() ) 
 	{
