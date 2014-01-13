@@ -141,7 +141,7 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     int frame_size_int;
 	frame_size_int = frame_size * 2 * 4;
 	log.LogMessage(LOG_INFO, "Frame size : %i",frame_size_int);
-	int data_offset = p_file_off + frame_size_int;
+	int data_offset = p_file_off ; // + frame_size_int;
 	log.LogMessage(LOG_INFO, "Offset to data : %i",data_offset);
 
     // find the number of echoes
@@ -399,6 +399,7 @@ void tarquin::CFIDReaderGE::EatTokens(CBoswell& log)
 			if( strDomain == "Time" ) 
 			{
 				strmValue >> m_options.nFieldSize;
+	            log.LogMessage(LOG_INFO, "Number of pts    : %i",m_options.nFieldSize);
 			}
 		}
 		else if( strKey == "num_coils" ) 
@@ -429,6 +430,7 @@ void tarquin::CFIDReaderGE::EatTokens(CBoswell& log)
 				treal fs;
 				strmValue >> fs;
 				m_fid.SetSamplingFrequency(fs);
+                log.LogMessage(LOG_INFO, "Sampling frequency: %f",fs);
 			}
 		}
 		else if( strKey == "TE" ) 
@@ -437,6 +439,7 @@ void tarquin::CFIDReaderGE::EatTokens(CBoswell& log)
 			strmValue >> tau;
 			// Apparently, time is always quoted in ms.
 			m_fid.SetEchoTime(tau * 1e-3);
+            log.LogMessage(LOG_INFO, "Echo time    : %f",tau*1e-3);
 		}
 		else if( strKey == "data_file_name" ) 
 		{
