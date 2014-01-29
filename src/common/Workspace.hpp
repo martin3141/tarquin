@@ -142,6 +142,16 @@ namespace tarquin
 				m_amplitudes = amps;
 			}
 
+            rvec_stdvec& GetAmplitudesComb()
+			{
+				return m_amplitudes_comb;
+			}
+
+			void SetAmplitudesComb(const rvec_stdvec amps)
+			{
+				m_amplitudes_comb = amps;
+			}
+
             void AppendParas(const cvm::rvector paras)
             {
                 m_paras.push_back(paras);
@@ -210,11 +220,35 @@ namespace tarquin
 			{
 				return m_crlbs;
 			}
+			
+            rvec_stdvec& GetCRLBsComb()
+			{
+				return m_crlbs_comb;
+			}
 
+			const rvec_stdvec& GetCRLBsComb() const
+			{
+				return m_crlbs_comb;
+			}
+
+			std::vector<std::string>& GetMetabNamesComb()
+			{
+				return m_metab_names_comb;
+			}
+			
+            const std::vector<std::string>& GetMetabNamesComb() const
+			{
+				return m_metab_names_comb;
+			}
 
 			void SetCRLBs(rvec_stdvec crlbs)
 			{
 				m_crlbs = crlbs;
+			}
+			
+            void SetCRLBsComb(rvec_stdvec crlbs)
+			{
+				m_crlbs_comb = crlbs;
 			}
 
 			const std::vector<double>& GetQ() const
@@ -356,6 +390,44 @@ namespace tarquin
 				m_crlbs_norm = crlbs_norm;
 			}
 
+			//! Get the normalised amplitudes.
+			const rvec_stdvec& GetAmplitudesNormalisedComb() const
+			{
+				return m_amp_norm_comb;
+			}
+
+			//! Get the normalised amplitudes.
+			rvec_stdvec& GetAmplitudesNormalisedComb()
+			{
+				return m_amp_norm_comb;
+			}
+			
+			//! Set the normalised amplitudes.
+			void SetAmplitudesNormalisedComb(const rvec_stdvec& amp_norm)
+			{
+				//m_amp_norm.resize(amp_norm.size());
+				m_amp_norm_comb = amp_norm;
+			}
+
+			//! Get the normalised CRLBs.
+			const rvec_stdvec& GetCRLBsNormalisedComb() const
+			{
+				return m_crlbs_norm_comb;
+			}
+	
+			//! Get the normalised CRLBs.
+			rvec_stdvec& GetCRLBsNormalisedComb()
+			{
+				return m_crlbs_norm_comb;
+			}
+
+			//! Set the normalised CRLBs.
+			void SetCRLBsNormalisedComb(const rvec_stdvec& crlbs_norm)
+			{
+				//m_crlbs_norm[0].resize(crlbs_norm.size());
+				m_crlbs_norm_comb = crlbs_norm;
+			}
+
 			//! Get reference to signal estimate.
 			cvec_stdvec& GetSignalEstimate()
 			{
@@ -444,18 +516,30 @@ namespace tarquin
 
 			//! Output of fit - amplitudes of each metabolite, the raw numbers
 			rvec_stdvec m_amplitudes;
+
+			//! Output of fit - amplitudes of each metabolite, the raw numbers for combined signals (TNAA=NAA+NAAG)
+			rvec_stdvec m_amplitudes_comb;
 		    
             //! Paramters
             rvec_stdvec m_paras;
 
 			//! Normalised amplitudes, by water or available, or by total amplitude if not.
 			rvec_stdvec m_amp_norm;
+			
+            //! Normalised amplitudes, for combined signals
+			rvec_stdvec m_amp_norm_comb;
 
 			//! Estimate of CRLBS (one per metabolite).
 			rvec_stdvec m_crlbs;
+			
+			//! Estimate of CRLBS (one per metabolite) for combined signals.
+            rvec_stdvec m_crlbs_comb;
 
 			//! Normalised CLRBS, by water or available, or by total amplitude if not.
 			rvec_stdvec m_crlbs_norm;
+
+			//! Normalised CLRBS, for combined signals
+			rvec_stdvec m_crlbs_norm_comb;
 
 			//! Estimate of signal.
 			cvec_stdvec m_yhat;
@@ -489,6 +573,9 @@ namespace tarquin
             
             //! Metabolite SNR
             std::vector<double> m_metab_snr;
+            
+            //! Combined metabolite names found (TNAA, TCho...)
+            std::vector<std::string> m_metab_names_comb;
 	};
 }
 

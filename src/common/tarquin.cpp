@@ -941,6 +941,139 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 		int voxel_num = 0;
 
 		log.LogMessage(LOG_INFO, "%u voxel(s) to be fitted", fit_list.size());
+        
+        // check for overlapping signals
+        bool TNAA = false;
+        int TNAA_ind = -1;
+        int NAA_pos = -1;
+        int NAAG_pos = -1;
+
+        bool TCho = false;
+        int TCho_ind = -1;
+        int PCh_pos = -1;
+        int GPC_pos = -1;
+
+        bool TCr = false;
+        int TCr_ind = -1;
+        int Cr_pos = -1;
+        int PCr_pos = -1;
+
+        bool Glx = false;
+        int Glx_ind = -1;
+        int Glu_pos = -1;
+        int Gln_pos = -1;
+
+        //bool TLMM09 = false;
+        //bool TLMM13 = false;
+        //bool TLMM20 = false;
+
+        std::vector<int> pos_list;
+        int overlapping_signals = 0;
+
+        int extra_cols = 0;
+
+        bool NAA_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "NAAAAA") != metab_names.end()) //TODO
+        {
+            NAA_found = true;
+            NAA_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "NAA") - metab_names.begin();
+        }
+        bool NAAG_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "NAAG") != metab_names.end())
+        {
+            NAAG_found = true;
+            NAAG_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "NAAG") - metab_names.begin();
+        }
+
+        bool PCh_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "PCh") != metab_names.end())
+        {
+            PCh_found = true;
+            PCh_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "PCh") - metab_names.begin();
+        }
+        bool GPC_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "GPC") != metab_names.end())
+        {
+            GPC_found = true;
+            GPC_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "GPC") - metab_names.begin();
+        }
+
+        bool Cr_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "Cr") != metab_names.end())
+        {
+            Cr_found = true;
+            Cr_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "Cr") - metab_names.begin();
+        }
+        bool PCr_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "PCr") != metab_names.end())
+        {
+            PCr_found = true;
+            PCr_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "PCr") - metab_names.begin();
+        }
+
+        bool Glu_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "Gluuuuuuuuuu") != metab_names.end()) // TODO
+        {
+            Glu_found = true;
+            Glu_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "Glu") - metab_names.begin();
+        }
+        bool Gln_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "Gln") != metab_names.end())
+        {
+            Gln_found = true;
+            Gln_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "Gln") - metab_names.begin();
+        }
+
+        std::vector<std::string> &metab_names_comb = work.GetMetabNamesComb();
+
+        int cnt = 1;
+        if ( NAA_found && NAAG_found )
+        {
+            TNAA = true;
+            overlapping_signals = overlapping_signals + 2;
+            extra_cols = extra_cols + 1;
+            pos_list.push_back(NAA_pos);
+            pos_list.push_back(NAAG_pos);
+            TNAA_ind = cnt;
+            cnt++;
+            metab_names_comb.push_back("TNAA");
+        }
+        if ( PCh_found && GPC_found )
+        {
+            TCho = true;
+            overlapping_signals = overlapping_signals + 2;
+            extra_cols = extra_cols + 1;
+            pos_list.push_back(PCh_pos);
+            pos_list.push_back(GPC_pos);
+            TCho_ind = cnt;
+            cnt++;
+            metab_names_comb.push_back("TCho");
+        }
+        if ( Cr_found && PCr_found )
+        {
+            TCr = true;
+            overlapping_signals = overlapping_signals + 2;
+            extra_cols = extra_cols + 1;
+            pos_list.push_back(Cr_pos);
+            pos_list.push_back(PCr_pos);
+            TCr_ind = cnt;
+            cnt++;
+            metab_names_comb.push_back("TCr");
+        }
+        if ( Glu_found && Gln_found )
+        {
+            Glx = true;
+            overlapping_signals = overlapping_signals + 2;
+            extra_cols = extra_cols + 1;
+            pos_list.push_back(Glu_pos);
+            pos_list.push_back(Gln_pos);
+            Glx_ind = cnt;
+            cnt++;
+            metab_names_comb.push_back("Glx");
+        }
+
+
+        log.DebugMessage(DEBUG_LEVEL_1, "Overlapping signals found: %i", overlapping_signals);
 
 		// iterate over the fit list	
 		for( coord_vec::const_iterator fit_it = fit_list.begin(); fit_it != fit_list.end(); ++fit_it )	
@@ -1304,10 +1437,42 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 				for( int j = 1; j<= Q; ++j )
 					D[i][j] = SpOut[i+nStart-1][j];
 
+            //std::cout << D(1).size() << std::endl;
+            // add extra column
+            /*
+            D.resize(D.msize(),D.nsize()+1);
+            metab_names.push_back("NAA+Scy");
+            ahat.resize(ahat.size()+1);
+            ahat(ahat.size()) = 0.00109027 + 2.20186e-05;
+			for( int i = 1; i <= activeN; ++i )
+            {
+				D[i][D.nsize()] = ahat(22)/(ahat(22)+ahat(25))*SpOut[i+nStart-1][22] + ahat(25)/(ahat(22)+ahat(25))*SpOut[i+nStart-1][25];
+				D[i][22] = 0;
+				D[i][25] = 0;
+            }
+            */
+            
+            /*std::ofstream dmat;
+            dmat.open ("./Dmat.txt");
+			for( int i = 1; i <= D.msize(); ++i )
+	    		for( int j = 1; j<= D.nsize(); ++j )
+                  dmat << D(i,j).real() << std::endl << " " << D(i,j).imag() << std::endl;
+            
+            dmat.close();
+            */
+
+            // python calc as follows:
+            // D = np.matrix(np.reshape(np.loadtxt('Dmat.txt').view(complex),(493,26)))
+            // FC = (D.H)*D
+            // crlbs = pow(np.diag(np.linalg.pinv(np.real(FC)/1.186197e-8)),0.5)
+
 			// make the fisher information matrix
 			cvm::scmatrix FC = (~D)*D;
+            
 			cvm::srmatrix fisher = FC.real();
 			fisher *= 1.0 / sigma;
+			
+			log.DebugMessage(DEBUG_LEVEL_1, "Sigma: %e", sigma);
 
 			cvm::rmatrix IFISHER = fisher.pinv();
 			log.EndTask("done.");
@@ -1315,12 +1480,121 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			// save in workspace
 			rvec_stdvec& crlbs_vec = work.GetCRLBs();
 			cvm::rvector crlbs;
-			crlbs.resize(Q);
+			crlbs.resize(IFISHER.msize());
 
-			for( int l = 1; l < Q+1; ++l )
+			for( int l = 1; l < IFISHER.msize()+1; ++l )
 				crlbs[l] = std::sqrt(IFISHER[l][l]);
 
+            //std::cout << crlbs << std::endl;
+
 			crlbs_vec.push_back(crlbs); 
+
+            // Lets find out if we should do an extra CRLB calculation with some
+            // signals combined...
+            if ( overlapping_signals > 0 )
+            {
+                cvm::rvector ahat_comb;
+                ahat_comb.resize(extra_cols);
+
+                // looks like some overlapping signals were found
+                cvm::cmatrix D_comb(JR.msize()/2, Q-overlapping_signals+extra_cols);
+                // do the non-overlapping signals first
+                int k = 1;
+                for( int j = 1; j<= Q; ++j )
+                {
+                    if (std::find(pos_list.begin(), pos_list.end(), k) == pos_list.end()) // if not in pos_list
+                    {
+                        for( int i = 1; i <= activeN; ++i )
+                        {
+                            D_comb[i][k] = SpOut[i+nStart-1][k];
+                        }
+                        k = k + 1;
+                    }
+                }
+
+                // do the combined signals now
+                if ( TNAA )
+                {
+                    for( int i = 1; i <= activeN; ++i )
+                    {
+                        D_comb[i][TNAA_ind+Q-overlapping_signals] = ahat(NAA_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAA_pos] + ahat(NAAG_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAAG_pos];
+                        ahat_comb(TNAA_ind) = ahat(NAA_pos) + ahat(NAAG_pos);
+                    }
+                }
+                if ( TCho )
+                {
+                    for( int i = 1; i <= activeN; ++i )
+                    {
+                        //D_comb[i][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos] + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos];
+                        D_comb[i][TCho_ind+Q-overlapping_signals] = SpOut[i+nStart-1][GPC_pos];
+                        ahat_comb(TCho_ind) = ahat(PCh_pos) + ahat(GPC_pos);
+                    }
+                }
+                if ( TCr )
+                {
+                    for( int i = 1; i <= activeN; ++i )
+                    {
+                        D_comb[i][TCr_ind+Q-overlapping_signals] = ahat(Cr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][Cr_pos] + ahat(PCr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][PCr_pos];
+                        ahat_comb(TCr_ind) = ahat(Cr_pos) + ahat(PCr_pos);
+                    }
+                }
+                if ( Glx )
+                {
+                    for( int i = 1; i <= activeN; ++i )
+                    {
+                        D_comb[i][Glx_ind+Q-overlapping_signals] = ahat(Glu_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Glu_pos] + ahat(Gln_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Gln_pos];
+                        ahat_comb(Glx_ind) = ahat(Glu_pos) + ahat(Gln_pos);
+                    }
+                }
+
+                // measure CRLBs
+                cvm::scmatrix FC_comb = (~D_comb)*D_comb;
+
+                cvm::srmatrix fisher_comb = FC_comb.real();
+                fisher_comb *= 1.0 / sigma;
+
+                cvm::rmatrix IFISHER_comb = fisher_comb.pinv();
+
+                cvm::rvector crlbs_comb;
+                crlbs_comb.resize(IFISHER_comb.msize());
+
+                for( int l = 1; l < IFISHER_comb.msize()+1; ++l )
+                    crlbs_comb[l] = std::sqrt(IFISHER_comb[l][l]);
+                
+                // pick out the combined subset
+                cvm::rvector crlbs_comb_cut;
+                crlbs_comb_cut.resize(extra_cols);
+
+                for( int x = 1; x < extra_cols + 1; x++ )
+                    crlbs_comb_cut(x) = crlbs_comb(Q-overlapping_signals+x);
+                
+                rvec_stdvec& crlbs_vec_comb = work.GetCRLBsComb();
+                crlbs_vec_comb.push_back(crlbs_comb_cut);
+                
+                rvec_stdvec& ahat_vec_comb = work.GetAmplitudesComb();
+                ahat_vec_comb.push_back(ahat_comb);
+            
+                rvec_stdvec& ampl_norm_vec_comb = work.GetAmplitudesNormalisedComb();
+                cvm::rvector ampl_norm_comb;
+                rvec_stdvec& crlb_norm_vec_comb = work.GetCRLBsNormalisedComb();
+                cvm::rvector crlb_norm_comb;
+
+                ampl_norm_comb.resize( ahat_comb.size() );
+                crlb_norm_comb.resize( crlbs_comb_cut.size() );
+                
+                // scale the amplitudes
+                for( int i = 1; i <= ahat_comb.size(); ++i )
+                    ampl_norm_comb[i] = work.NormaliseValue(voxel_num-1, ahat_comb[i]);
+
+                for( int i = 1; i <= crlbs_comb_cut.size(); ++i )
+                    crlb_norm_comb[i] = work.NormaliseValue(voxel_num-1, crlbs_comb_cut[i]);
+
+                // store the results before moving to the next fid
+                ampl_norm_vec_comb.push_back(ampl_norm_comb);
+                crlb_norm_vec_comb.push_back(crlb_norm_comb);
+            }
+
+
 
 			// measure of fit quality
 			cvm::cvector yz = y; 
