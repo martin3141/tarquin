@@ -569,16 +569,16 @@ void ExportTxtResults(const std::string& strFilename, const Workspace& workspace
         }
 
         // combined metabolites
-
-        for(integer n = 1; n < workspace.GetAmplitudesNormalisedComb()[fit].size()+1; n++) {
-            fout << std::setw(10) << std::left << workspace.GetMetabNamesComb()[n-1];
-            fout << std::setw(10) << std::right << workspace.GetAmplitudesNormalisedComb()[fit][n];
-            fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[fit][n]/workspace.GetAmplitudesNormalisedComb()[fit][n]*100;
-            fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[fit][n] << std::endl;
+        
+        if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
+        {
+            for(integer n = 1; n < workspace.GetAmplitudesNormalisedComb()[fit].size()+1; n++) {
+                fout << std::setw(10) << std::left << workspace.GetMetabNamesComb()[n-1];
+                fout << std::setw(10) << std::right << workspace.GetAmplitudesNormalisedComb()[fit][n];
+                fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[fit][n]/workspace.GetAmplitudesNormalisedComb()[fit][n]*100;
+                fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[fit][n] << std::endl;
+            }
         }
-
-
-
 
         // output some other useful information
         fout << std::endl;

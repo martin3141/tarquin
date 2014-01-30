@@ -133,6 +133,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_NAA );
         metabolites.push_back( BV_NAAG );
         metabolites.push_back( BV_PCH );
+        metabolites.push_back( BV_PCR );
         metabolites.push_back( BV_SCYLLO );
         metabolites.push_back( BV_TAU );
     }

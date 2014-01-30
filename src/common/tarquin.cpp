@@ -973,7 +973,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
         int extra_cols = 0;
 
         bool NAA_found = false;
-        if (std::find(metab_names.begin(), metab_names.end(), "NAAAAA") != metab_names.end()) //TODO
+        if (std::find(metab_names.begin(), metab_names.end(), "NAA") != metab_names.end())
         {
             NAA_found = true;
             NAA_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "NAA") - metab_names.begin();
@@ -1012,7 +1012,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
         }
 
         bool Glu_found = false;
-        if (std::find(metab_names.begin(), metab_names.end(), "Gluuuuuuuuuu") != metab_names.end()) // TODO
+        if (std::find(metab_names.begin(), metab_names.end(), "Glu") != metab_names.end())
         {
             Glu_found = true;
             Glu_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "Glu") - metab_names.begin();
@@ -1502,11 +1502,11 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 int k = 1;
                 for( int j = 1; j<= Q; ++j )
                 {
-                    if (std::find(pos_list.begin(), pos_list.end(), k) == pos_list.end()) // if not in pos_list
+                    if (std::find(pos_list.begin(), pos_list.end(), j) == pos_list.end()) // if not in pos_list
                     {
                         for( int i = 1; i <= activeN; ++i )
                         {
-                            D_comb[i][k] = SpOut[i+nStart-1][k];
+                            D_comb[i][k] = SpOut[i+nStart-1][j];
                         }
                         k = k + 1;
                     }
@@ -1525,8 +1525,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        //D_comb[i][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos] + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos];
-                        D_comb[i][TCho_ind+Q-overlapping_signals] = SpOut[i+nStart-1][GPC_pos];
+                        D_comb[i][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos] + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos];
+                        //D_comb[i][TCho_ind+Q-overlapping_signals] = SpOut[i+nStart-1][GPC_pos];
+                        //D_comb[i][TCho_ind+Q-overlapping_signals] = SpOut[i+nStart-1][GPC_pos];
                         ahat_comb(TCho_ind) = ahat(PCh_pos) + ahat(GPC_pos);
                     }
                 }
@@ -1547,6 +1548,15 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                     }
                 }
 
+                /*std::ofstream dmat_comb;
+                dmat_comb.open ("./Dmat_comb.txt");
+                for( int i = 1; i <= D_comb.msize(); ++i )
+                    for( int j = 1; j<= D_comb.nsize(); ++j )
+                        dmat_comb << D_comb(i,j).real() << std::endl << " " << D_comb(i,j).imag() << std::endl;
+
+                dmat_comb.close();
+                */
+
                 // measure CRLBs
                 cvm::scmatrix FC_comb = (~D_comb)*D_comb;
 
@@ -1560,6 +1570,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
                 for( int l = 1; l < IFISHER_comb.msize()+1; ++l )
                     crlbs_comb[l] = std::sqrt(IFISHER_comb[l][l]);
+
+                //std::cout << crlbs_comb << std::endl;
                 
                 // pick out the combined subset
                 cvm::rvector crlbs_comb_cut;
