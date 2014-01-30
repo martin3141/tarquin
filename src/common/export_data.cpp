@@ -217,15 +217,27 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 	fout << "Row" << "," << "Col" << "," << "Slice" << ","; 
 	// output the signal names	
 	for(integer n = 1; n < width; n++) 
-	{
 		fout << signal_names_sorted[n-1] << ",";
-	}
-	// last one without the comma	
-	fout << signal_names_sorted[width-1] << std::endl;
+	
+    if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
+    {
+        fout << signal_names_sorted[width-1] << ",";
+        for(integer n = 1; n < workspace.GetMetabNamesComb().size(); n++)
+            fout << workspace.GetMetabNamesComb()[n-1] << ",";
+        
+        fout << workspace.GetMetabNamesComb()[workspace.GetMetabNamesComb().size()-1] << std::endl;
+    }
+    else
+    {
+        // last one without the comma	
+        fout << signal_names_sorted[width-1] << std::endl;
+    }
 	
 	// output the signal amplitudes
     const coord_vec& fit_list = options.GetFitList();
 	coord_vec::const_iterator i_coord = fit_list.begin();
+
+    size_t fit = 0;
 	for( rvec_stdvec::const_iterator i = ahat.begin(); i != ahat.end(); ++i )	
 	{
 		// write the voxel info
@@ -242,20 +254,41 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 			}
 			fout << tempamp << ",";	
 		}
+        
+        if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
+        {
+            for(integer m = 1; m < width+1; m++) 
+            {
+                if ( signal_names_sorted[width-1] == signal_names[m-1] )
+                {
+                    tempamp = (*i)(m);
+                    break;
+                }
+            }
+            fout << tempamp << ",";
 
-		// last one without the comma	
-		for(integer m = 1; m < width+1; m++) 
-		{
-			if ( signal_names_sorted[width-1] == signal_names[m-1] )
-			{
-				tempamp = (*i)(m);
-				break;
-			}
-		}
-		fout << tempamp << std::endl;
+            for(integer n = 1; n < workspace.GetAmplitudesNormalisedComb()[fit].size(); n++)
+            {
+                fout << workspace.GetAmplitudesNormalisedComb()[fit][n] << ",";
+            }
+            fout << workspace.GetAmplitudesNormalisedComb()[fit][workspace.GetAmplitudesNormalisedComb()[fit].size()] << std::endl;
+        }
+        else
+        {
+            for(integer m = 1; m < width+1; m++) 
+            {
+                if ( signal_names_sorted[width-1] == signal_names[m-1] )
+                {
+                    tempamp = (*i)(m);
+                    break;
+                }
+            }
+            fout << tempamp << std::endl;
+        }
 
 		// move to the next voxel
 		i_coord++;
+        fit++;
 	}
 
 	fout << "CRLBs (standard deviation)" << std::endl;
@@ -265,11 +298,24 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 	{
 		fout << signal_names_sorted[n-1] << ",";
 	}
-	// last one without the comma	
-	fout << signal_names_sorted[width-1] << std::endl;
-	
+    
+    if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
+    {
+        fout << signal_names_sorted[width-1] << ",";
+        for(integer n = 1; n < workspace.GetMetabNamesComb().size(); n++)
+            fout << workspace.GetMetabNamesComb()[n-1] << ",";
+        
+        fout << workspace.GetMetabNamesComb()[workspace.GetMetabNamesComb().size()-1] << std::endl;
+    }
+    else
+    {
+        // last one without the comma	
+        fout << signal_names_sorted[width-1] << std::endl;
+    }
+
 	// output the signal amplitudes
 	i_coord = fit_list.begin();
+    fit = 0;
 	for( rvec_stdvec::const_iterator i = crlb.begin(); i != crlb.end(); ++i )	
 	{
 		// write the voxel info
@@ -287,19 +333,41 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 			fout << tempamp << ",";	
 		}
 
-		// last one without the comma	
-		for(integer m = 1; m < width+1; m++) 
-		{
-			if ( signal_names_sorted[width-1] == signal_names[m-1] )
-			{
-				tempamp = (*i)(m);
-				break;
-			}
-		}
-		fout << tempamp << std::endl;
+        if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
+        {
+            for(integer m = 1; m < width+1; m++) 
+            {
+                if ( signal_names_sorted[width-1] == signal_names[m-1] )
+                {
+                    tempamp = (*i)(m);
+                    break;
+                }
+            }
+            fout << tempamp << ",";
+
+            for(integer n = 1; n < workspace.GetCRLBsNormalisedComb()[fit].size(); n++)
+            {
+                fout << workspace.GetCRLBsNormalisedComb()[fit][n] << ",";
+            }
+            fout << workspace.GetCRLBsNormalisedComb()[fit][workspace.GetCRLBsNormalisedComb()[fit].size()] << std::endl;
+        }
+        else
+        {
+            for(integer m = 1; m < width+1; m++) 
+            {
+                if ( signal_names_sorted[width-1] == signal_names[m-1] )
+                {
+                    tempamp = (*i)(m);
+                    break;
+                }
+            }
+            fout << tempamp << std::endl;
+        }
+
 
 		// move to the next voxel
 		i_coord++;
+        fit++;
 	}
     
     //fout << std::showpoint;
@@ -335,7 +403,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 	integer M = basis.GetGroupMatrix().nsize();
 	std::size_t nIdxBeta   = 2*M+1;
     
-    size_t fit = 0;
+    fit = 0;
 	for( coord_vec::const_iterator i_coord = options.GetFitList().begin(); i_coord != options.GetFitList().end(); ++i_coord )	
 	{
         std::string stop;

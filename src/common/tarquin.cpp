@@ -1432,26 +1432,26 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			// actually compute the derivative of YHAT w.r.t. each amplitude parameter, we just
 			// stick the basis vectors as the first few columns of the matrix.
 			//cvm::cmatrix D(JR.msize()/2, Q + JR.nsize());
-			cvm::cmatrix D(JR.msize()/2, Q);
+			
+            cvm::cmatrix D(JR.msize()/2, Q);
 			for( int i = 1; i <= activeN; ++i )
 				for( int j = 1; j<= Q; ++j )
 					D[i][j] = SpOut[i+nStart-1][j];
+            
 
-            //std::cout << D(1).size() << std::endl;
-            // add extra column
+            // gives identical results to above
             /*
-            D.resize(D.msize(),D.nsize()+1);
-            metab_names.push_back("NAA+Scy");
-            ahat.resize(ahat.size()+1);
-            ahat(ahat.size()) = 0.00109027 + 2.20186e-05;
+			cvm::cmatrix D(JR.msize(), Q);
 			for( int i = 1; i <= activeN; ++i )
             {
-				D[i][D.nsize()] = ahat(22)/(ahat(22)+ahat(25))*SpOut[i+nStart-1][22] + ahat(25)/(ahat(22)+ahat(25))*SpOut[i+nStart-1][25];
-				D[i][22] = 0;
-				D[i][25] = 0;
+				for( int j = 1; j<= Q; ++j )
+                {
+					D[i][j] = SpOut[i+nStart-1][j].real();
+					D[i+JR.msize()/2][j] = SpOut[i+nStart-1][j].imag();
+                }
             }
             */
-            
+
             /*std::ofstream dmat;
             dmat.open ("./Dmat.txt");
 			for( int i = 1; i <= D.msize(); ++i )
@@ -1465,6 +1465,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             // D = np.matrix(np.reshape(np.loadtxt('Dmat.txt').view(complex),(493,26)))
             // FC = (D.H)*D
             // crlbs = pow(np.diag(np.linalg.pinv(np.real(FC)/1.186197e-8)),0.5)
+
 
 			// make the fisher information matrix
 			cvm::scmatrix FC = (~D)*D;
@@ -1526,8 +1527,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                     for( int i = 1; i <= activeN; ++i )
                     {
                         D_comb[i][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos] + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos];
-                        //D_comb[i][TCho_ind+Q-overlapping_signals] = SpOut[i+nStart-1][GPC_pos];
-                        //D_comb[i][TCho_ind+Q-overlapping_signals] = SpOut[i+nStart-1][GPC_pos];
                         ahat_comb(TCho_ind) = ahat(PCh_pos) + ahat(GPC_pos);
                     }
                 }
