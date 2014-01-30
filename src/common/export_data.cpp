@@ -825,6 +825,18 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
         fout << std::setw(10) << std::right << tempcrlb/tempamp*100;
         fout << std::setw(10) << std::right << tempcrlb << "\\n";
 	}
+        
+    // combined metabolites
+    if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
+    {
+        for(integer n = 1; n < workspace.GetAmplitudesNormalisedComb()[0].size()+1; n++) { // TODO
+            fout << std::setw(10) << std::left << workspace.GetMetabNamesComb()[n-1];
+            fout << std::setw(10) << std::right << workspace.GetAmplitudesNormalisedComb()[0][n]; // TODO
+            fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[0][n]/workspace.GetAmplitudesNormalisedComb()[0][n]*100; //TODO
+            fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[0][n] << "\\n"; // TODO
+        }
+    }
+
 
 	CFID yfid = workspace.GetFID();
     

@@ -86,7 +86,6 @@ void ResultsDlg::InitFromWorkspace(const tarquin::Workspace& workspace)
 	}
 
 	std::vector<ResultRow> results;
-
 	// for each basis vector
 	for( int i = 0; i < ampl_norm[fit_no].size(); ++i )
 	{
@@ -112,4 +111,18 @@ void ResultsDlg::InitFromWorkspace(const tarquin::Workspace& workspace)
 		m_model->setData(m_model->index(0, 2), QString::number(results[i].crlb,  'g', 4));
 		m_model->setData(m_model->index(0, 3), QString::number(results[i].error, 'g', 4));
 	}
+
+    if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
+    {
+        for(int n = 1; n < workspace.GetAmplitudesNormalisedComb()[fit_no].size()+1; n++)
+        {
+            m_model->insertRow(results.size()+n-1);
+            m_model->setData(m_model->index(results.size()+n-1, 0), QString::fromStdString(workspace.GetMetabNamesComb()[n-1])  );
+            m_model->setData(m_model->index(results.size()+n-1, 1), QString::number(workspace.GetAmplitudesNormalisedComb()[fit_no][n],  'g', 4));
+            m_model->setData(m_model->index(results.size()+n-1, 2), QString::number(workspace.GetCRLBsNormalisedComb()[fit_no][n],  'g', 4));
+            m_model->setData(m_model->index(results.size()+n-1, 3), QString::number(workspace.GetCRLBsNormalisedComb()[fit_no][n]/workspace.GetAmplitudesNormalisedComb()[fit_no][n]*100, 'g', 4));
+
+        }
+    }
+
 }
