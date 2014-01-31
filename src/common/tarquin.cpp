@@ -1545,29 +1545,63 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			log.BeginTask("Computing CRLBs.");
 			cvm::rmatrix JR = params.m_final_jac;
 
+            /*std::cout << std::endl << JR.msize() << std::endl;
+            std::cout << JR.nsize() << std::endl;*/
+
+
 			// Each column of D is the derivative of YHAT w.r.t. each parameter. Since we don't
 			// actually compute the derivative of YHAT w.r.t. each amplitude parameter, we just
 			// stick the basis vectors as the first few columns of the matrix.
 			//cvm::cmatrix D(JR.msize()/2, Q + JR.nsize());
 			
-            cvm::cmatrix D(JR.msize()/2, Q);
+            /*cvm::cmatrix D(JR.msize()/2, Q);
 			for( int i = 1; i <= activeN; ++i )
 				for( int j = 1; j<= Q; ++j )
 					D[i][j] = SpOut[i+nStart-1][j];
+                    */
             
 
             // gives identical results to above
-            /*
-			cvm::cmatrix D(JR.msize(), Q);
+			cvm::rmatrix D(JR.msize(), Q+JR.nsize());
 			for( int i = 1; i <= activeN; ++i )
             {
+                // amps
 				for( int j = 1; j<= Q; ++j )
                 {
 					D[i][j] = SpOut[i+nStart-1][j].real();
 					D[i+JR.msize()/2][j] = SpOut[i+nStart-1][j].imag();
                 }
             }
+                
+			for( int i = 1; i <= activeN*2; ++i )
+            {
+                // other paras
+                for( int k = 1; k<= JR.nsize(); ++k )
+                {
+					D[i][k+Q] = JR[i][k];
+                }
+            }
+
+            /* 
+            std::ofstream dmat;
+            dmat.open ("./Dmat.txt");
+			for( int i = 1; i <= D.msize(); ++i )
+	    		for( int j = 1; j<= D.nsize(); ++j )
+                  dmat << D(i,j) << std::endl;
+
+            std::cout << D.msize() << "," << D.nsize() << std::endl;
+                  
+            //dmat << D(i,j).real() << std::endl << " " << D(i,j).imag() << std::endl;
+            
+            dmat.close();
             */
+
+            // import numpy as np
+            // import pylab as pl
+            // D = np.matrix(np.reshape(np.loadtxt('Dmat.txt'),(986,81)))
+            // pl.plot(D[:,60])
+            // pl.show()
+
 
             /*std::ofstream dmat;
             dmat.open ("./Dmat.txt");
@@ -1575,19 +1609,13 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 	    		for( int j = 1; j<= D.nsize(); ++j )
                   dmat << D(i,j).real() << std::endl << " " << D(i,j).imag() << std::endl;
             
-            dmat.close();
-            */
-
-            // python calc as follows:
-            // D = np.matrix(np.reshape(np.loadtxt('Dmat.txt').view(complex),(493,26)))
-            // FC = (D.H)*D
-            // crlbs = pow(np.diag(np.linalg.pinv(np.real(FC)/1.186197e-8)),0.5)
-
+            dmat.close();*/
 
 			// make the fisher information matrix
-			cvm::scmatrix FC = (~D)*D;
+			cvm::srmatrix FC = (~D)*D;
             
-			cvm::srmatrix fisher = FC.real();
+			//cvm::srmatrix fisher = FC.real();
+			cvm::srmatrix fisher = FC;
 			fisher *= 1.0 / sigma;
 			
 			log.DebugMessage(DEBUG_LEVEL_1, "Sigma: %e", sigma);
@@ -1598,9 +1626,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			// save in workspace
 			rvec_stdvec& crlbs_vec = work.GetCRLBs();
 			cvm::rvector crlbs;
-			crlbs.resize(IFISHER.msize());
+			crlbs.resize(Q);
 
-			for( int l = 1; l < IFISHER.msize()+1; ++l )
+			for( int l = 1; l < Q+1; ++l )
 				crlbs[l] = std::sqrt(IFISHER[l][l]);
 
             //std::cout << crlbs << std::endl;
