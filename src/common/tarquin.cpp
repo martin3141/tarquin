@@ -1152,17 +1152,17 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             cnt++;
             metab_names_comb.push_back("TLM09");
         }
-        /*if ( Lip13a_found && Lip13b_found )
-        {
-            TL13 = true;
-            overlapping_signals = overlapping_signals + 2;
-            extra_cols = extra_cols + 1;
-            pos_list.push_back(Lip13a_pos);
-            pos_list.push_back(Lip13b_pos);
-            TL13_ind = cnt;
-            cnt++;
-            metab_names_comb.push_back("TL13");
-        }*/
+        //if ( Lip13a_found && Lip13b_found )
+        //{
+        //    TL13 = true;
+        //    overlapping_signals = overlapping_signals + 2;
+        //    extra_cols = extra_cols + 1;
+        //    pos_list.push_back(Lip13a_pos);
+        //    pos_list.push_back(Lip13b_pos);
+        //    TL13_ind = cnt;
+        //    cnt++;
+        //    metab_names_comb.push_back("TL13");
+        //}
         if ( Lip13a_found && Lip13b_found && MM12_found && MM14_found )
         {
             TLM13 = true;
@@ -1187,8 +1187,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             cnt++;
             metab_names_comb.push_back("TLM20");
         }
-
-
 
         log.DebugMessage(DEBUG_LEVEL_1, "Overlapping signals found: %i", overlapping_signals);
 
@@ -1582,8 +1580,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 }
             }
 
-            /* 
-            std::ofstream dmat;
+            /*std::ofstream dmat;
             dmat.open ("./Dmat.txt");
 			for( int i = 1; i <= D.msize(); ++i )
 	    		for( int j = 1; j<= D.nsize(); ++j )
@@ -1593,15 +1590,14 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                   
             //dmat << D(i,j).real() << std::endl << " " << D(i,j).imag() << std::endl;
             
-            dmat.close();
-            */
+            dmat.close();*/
+
 
             // import numpy as np
             // import pylab as pl
             // D = np.matrix(np.reshape(np.loadtxt('Dmat.txt'),(986,81)))
             // pl.plot(D[:,60])
             // pl.show()
-
 
             /*std::ofstream dmat;
             dmat.open ("./Dmat.txt");
@@ -1643,27 +1639,32 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 ahat_comb.resize(extra_cols);
 
                 // looks like some overlapping signals were found
-                cvm::cmatrix D_comb(JR.msize()/2, Q-overlapping_signals+extra_cols);
+                cvm::rmatrix D_comb(JR.msize(), Q-overlapping_signals+extra_cols+JR.nsize());
                 // do the non-overlapping signals first
                 int k = 1;
                 for( int j = 1; j<= Q; ++j )
                 {
                     if (std::find(pos_list.begin(), pos_list.end(), j) == pos_list.end()) // if not in pos_list
                     {
+                        //std::cout << k << "," << j << std::endl;
                         for( int i = 1; i <= activeN; ++i )
                         {
-                            D_comb[i][k] = SpOut[i+nStart-1][j];
+                            D_comb[i][k] = SpOut[i+nStart-1][j].real();
+                            D_comb[i+JR.msize()/2][k] = SpOut[i+nStart-1][j].imag();
                         }
                         k = k + 1;
                     }
                 }
-
+                //std::cout << std::endl << Q-overlapping_signals << std::endl;
+                //std::cout << TNAA_ind << std::endl;
+                //std::cout << Q-overlapping_signals+extra_cols << std::endl;
                 // do the combined signals now
                 if ( TNAA )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TNAA_ind+Q-overlapping_signals] = ahat(NAA_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAA_pos] + ahat(NAAG_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAAG_pos];
+                        D_comb[i][TNAA_ind+Q-overlapping_signals] = ahat(NAA_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAA_pos].real() + ahat(NAAG_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAAG_pos].real();
+                        D_comb[i+JR.msize()/2][TNAA_ind+Q-overlapping_signals] = ahat(NAA_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAA_pos].imag() + ahat(NAAG_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAAG_pos].imag();
                         ahat_comb(TNAA_ind) = ahat(NAA_pos) + ahat(NAAG_pos);
                     }
                 }
@@ -1671,7 +1672,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos] + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos];
+                        D_comb[i][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos].real() + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos].real();
+                        D_comb[i+JR.msize()/2][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos].imag() + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos].imag();
                         ahat_comb(TCho_ind) = ahat(PCh_pos) + ahat(GPC_pos);
                     }
                 }
@@ -1679,7 +1681,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TCr_ind+Q-overlapping_signals] = ahat(Cr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][Cr_pos] + ahat(PCr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][PCr_pos];
+                        D_comb[i][TCr_ind+Q-overlapping_signals] = ahat(Cr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][Cr_pos].real() + ahat(PCr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][PCr_pos].real();
+                        D_comb[i+JR.msize()/2][TCr_ind+Q-overlapping_signals] = ahat(Cr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][Cr_pos].imag() + ahat(PCr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][PCr_pos].imag();
                         ahat_comb(TCr_ind) = ahat(Cr_pos) + ahat(PCr_pos);
                     }
                 }
@@ -1687,7 +1690,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][Glx_ind+Q-overlapping_signals] = ahat(Glu_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Glu_pos] + ahat(Gln_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Gln_pos];
+                        D_comb[i][Glx_ind+Q-overlapping_signals] = ahat(Glu_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Glu_pos].real() + ahat(Gln_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Gln_pos].real();
+                        D_comb[i+JR.msize()/2][Glx_ind+Q-overlapping_signals] = ahat(Glu_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Glu_pos].imag() + ahat(Gln_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Gln_pos].imag();
                         ahat_comb(Glx_ind) = ahat(Glu_pos) + ahat(Gln_pos);
                     }
                 }
@@ -1695,7 +1699,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TLM09_ind+Q-overlapping_signals] = ahat(Lip09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][Lip09_pos] + ahat(MM09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][MM09_pos];
+                        D_comb[i][TLM09_ind+Q-overlapping_signals] = ahat(Lip09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][Lip09_pos].real() + ahat(MM09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][MM09_pos].real();
+                        D_comb[i+JR.msize()/2][TLM09_ind+Q-overlapping_signals] = ahat(Lip09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][Lip09_pos].imag() + ahat(MM09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][MM09_pos].imag();
                         ahat_comb(TLM09_ind) = ahat(Lip09_pos) + ahat(MM09_pos);
                     }
                 }
@@ -1711,7 +1716,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TLM13_ind+Q-overlapping_signals] = ahat(Lip13a_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13a_pos] + ahat(Lip13b_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13b_pos] + ahat(MM12_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM12_pos] + ahat(MM14_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM14_pos];
+                        // HAHAHA Greg will hate this!
+                        D_comb[i][TLM13_ind+Q-overlapping_signals] = ahat(Lip13a_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13a_pos].real() + ahat(Lip13b_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13b_pos].real() + ahat(MM12_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM12_pos].real() + ahat(MM14_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM14_pos].real();
+                        D_comb[i+JR.msize()/2][TLM13_ind+Q-overlapping_signals] = ahat(Lip13a_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13a_pos].imag() + ahat(Lip13b_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13b_pos].imag() + ahat(MM12_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM12_pos].imag() + ahat(MM14_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM14_pos].imag();
 
                         ahat_comb(TLM13_ind) = ahat(Lip13a_pos) + ahat(Lip13b_pos) + ahat(MM12_pos) + ahat(MM14_pos);
                     }
@@ -1721,11 +1728,29 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TLM20_ind+Q-overlapping_signals] = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][Lip20_pos] + ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][MM20_pos];
+                        D_comb[i][TLM20_ind+Q-overlapping_signals] = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][Lip20_pos].real() + ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][MM20_pos].real();
+                        D_comb[i+JR.msize()/2][TLM20_ind+Q-overlapping_signals] = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][Lip20_pos].imag() + ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][MM20_pos].imag();
                         ahat_comb(TLM20_ind) = ahat(Lip20_pos) + ahat(MM20_pos);
                     }
                 }
 
+                for( int i = 1; i <= activeN*2; ++i )
+                {
+                    // other paras
+                    for( int k = 1; k<= JR.nsize(); ++k )
+                    {
+                        D_comb[i][k+Q-overlapping_signals+extra_cols] = JR[i][k];
+                        //std::cout << k+Q-overlapping_signals+extra_cols << std::endl;
+                    }
+                }
+                
+                /*for( int k = 1; k<= JR.nsize(); ++k )
+                {
+                    std::cout << k << std::endl;
+                    std::cout << D_comb[1][k+Q-overlapping_signals+extra_cols] << std::endl;
+                }*/
+
+                //std::cout << JR << std::endl;
 
 
                 /*std::ofstream dmat_comb;
@@ -1736,11 +1761,20 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
                 dmat_comb.close();
                 */
+            
+                /*std::ofstream dmat_comb;
+                dmat_comb.open ("./Dmat_comb.txt");
+                for( int i = 1; i <= D_comb.msize(); ++i )
+                    for( int j = 1; j<= D_comb.nsize(); ++j )
+                        dmat_comb << D_comb(i,j) << std::endl;
 
+                std::cout << D_comb.msize() << "," << D_comb.nsize() << std::endl;
+                */
+                  
                 // measure CRLBs
-                cvm::scmatrix FC_comb = (~D_comb)*D_comb;
+                cvm::srmatrix FC_comb = (~D_comb)*D_comb;
 
-                cvm::srmatrix fisher_comb = FC_comb.real();
+                cvm::srmatrix fisher_comb = FC_comb;
                 fisher_comb *= 1.0 / sigma;
 
                 cvm::rmatrix IFISHER_comb = fisher_comb.pinv();
@@ -1748,7 +1782,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 cvm::rvector crlbs_comb;
                 crlbs_comb.resize(IFISHER_comb.msize());
 
-                for( int l = 1; l < IFISHER_comb.msize()+1; ++l )
+                for( int l = 1; l < Q+1; ++l )
                     crlbs_comb[l] = std::sqrt(IFISHER_comb[l][l]);
 
                 //std::cout << crlbs_comb << std::endl;
