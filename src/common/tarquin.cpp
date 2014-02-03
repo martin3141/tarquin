@@ -1227,29 +1227,21 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			}
 
 
-			// estimate the standard deviation of the noise
-			// TODO: do this in a less retarded way
+			// estimate the standard deviation of the noise in the time domain
 			// Greg, I moved this to before fitting in case a big phi1
 			// correction causes a distortion at the end of the fid
 
-			int offset = 5;
+            int td_block_size = 100;
+            double td_noise_min = std::numeric_limits<double>::infinity();
+		    double td_noise_temp = 0;
+            for ( int n = 1; n < (y.size()+1) - td_block_size; n = n + td_block_size ) 
+            {
+                td_noise_temp = stdev(y.real(),n,n+td_block_size-1);
+                if ( td_noise_temp < td_noise_min )
+                    td_noise_min = td_noise_temp;
+            }
 
-			// bigger offset for bruker due to the dps filtering guff
-			// at the start of the FID
-			if ( options.GetFormat() == tarquin::BRUKER ) 
-				offset = 105;
-
-			double mean = 0;
-			int num_points_for_noise = 50;
-			for( int n = y.size()-num_points_for_noise-offset; n <= y.size()-offset; ++n )
-				mean += std::real(y[n]);
-
-			mean /= num_points_for_noise;
-			double sigma = 0;
-			for( int n = y.size()-num_points_for_noise-offset; n <= y.size()-offset; ++n )
-				sigma += (std::real(y[n]) - mean) * (std::real(y[n]) - mean);
-
-			sigma /= num_points_for_noise;
+			double sigma = td_noise_min*td_noise_min;
 
 			//plot(y);
 
