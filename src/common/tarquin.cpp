@@ -1587,7 +1587,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
             // import numpy as np
             // import pylab as pl
-            // D = np.matrix(np.reshape(np.loadtxt('Dmat.txt'),(986,81)))
+            // D = np.matrix(np.reshape(np.loadtxt('Dmat.txt'),(986,73)))
+            // IFISHER = np.linalg.pinv(fisher)
             // pl.plot(D[:,60])
             // pl.show()
 
@@ -1619,8 +1620,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			for( int l = 1; l < Q+1; ++l )
 				crlbs[l] = std::sqrt(IFISHER[l][l]);
 
-            //std::cout << crlbs << std::endl;
-
 			crlbs_vec.push_back(crlbs); 
 
             // Lets find out if we should do an extra CRLB calculation with some
@@ -1650,8 +1649,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 //std::cout << std::endl << Q-overlapping_signals << std::endl;
                 //std::cout << TNAA_ind << std::endl;
                 //std::cout << Q-overlapping_signals+extra_cols << std::endl;
+
                 // do the combined signals now
-                if ( TNAA )
+                if ( TNAA && ((ahat(NAA_pos) + ahat(NAAG_pos)) > 0) )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
@@ -1660,7 +1660,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         ahat_comb(TNAA_ind) = ahat(NAA_pos) + ahat(NAAG_pos);
                     }
                 }
-                if ( TCho )
+                if ( TCho && ((ahat(PCh_pos) + ahat(GPC_pos)) > 0) )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
@@ -1669,7 +1669,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         ahat_comb(TCho_ind) = ahat(PCh_pos) + ahat(GPC_pos);
                     }
                 }
-                if ( TCr )
+                if ( TCr && ((ahat(Cr_pos) + ahat(PCr_pos)) > 0) )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
@@ -1678,7 +1678,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         ahat_comb(TCr_ind) = ahat(Cr_pos) + ahat(PCr_pos);
                     }
                 }
-                if ( Glx )
+                if ( Glx && ((ahat(Glu_pos) + ahat(Gln_pos)) > 0) )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
@@ -1687,7 +1687,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         ahat_comb(Glx_ind) = ahat(Glu_pos) + ahat(Gln_pos);
                     }
                 }
-                if ( TLM09 )
+                if ( TLM09 && ((ahat(Lip09_pos) + ahat(MM09_pos)) > 0) )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
@@ -1704,7 +1704,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         ahat_comb(TL13_ind) = ahat(Lip13a_pos) + ahat(Lip13b_pos);
                     }
                 }*/
-                if ( TLM13 )
+                if ( TLM13 && ((ahat(Lip13a_pos) + ahat(Lip13b_pos) + ahat(MM12_pos) + ahat(MM14_pos)) > 0) )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
@@ -1716,7 +1716,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                     }
                 }
 
-                if ( TLM20 )
+                if ( TLM20 && ((ahat(Lip20_pos) + ahat(MM20_pos)) > 0) )
                 {
                     for( int i = 1; i <= activeN; ++i )
                     {
@@ -1725,6 +1725,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         ahat_comb(TLM20_ind) = ahat(Lip20_pos) + ahat(MM20_pos);
                     }
                 }
+
 
                 for( int i = 1; i <= activeN*2; ++i )
                 {
@@ -1754,14 +1755,25 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 dmat_comb.close();
                 */
             
+                // import numpy as np
+                // import pylab as pl
+                // D_comb = np.matrix(np.reshape(np.loadtxt('Dmat_comb.txt'),(986,73)))
+                // FC = D_comb.T*D_comb
+                // fisher = FC/ 5.214470e-01
+                // IFISHER = np.linalg.pinv(fisher)
+                // pl.plot(D[:,60])
+                // pl.show()
+
+            
                 /*std::ofstream dmat_comb;
                 dmat_comb.open ("./Dmat_comb.txt");
                 for( int i = 1; i <= D_comb.msize(); ++i )
                     for( int j = 1; j<= D_comb.nsize(); ++j )
                         dmat_comb << D_comb(i,j) << std::endl;
 
-                std::cout << D_comb.msize() << "," << D_comb.nsize() << std::endl;
-                */
+                dmat_comb.close();
+
+                std::cout << D_comb.msize() << "," << D_comb.nsize() << std::endl;*/
                   
                 // measure CRLBs
                 cvm::srmatrix FC_comb = (~D_comb)*D_comb;
@@ -1773,8 +1785,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
                 cvm::rvector crlbs_comb;
                 crlbs_comb.resize(IFISHER_comb.msize());
+                //std::cout << IFISHER_comb.nsize() << " " << IFISHER_comb.msize() << std::flush << std::endl;
 
-                for( int l = 1; l < Q+1; ++l )
+                for( int l = 1; l < IFISHER_comb.msize()+1; ++l )
                     crlbs_comb[l] = std::sqrt(IFISHER_comb[l][l]);
 
                 //std::cout << crlbs_comb << std::endl;
@@ -1800,6 +1813,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 ampl_norm_comb.resize( ahat_comb.size() );
                 crlb_norm_comb.resize( crlbs_comb_cut.size() );
                 
+
                 // scale the amplitudes
                 for( int i = 1; i <= ahat_comb.size(); ++i )
                     ampl_norm_comb[i] = work.NormaliseValue(voxel_num-1, ahat_comb[i]);
