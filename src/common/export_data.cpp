@@ -21,6 +21,55 @@ void ExportCsvSpectraAligned(const std::string& strFilename, const Workspace& wo
 	coord_vec fit_list = options.GetFitList();
 
     std::ofstream fout(strFilename.c_str(), std::ios::out);
+
+    int spectra = fit_list.size();
+    cvm::rvector freq_scale = yfid.GetPPMScale(fit_list[0], options.GetZF());
+    int N = freq_scale.size();
+    
+    std::vector<cvm::cvector> spectra_vec;
+
+    for ( size_t p = 0; p < spectra; p++ )
+    {
+        yfid.ShiftRef(options.GetRef(), yfid.vox2ind(fit_list[p]));
+        cvm::cvector y = yfid.GetVectorFID(fit_list[p]);
+        lb(y,workspace.GetFIDRaw(),options.Getlb());
+        ZeroPad(y,options.GetZF());
+        cvm::cvector Y = fft(y);
+        Y = fftshift(Y);
+        spectra_vec.push_back(Y);
+    }
+
+    fout << "PPMScale";
+    for ( size_t n = 0; n < spectra; n++ )
+        fout << "," << fit_list[n].row  << "-" << fit_list[n].col << "-" << fit_list[n].slice;
+
+    fout << std::endl;
+
+    for ( size_t row = 1; row < N+1; row++ )
+    {
+        fout << freq_scale(row);
+        for ( size_t col = 1; col < spectra+1; col++ )
+        {
+            if ( mag == false )
+                fout << "," << spectra_vec[col-1](row).real();
+            else
+                fout << "," << std::abs(spectra_vec[col-1](row));
+
+        }
+        fout << std::endl;
+    }
+}
+
+/* OLDER FUNCTION, bit like the above but transposed so difficult to read in other software
+void ExportCsvSpectraAligned(const std::string& strFilename, const Workspace& workspace, bool mag)
+{
+	// create a new options 
+	Options options = workspace.GetOptions();
+
+	CFID yfid = workspace.GetFID();
+	coord_vec fit_list = options.GetFitList();
+
+    std::ofstream fout(strFilename.c_str(), std::ios::out);
     
     for ( size_t p = 0; p < fit_list.size(); p++ )
     {
@@ -39,7 +88,7 @@ void ExportCsvSpectraAligned(const std::string& strFilename, const Workspace& wo
         // write ppm scale first
         if ( p == 0 )
         {
-            fout << ",,PPMScale";
+            fout << ",,,,,PPMScale";
             for ( int m = 1; ( m < Y.size() + 1 ); m++) 
             {
                 fout << "," << freq_scale(m);
@@ -59,7 +108,7 @@ void ExportCsvSpectraAligned(const std::string& strFilename, const Workspace& wo
         }
         fout << std::endl;
     }
-}
+}*/
 
 void ExportCsvSpectrum(const std::string& strFilename, const Workspace& workspace)
 {
