@@ -47,9 +47,9 @@ namespace tarquin
 	enum basis_set_e 
 	{ 
 		PROTON_BRAIN = 0,           // Std brain metabolites
-		PROTON_BRAIN_GLTH,           // Std brain metabolites + Glth
+		PROTON_BRAIN_GLY_GLTH,           // Std brain metabolites Gly + Glth
 		PROTON_BRAIN_GLY_CIT_GLTH,       // Std brain metabolites + Gly + Cit + Glth
-		PROTON_BRAIN_FULL,       // Std brain metabolites + Gly + Glth + PCr
+		PROTON_BRAIN_FULL,       // Std brain metabolites + Gly + Glth + PEth
 		PROTON_BRAIN_LE,       // Std brain metabolites + Gly + Cit
 		PROTON_MEGAPRESS_GABA,
 		PHOSPH_BRAIN_DECOUP
@@ -154,7 +154,7 @@ namespace tarquin
 	    m_nStartTime = 0.01;
 	    m_ref_signals = PROTON_NAA_CR_CHO_LIP;
 	    m_dyn_ref_signals = PROTON_NAA_CR_CHO_LIP;
-        m_int_basis_set = PROTON_BRAIN;
+        m_int_basis_set = PROTON_BRAIN_GLY_GLTH;
         m_dyn_av = DEFAULT;
         m_dyn_freq_corr = false;
         m_pul_seq = PRESS;

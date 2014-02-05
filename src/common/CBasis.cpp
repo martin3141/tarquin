@@ -107,7 +107,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_SCYLLO );
         metabolites.push_back( BV_TAU );
     }
-    else if ( options.GetIntBasisSet() == PROTON_BRAIN_GLTH )
+    else if ( options.GetIntBasisSet() == PROTON_BRAIN_GLY_GLTH )
     {
         metabolites.push_back( BV_ALA );
         metabolites.push_back( BV_ASP );
@@ -118,6 +118,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_GLN );
         metabolites.push_back( BV_GLTH );
         metabolites.push_back( BV_GLU );
+        metabolites.push_back( BV_GLY );
         metabolites.push_back( BV_GPC );
         metabolites.push_back( BV_INS );
         metabolites.push_back( BV_LAC );
@@ -130,7 +131,6 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_MM14 );
         metabolites.push_back( BV_MM17 );
         metabolites.push_back( BV_MM20 );
-        metabolites.push_back( BV_MM38 );
         metabolites.push_back( BV_NAA );
         metabolites.push_back( BV_NAAG );
         metabolites.push_back( BV_PCH );
@@ -195,6 +195,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_MM14 );
         metabolites.push_back( BV_MM17 );
         metabolites.push_back( BV_MM20 );
+        metabolites.push_back( BV_MM38 );
         metabolites.push_back( BV_NAA );
         metabolites.push_back( BV_NAAG );
         metabolites.push_back( BV_PCH );
@@ -211,6 +212,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_LIP09 );
         metabolites.push_back( BV_LIP13A );
         metabolites.push_back( BV_LIP13B );
+        metabolites.push_back( BV_PCR );
         metabolites.push_back( BV_TCHO );
         metabolites.push_back( BV_TNAA );
     }
