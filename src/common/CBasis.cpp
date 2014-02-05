@@ -103,6 +103,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_NAA );
         metabolites.push_back( BV_NAAG );
         metabolites.push_back( BV_PCH );
+        metabolites.push_back( BV_PCR );
         metabolites.push_back( BV_SCYLLO );
         metabolites.push_back( BV_TAU );
     }
@@ -165,6 +166,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_NAA );
         metabolites.push_back( BV_NAAG );
         metabolites.push_back( BV_PCH );
+        metabolites.push_back( BV_PCR );
         metabolites.push_back( BV_SCYLLO );
         metabolites.push_back( BV_TAU );
     }
@@ -172,7 +174,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
     {
         metabolites.push_back( BV_ALA );
         metabolites.push_back( BV_ASP );
-        //metabolites.push_back( BV_CIT );
+        metabolites.push_back( BV_CIT );
         metabolites.push_back( BV_CR );
         metabolites.push_back( BV_CRCH2 );
         metabolites.push_back( BV_GABA );
