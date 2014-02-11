@@ -3,6 +3,7 @@
 #include "signal_simulate_full.hpp"
 #include "basis_set.hpp"
 #include "Options.hpp"
+#include "fidio/CFIDReaderDPT.hpp"
 
 #include "threadpool/boost/threadpool.hpp"
 #include <boost/tokenizer.hpp>
@@ -325,8 +326,7 @@ bool tarquin::CBasis::Simulate(std::string strBasisPath, const CFID& fidMatch, c
 			std::string current_str = current.string();
 
 			// csv file and not a directory so store this file
-			// TODO: use extension?
-			if( false == fs::is_directory(*dir_itr) && current_str.substr(current_str.size()-4,4) == ".csv" ) 
+			if( false == fs::is_directory(*dir_itr) && ( current_str.substr(current_str.size()-4,4) == ".csv" || current_str.substr(current_str.size()-4,4) == ".dpt" ) ) 
 				m_vecSignalFiles.push_back(*dir_itr);
 		}
 	}
@@ -348,33 +348,59 @@ bool tarquin::CBasis::Simulate(std::string strBasisPath, const CFID& fidMatch, c
 
 		std::string strMessage = "Simulating '" + itFile->string() + "'";
 		log.BeginTask(strMessage);
-
-		CCSVFile file;
-		if( false == file.load(itFile->string()) )
-			return false;
-
-		log.UpdateTask(".");
-		
-		// read in CSV file
-		std::vector<std::vector<double> >& file_doubmat = file.getDoubleMatrix();
-		
-		// print the doubmat
-		/*
-		for (vector< vector<double> >::size_type u = 0; u < file_doubmat.size(); u++) {
-			for (vector<double>::size_type v = 0; v < file_doubmat[u].size(); v++) {
-				cout << file_doubmat[u][v] << " ";
-			}
-			cout << endl;
-		}
-		*/
-
-		// find the filename	
-		int last_sep = file.getFileName().find_last_of(filesep);
-		std::string fname = file.getFileName().substr(last_sep+1,file.getFileName().size()); 
+        
+        // find the filename	
+		int last_sep = itFile->string().find_last_of(filesep);
+		std::string fname = itFile->string().substr(last_sep+1,itFile->string().size()); 
 
 		boost::filesystem::path full_path = fname;
 
-		signal_simulate_full(file_doubmat, m_signals[nMetabolite-1], fidMatch, options, fname);
+        if ( itFile->string().substr(itFile->string().size()-4,4) == ".csv" )
+        {
+
+            CCSVFile file;
+            if( false == file.load(itFile->string()) )
+                return false;
+
+            log.UpdateTask(".");
+
+            // read in CSV file
+            std::vector<std::vector<double> >& file_doubmat = file.getDoubleMatrix();
+
+            // print the doubmat
+            /*
+               for (vector< vector<double> >::size_type u = 0; u < file_doubmat.size(); u++) {
+               for (vector<double>::size_type v = 0; v < file_doubmat[u].size(); v++) {
+               cout << file_doubmat[u][v] << " ";
+               }
+               cout << endl;
+               }
+             */
+
+
+            signal_simulate_full(file_doubmat, m_signals[nMetabolite-1], fidMatch, options, fname);
+        }
+        else // looks like a dpt file
+        {
+            // read in the dpt fid
+            CFID dpt_fid;
+            Options dummy_opts;
+
+            CFIDReaderDPT reader(dpt_fid, log);
+		    reader.Load(itFile->string(), dummy_opts, log);
+
+            m_signals[nMetabolite-1].m_fids.resize(1);
+            m_signals[nMetabolite-1].m_fids[0].AppendFromVector(dpt_fid.GetVectorFID()[0]);
+
+            m_signals[nMetabolite-1].m_fids[0].SetSamplingFrequency(fidMatch.GetSamplingFrequency());
+            m_signals[nMetabolite-1].m_fids[0].SetTransmitterFrequency(fidMatch.GetTransmitterFrequency());
+
+
+            pair_vec default_ref;
+            default_ref.push_back(std::make_pair(4.65, true));
+            m_signals[nMetabolite-1].m_fids[0].SetPPMRef(default_ref);
+
+        }
 
 		m_broad_sig.push_back(has_broad_signal_name(full_path.filename().string()));
 
