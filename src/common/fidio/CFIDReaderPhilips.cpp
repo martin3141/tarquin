@@ -257,10 +257,15 @@ void tarquin::CFIDReaderPhilips::EatTokens()
             m_fid.SetCols(cols);
         }
     }
+    
+    //std::cout << m_fid.GetRows() << std::endl;
+    //std::cout << m_fid.GetCols() << std::endl;
+    //std::cout << rows << std::endl;
 
     // looks like a dynamic scan
     if ( m_fid.GetRows() == 1 && m_fid.GetCols() == 1 && rows != 1 )
     {
+        //std::cout << "looks dynamic" << std::endl;
         m_fid.SetCols(rows);
         m_fid.SetDyn(true);
     }

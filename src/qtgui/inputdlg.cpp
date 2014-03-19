@@ -310,16 +310,18 @@ void InputDlg::LoadFID(QString filename, fid_type_e fid_type)
 			// flag as loaded
 			m_loaded_ws = true;
 
-			//
-            // transfer the acquisition parameters to the dialog
-            //
-            UpdateDlg();
 		}
 		// the water reference file is separate
 		else
 		{
 			m_session->GetWorkspace().GetFIDWater().Load(filename.toStdString(), opts, m_session->GetWorkspace(), GetLog());
 		}
+
+        //
+        // transfer the acquisition parameters to the dialog
+        //
+        UpdateDlg();
+
 		m_ui.btnOpenWS->setEnabled(false);
 	}
 	catch( const tarquin::Exception& e )

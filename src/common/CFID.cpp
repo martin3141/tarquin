@@ -777,12 +777,10 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
         if ( m_dyn )
         {
             options.SetDynAvW(ALL);
-            std::cout << "changed1" << std::endl;
         }
         else
         {
             options.SetDynAvW(NONE);
-            std::cout << "changed2" << std::endl;
         }
     }
 

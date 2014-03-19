@@ -8,8 +8,12 @@ Version 4.3.3
 - Default basis set includes gutathione and glycine.
 - Bug fix for GE MRI loading
 - Lipid signal at 1.3PPM can be used to automatically reference the PPM axis (useful for liver 1H MRS)
+- CRLB calculation has been improved
+- More felixable options for averaging dynamic water data
+
+
 - Improvements to GE shf reading - TODO
-- 3D MRSI for Siemens and Philips is not supported - TODO
+- 3D MRSI for Siemens and Philips is now supported - TODO
 
 Version 4.3.1
 - 2D MRSI gui visualisation is much improved:
