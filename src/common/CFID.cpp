@@ -817,10 +817,32 @@ void tarquin::CFID::AverageData(Options& options)
     else
     {
         for ( size_t n = 0; n < fids; n++ )
+        {
+            if ( options.GetDynAvW() == ALL )
+                new_fid = new_fid + m_cvmFID[n] / fids;
+            else if ( options.GetDynAvW() == ODD && ( (n + 1) % 2 != 0 ) ) // n odd?
+                new_fid = new_fid + m_cvmFID[n] / (fids / 2);
+            else if ( options.GetDynAvW() == EVEN && ( (n + 1) % 2 == 0 ) ) // n even?
+                new_fid = new_fid + m_cvmFID[n] / (fids / 2);
+            else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 != 0 ) ) // n odd?
+                new_fid = new_fid + m_cvmFID[n] / fids;
+            else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 == 0 ) ) // n even?
+                new_fid = new_fid - m_cvmFID[n] / fids;
+            else if ( options.GetDynAvW() == DEFAULT )
+            {
+                std::cout << "ERROR, averaging should not be default here." << std::endl;
+                new_fid = new_fid + m_cvmFID[n] / fids;
+            }
+        }
+
+
+        /*
+        for ( size_t n = 0; n < fids; n++ )
             new_fid = new_fid + m_cvmFID[n] / fids;
 
         if ( options.GetDynAv() == DEFAULT )
             std::cout << "ERROR, averaging should not be default here." << std::endl;
+            */
     }
 
     m_cvmFID.clear();

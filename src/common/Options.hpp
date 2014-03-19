@@ -156,6 +156,7 @@ namespace tarquin
 	    m_dyn_ref_signals = PROTON_NAA_CR_CHO_LIP;
         m_int_basis_set = PROTON_BRAIN_GLY_GLTH;
         m_dyn_av = DEFAULT;
+        m_dyn_av_w = DEFAULT;
         m_dyn_freq_corr = false;
         m_pul_seq = PRESS;
         m_fit_rows = -1;
@@ -725,6 +726,16 @@ namespace tarquin
 	    m_dyn_av = dyn_av;
 	}
 
+	dyn_av_e GetDynAvW() const
+	{
+	    return m_dyn_av_w;
+	}
+
+	void SetDynAvW(dyn_av_e dyn_av)
+	{
+	    m_dyn_av_w = dyn_av;
+	}
+
 	bool GetDynFreqCorr() const
 	{
 	    return m_dyn_freq_corr;
@@ -1202,8 +1213,11 @@ namespace tarquin
     //! Internal basis set
     basis_set_e m_int_basis_set;
     
-    //! dynamic averaging scheme
+    //! dynamic averaging scheme (WS)
     dyn_av_e m_dyn_av;
+
+    //! dynamic averaging scheme (W)
+    dyn_av_e m_dyn_av_w;
 
     //! pre-averaging frequency correction
     bool m_dyn_freq_corr;

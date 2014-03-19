@@ -73,6 +73,13 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     m_ui.cmbDynAv->addItem("Subtract even from odd",          QVariant(tarquin::SUBTRACT));
     m_ui.cmbDynAv->addItem("Average odd scans only",          QVariant(tarquin::ODD));
     m_ui.cmbDynAv->addItem("Average even scans only",         QVariant(tarquin::EVEN));
+
+    m_ui.cmbDynAv_W->addItem("Default",                         QVariant(tarquin::DEFAULT));
+    m_ui.cmbDynAv_W->addItem("No averaging",                    QVariant(tarquin::NONE));
+    m_ui.cmbDynAv_W->addItem("Average all scans",               QVariant(tarquin::ALL));
+    m_ui.cmbDynAv_W->addItem("Subtract even from odd",          QVariant(tarquin::SUBTRACT));
+    m_ui.cmbDynAv_W->addItem("Average odd scans only",          QVariant(tarquin::ODD));
+    m_ui.cmbDynAv_W->addItem("Average even scans only",         QVariant(tarquin::EVEN));
     
     m_ui.cmbPS->addItem("PRESS",             QVariant(tarquin::PRESS));
     m_ui.cmbPS->addItem("STEAM",             QVariant(tarquin::STEAM));
@@ -139,6 +146,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
 	m_ui.cmbDynRefMode->setEnabled(false);
 	m_ui.cmbIntBasisSet->setEnabled(false);
 	m_ui.cmbDynAv->setEnabled(false);
+	m_ui.cmbDynAv_W->setEnabled(false);
 
 }
 
@@ -291,6 +299,7 @@ void InputDlg::LoadFID(QString filename, fid_type_e fid_type)
 	        m_ui.cmbDynRefMode->setEnabled(true);
             m_ui.cmbIntBasisSet->setEnabled(true);
             m_ui.cmbDynAv->setEnabled(true);
+            m_ui.cmbDynAv_W->setEnabled(true);
 
 			// did the FID contain the water data as well?
 			if( fid.GetCWF() )
@@ -346,6 +355,7 @@ void InputDlg::UpdateDlg()
     m_ui.cmbIntBasisSet->setCurrentIndex( opts.GetIntBasisSet() );
     m_ui.cmbPS->setCurrentIndex( opts.GetPulSeq() );
     m_ui.cmbDynAv->setCurrentIndex( opts.GetDynAv() );
+    m_ui.cmbDynAv_W->setCurrentIndex( opts.GetDynAvW() );
 
     m_ui.txtNP->setText( QString::number(fid.GetNumberOfPoints()) );
     m_ui.txtRO->setText( QString::number(fid.GetPPMRef(0)) ); // TODO
@@ -902,6 +912,10 @@ bool InputDlg::CheckDlg()
     // set dynamic averaging scheme
     tarquin::dyn_av_e dyn_av = static_cast<tarquin::dyn_av_e> (m_ui.cmbDynAv->itemData(m_ui.cmbDynAv->currentIndex(), Qt::UserRole).toInt());
     opts.SetDynAv(dyn_av);
+
+    // set dynamic averaging scheme (water ref)
+    tarquin::dyn_av_e dyn_av_w = static_cast<tarquin::dyn_av_e> (m_ui.cmbDynAv_W->itemData(m_ui.cmbDynAv_W->currentIndex(), Qt::UserRole).toInt());
+    opts.SetDynAv(dyn_av_w);
 
     // reload the fids to account for dynamic scans or full echo processing
     // or k-space zero-filling

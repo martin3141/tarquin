@@ -45,7 +45,8 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--tm                tm time in seconds for STEAM sequence";
 	std::cout << "\n\t--cpmg_pulses       number of pulses for CPMG sequence";
 	std::cout << "\n\t--pul_seq           {press | steam | laser | pulse_acq | cpmg | se | mega_press}";
-	std::cout << "\n\t--dyn_av            {default | none | all | subtract | odd | even}";
+	std::cout << "\n\t--dyn_av            {default | none | all | subtract | odd | even} water sup. dyn averaging scheme";
+	std::cout << "\n\t--dyn_av_w          {default | none | all | subtract | odd | even} water dyn averaging scheme";
 	std::cout << "\n\t--dyn_freq_corr     {true | false}";
 	std::cout << "\n\t--ref               reference offset in ppm";
 	std::cout << "\n\t--water_eddy        {true | false}";
@@ -334,6 +335,25 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.SetDynAv(ODD);
 			else if( strVal == "even" ) 
 				options.SetDynAv(EVEN);
+			else {
+				std::cerr << "\nerror: unrecognised dynamic averaging scheme '" << strVal << "'" << std::endl;
+				return false;
+			}
+		}
+
+		else if( strKey == "--dyn_av_w" ) {
+			if( strVal == "default" ) 
+				options.SetDynAvW(DEFAULT);
+			else if ( strVal == "none" ) 
+				options.SetDynAvW(NONE);
+			else if( strVal == "all" ) 
+				options.SetDynAvW(ALL);
+			else if( strVal == "subtract" ) 
+				options.SetDynAvW(SUBTRACT);
+			else if( strVal == "odd" ) 
+				options.SetDynAvW(ODD);
+			else if( strVal == "even" ) 
+				options.SetDynAvW(EVEN);
 			else {
 				std::cerr << "\nerror: unrecognised dynamic averaging scheme '" << strVal << "'" << std::endl;
 				return false;
