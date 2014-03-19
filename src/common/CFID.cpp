@@ -673,6 +673,14 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
             options.SetDynAv(NONE);
     }
 
+    if ( options.GetDynAvW() == DEFAULT && m_wref )
+    {
+        if ( m_dyn )
+            options.SetDynAvW(ALL);
+        else
+            options.SetDynAvW(NONE);
+    }
+
     if ( options.GetDynAv() != NONE )
         AverageData(options);
 
@@ -763,9 +771,23 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
         phi1_vec.push_back(def_phi1);
 
     m_phi1 = phi1_vec;
-    
+
+    if ( options.GetDynAvW() == DEFAULT )
+    {
+        if ( m_dyn )
+        {
+            options.SetDynAvW(ALL);
+            std::cout << "changed1" << std::endl;
+        }
+        else
+        {
+            options.SetDynAvW(NONE);
+            std::cout << "changed2" << std::endl;
+        }
+    }
+
     // shouldn't ever be default at this point because WUS data is always loaded after WS data
-    if ( options.GetDynAv() != NONE )
+    if ( options.GetDynAvW() != NONE )
         AverageData(options);
 
     //std::cout << "Parameter Water ref fids :" << m_cols * m_rows * m_slices << std::endl;

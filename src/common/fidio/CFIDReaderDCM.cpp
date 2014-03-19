@@ -666,6 +666,7 @@ void tarquin::CFIDReaderDCM::LoadW(std::string strFilename, const Options& opts)
     {
         //m_fid.SetCols(frames);
         m_fid.SetCols(dyn_num);
+        m_fid.SetDyn(true);
         //std::cout << m_fid.GetCols() << std::endl;
         //std::cout << m_fid.GetRows() << std::endl;
     }

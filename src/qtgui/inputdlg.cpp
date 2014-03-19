@@ -238,10 +238,6 @@ void InputDlg::LoadFID(QString filename, fid_type_e fid_type)
 
 			fid.Load(filename.toStdString(), opts, m_session->GetWorkspace(), GetLog());
 
-			//
-            // transfer the acquisition parameters to the dialog
-            //
-            UpdateDlg();
 
 			// enable all the buttons
 			m_ui.txtSF->setEnabled(true);
@@ -313,6 +309,11 @@ void InputDlg::LoadFID(QString filename, fid_type_e fid_type)
 
 			// flag as loaded
 			m_loaded_ws = true;
+
+			//
+            // transfer the acquisition parameters to the dialog
+            //
+            UpdateDlg();
 		}
 		// the water reference file is separate
 		else
@@ -915,7 +916,7 @@ bool InputDlg::CheckDlg()
 
     // set dynamic averaging scheme (water ref)
     tarquin::dyn_av_e dyn_av_w = static_cast<tarquin::dyn_av_e> (m_ui.cmbDynAv_W->itemData(m_ui.cmbDynAv_W->currentIndex(), Qt::UserRole).toInt());
-    opts.SetDynAv(dyn_av_w);
+    opts.SetDynAvW(dyn_av_w);
 
     // reload the fids to account for dynamic scans or full echo processing
     // or k-space zero-filling
