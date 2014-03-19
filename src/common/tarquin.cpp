@@ -986,6 +986,11 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
         int Lip20_pos = -1;
         int MM20_pos = -1;
 
+        bool TGABA = false;
+        int TGABA_ind = -1;
+        int GABAA_pos = -1;
+        int GABAB_pos = -1;
+
         //bool TLM13 = false;
 
         std::vector<int> pos_list;
@@ -1093,6 +1098,20 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             MM20_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "MM20") - metab_names.begin();
         }
 
+        bool GABAA_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "GABA_A") != metab_names.end())
+        {
+            GABAA_found = true;
+            GABAA_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "GABA_A") - metab_names.begin();
+        }
+        bool GABAB_found = false;
+        if (std::find(metab_names.begin(), metab_names.end(), "GABA_B") != metab_names.end())
+        {
+            GABAB_found = true;
+            GABAB_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "GABA_B") - metab_names.begin();
+        }
+
+
 
         std::vector<std::string> &metab_names_comb = work.GetMetabNamesComb();
 
@@ -1186,6 +1205,17 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             TLM20_ind = cnt;
             cnt++;
             metab_names_comb.push_back("TLM20");
+        }
+        if ( GABAA_found && GABAB_found )
+        {
+            TGABA = true;
+            overlapping_signals = overlapping_signals + 2;
+            extra_cols = extra_cols + 1;
+            pos_list.push_back(GABAA_pos);
+            pos_list.push_back(GABAB_pos);
+            TGABA_ind = cnt;
+            cnt++;
+            metab_names_comb.push_back("TGABA");
         }
 
         log.DebugMessage(DEBUG_LEVEL_1, "Overlapping signals found: %i", overlapping_signals);
@@ -1723,6 +1753,16 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         D_comb[i][TLM20_ind+Q-overlapping_signals] = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][Lip20_pos].real() + ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][MM20_pos].real();
                         D_comb[i+JR.msize()/2][TLM20_ind+Q-overlapping_signals] = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][Lip20_pos].imag() + ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][MM20_pos].imag();
                         ahat_comb(TLM20_ind) = ahat(Lip20_pos) + ahat(MM20_pos);
+                    }
+                }
+
+                if ( TGABA && ((ahat(GABAA_pos) + ahat(GABAB_pos)) > 0) )
+                {
+                    for( int i = 1; i <= activeN; ++i )
+                    {
+                        D_comb[i][TGABA_ind+Q-overlapping_signals] = ahat(GABAA_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAA_pos].real() + ahat(GABAB_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAB_pos].real();
+                        D_comb[i+JR.msize()/2][TGABA_ind+Q-overlapping_signals] = ahat(GABAA_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAA_pos].imag() + ahat(GABAB_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAB_pos].imag();
+                        ahat_comb(TGABA_ind) = ahat(GABAA_pos) + ahat(GABAB_pos);
                     }
                 }
 
