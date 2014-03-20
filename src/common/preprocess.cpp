@@ -2182,7 +2182,7 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
     if ( left_pt == -1 || right_pt == -1 )
     {
         bos_log.DebugMessage(DEBUG_LEVEL_1, "Warning, init beta calc failed, carry on regardless.");
-        options.AppendInitBetaUsed(0);
+        options.AppendInitBetaUsed(options.GetInitBeta());
         return true;
     }
 
