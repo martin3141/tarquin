@@ -271,6 +271,9 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 			else if( strVal == "1h_h2o" ) 
 				options.m_dyn_ref_signals = tarquin::PROTON_H2O;
+            
+            else if( strVal == "1h_lip" ) 
+				options.m_ref_signals = tarquin::PROTON_LIP;
 
 			else if( strVal == "1h_naa" ) 
 				options.m_dyn_ref_signals = tarquin::PROTON_NAA;
@@ -547,6 +550,32 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				return false;
 			}
 			options.m_init_beta = temp;
+		}
+		
+        else if( strKey == "--max_beta" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_max_beta = temp;
+		}
+
+        else if( strKey == "--beta_scale" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_beta_scale = temp;
 		}
 
         else if( strKey == "--max_phi1" ) {

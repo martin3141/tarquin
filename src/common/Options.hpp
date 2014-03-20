@@ -114,6 +114,9 @@ namespace tarquin
 	    m_phi1_upper = +20;
 	    m_phi1_typ = 0;
 
+        m_max_beta = 5000;
+        m_beta_scale = 1;
+
 	    m_bUsePrecompiled = false;
 	    m_format = NOTSET;
 	    m_water_window = 45;
@@ -218,7 +221,7 @@ namespace tarquin
 		// set some sensible default options
 		SetMetabAlphaLimits(0, 10, basis);
 		SetBroadAlphaLimits(0, 50, basis);
-		SetBetaLimits(0, 5000);
+		SetBetaLimits(0, m_max_beta);
 		log.LogMessage(LOG_INFO, "Setting metab shift limit to %f ppm", m_max_metab_shift);
 		log.LogMessage(LOG_INFO, "Setting broad shift limit to %f ppm", m_max_broad_shift);
 		SetMetabShiftLimits(-m_max_metab_shift, m_max_metab_shift, fid, basis);
@@ -322,6 +325,25 @@ namespace tarquin
 	    }
 	}
 
+    void SetMaxBeta(treal max_beta)
+	{
+	    m_max_beta = max_beta;
+	}
+    
+    treal GetMaxBeta() const
+	{
+	    return m_max_beta;
+	}
+
+    void SetBetaScale(treal beta_scale)
+	{
+	    m_beta_scale = beta_scale;
+	}
+    
+    treal GetBetaScale() const
+	{
+	    return m_beta_scale;
+	}
 
     void SetInitBeta(treal init_beta)
 	{
@@ -1284,6 +1306,12 @@ namespace tarquin
 
 	//! Starting value of phi0.
 	treal m_phi1_typ;
+    
+    //! Max value for beta
+    treal m_max_beta;
+    
+    //! Optimiser beta scale factor
+    treal m_beta_scale;
 
     //! Starting PPM value for plotting results.
 	treal m_ppm_start;

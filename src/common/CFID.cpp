@@ -635,6 +635,8 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
                 {
 	                coord scan(row, col, slice); 
                     AutoReferenceCorr(scan, options, *this, true, false, true, log);
+
+			        //AutoPhaseNew(scan, *this, options, log);
                     n++;
                 }
 
