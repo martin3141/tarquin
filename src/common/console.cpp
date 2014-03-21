@@ -273,7 +273,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_dyn_ref_signals = tarquin::PROTON_H2O;
             
             else if( strVal == "1h_lip" ) 
-				options.m_ref_signals = tarquin::PROTON_LIP;
+				options.m_dyn_ref_signals = tarquin::PROTON_LIP;
 
 			else if( strVal == "1h_naa" ) 
 				options.m_dyn_ref_signals = tarquin::PROTON_NAA;
