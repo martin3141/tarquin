@@ -272,7 +272,7 @@ void tarquin::residual_objective_all(
 		// the parameters to apply
 		treal omega = vParams(nIdxShift)*2.0*M_PI;
 		treal alpha = vParams(nIdxAlpha);
-		treal beta  = vParams(nIdxBeta)*opts.GetBetaScale(); // MAGIC BETA SCALE
+		treal beta  = pow(vParams(nIdxBeta),1)*opts.GetBetaScale(); // MAGIC BETA SCALE
 
 		// for each (sample of the active part of the signal == row of G)
 		for( integer n = 0; n < nActive; n++ ) 
@@ -902,7 +902,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 		// limits for beta
 		std::size_t nIdxBeta   = 2*M+1;
 		vLowerBounds(nIdxBeta) = options.GetLowerLimitBeta(0); 
-		vUpperBounds(nIdxBeta) = options.GetUpperLimitBeta(0); 
+		vUpperBounds(nIdxBeta) = options.GetUpperLimitBeta(0);
 		vParams(nIdxBeta)      = options.GetTypicalBeta(0); 
 
 		// limits for phi0
@@ -1387,8 +1387,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			}
 
 			//log.DebugMessage(DEBUG_LEVEL_1, "Initial beta estimate: %2.f", bestBeta);
-			vParams[nIdxBeta] = options.GetInitBetaUsed(voxel_num - 1) / options.GetBetaScale(); // MAGIC BETA SCALE
-			log.DebugMessage(DEBUG_LEVEL_1, "Using init_beta: %f", vParams[nIdxBeta]*options.GetBetaScale()); // MAGIC BETA SCALE
+			vParams[nIdxBeta] = pow(options.GetInitBetaUsed(voxel_num - 1),1) / options.GetBetaScale(); // MAGIC BETA SCALE
+			log.DebugMessage(DEBUG_LEVEL_1, "Using init_beta: %f", pow(vParams[nIdxBeta],1)*options.GetBetaScale()); // MAGIC BETA SCALE
 
 			// set the maximum number of iterations	
 			integer iterations = options.GetMaxIters();
@@ -1447,7 +1447,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			std::vector<std::vector<double> >& STL_info_vec = work.GetLMinfo();
 			STL_info_vec.push_back(STL_info);
 
-            vParams(nIdxBeta) = vParams(nIdxBeta) * options.GetBetaScale(); // MAGIC BETA SCALE
+            vParams(nIdxBeta) = pow(vParams(nIdxBeta),1) * options.GetBetaScale(); // MAGIC BETA SCALE
 
 			work.AppendParas(vParams);
 
