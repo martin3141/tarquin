@@ -5,11 +5,12 @@
 Version 4.3.3
 - Combined signals such as TNAA and TCho are now listed in the results.
 - PCr has been added to the short TE internal basis sets (this gives better downfield residuals for decent 3T data).
-- Default basis set includes gutathione and glycine.
+- Default basis set includes glutathione and glycine.
 - Bug fix for GE MRI loading
 - Lipid signal at 1.3PPM can be used to automatically reference the PPM axis (useful for liver 1H MRS)
 - CRLB calculation has been improved
 - More felixable options for averaging dynamic water data
+- Dynamic SVS can now be read from dpt files
 
 
 - Improvements to GE shf reading - TODO

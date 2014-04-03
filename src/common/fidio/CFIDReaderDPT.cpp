@@ -137,6 +137,11 @@ void tarquin::CFIDReaderDPT::EatTokens()
 void tarquin::CFIDReaderDPT::EatTokensFID(TokenList::iterator it_token, std::size_t nSamples)
 {
 	assert( nSamples > 0 );
+    
+    //TokenList::iterator it_token_counter = it_token;
+    //while it_token_counter != ittok.end();
+
+    // check the total number of complex points in the file
 
 	std::istringstream ins;
 
@@ -144,39 +149,54 @@ void tarquin::CFIDReaderDPT::EatTokensFID(TokenList::iterator it_token, std::siz
 	cvm::cvector FID(nSamples);
 
 	// read in points
-	for(std::size_t n = 0; n < nSamples; n++) 
-	{
-		double real_part, imag_part;	
+    size_t cols = 0;
+    while ( it_token != m_tokens.end() )
+    {
+        cols++;
+        for(std::size_t n = 0; n < nSamples; n++) 
+        {
+            double real_part, imag_part;	
 
-		ins.clear();
-		ins.str(it_token->first);
-		ins >> real_part;
+            ins.clear();
+            ins.str(it_token->first);
+            ins >> real_part;
 
-		if( ins.fail() ) 
-		{
-			throw Exception("error reading FID tokens: '%s' should be a number.", it_token->first.c_str());
-		}
+            if( ins.fail() ) 
+            {
+                throw Exception("error reading FID tokens: '%s' should be a number.", it_token->first.c_str());
+            }
 
-		it_token++;
+            it_token++;
+            
+            if ( it_token == m_tokens.end() )
+                throw Exception("error reading FID tokens, data points not a multiple of N.");
 
-		ins.clear();
-		ins.str(it_token->first);
-		ins >> imag_part;
+            ins.clear();
+            ins.str(it_token->first);
+            ins >> imag_part;
 
-		if( ins.fail() ) 
-		{
-			throw Exception("error reading FID tokens: '%s' should be a number.", it_token->first.c_str());
-		}
+            if( ins.fail() ) 
+            {
+                throw Exception("error reading FID tokens: '%s' should be a number.", it_token->first.c_str());
+            }
 
-		it_token++;
+            it_token++;
+            
+            if ( it_token == m_tokens.end() && ( n != (nSamples-1 )) )
+                throw Exception("error reading FID tokens, data points not a multiple of N.");
 
-		FID[n+1] = tcomplex(real_part, imag_part);
-	}
+            FID[n+1] = tcomplex(real_part, imag_part);
+        }
 
-    // truncate FID if long, prob need a warning here...
-    if ( FID.size() > 16384 )
-        FID.resize(16384);
+        // truncate FID if long, prob need a warning here...
+        if ( FID.size() > 16384 )
+            FID.resize(16384);
 
-	m_fid.AppendFromVector(FID);
+        m_fid.AppendFromVector(FID);
+    }
+
+    m_fid.SetCols(cols);
+    m_fid.SetDyn(true);
+
 }
 
