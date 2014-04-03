@@ -47,6 +47,7 @@ namespace tarquin
 	enum basis_set_e 
 	{ 
 		PROTON_BRAIN = 0,           // Std brain metabolites
+		PROTON_BRAIN_NO_PCR,           // Std brain metabolites w/o PCr
 		PROTON_BRAIN_GLY_GLTH,           // Std brain metabolites Gly + Glth
 		PROTON_BRAIN_GLY_CIT_GLTH,       // Std brain metabolites + Gly + Cit + Glth
 		PROTON_BRAIN_FULL,       // Std brain metabolites + Gly + Glth + PEth

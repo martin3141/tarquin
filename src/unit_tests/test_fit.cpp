@@ -31,6 +31,7 @@ BOOST_AUTO_TEST_CASE( nb_fit_test_no_iters )
 	// options
 	tarquin::Options& options = workspace.GetOptions();
 	options.SetFormat(tarquin::PHILIPS);
+    options.SetIntBasisSet(tarquin::PROTON_BRAIN_NO_PCR);
 	options.SetMaxIters(0);
 
 	// load the water suppressed FID file
@@ -105,6 +106,7 @@ BOOST_AUTO_TEST_CASE( nb_fit_test )
 	// options
 	tarquin::Options& options = workspace.GetOptions();
 	options.SetFormat(tarquin::PHILIPS);
+    options.SetIntBasisSet(tarquin::PROTON_BRAIN_NO_PCR);
 
 	// load the water suppressed FID file
 	fidraw.Load("data/philips_spar_sdat_WS.SDAT", options, workspace, log);

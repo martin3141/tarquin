@@ -41,7 +41,8 @@ BOOST_AUTO_TEST_CASE( simulation_test )
 	tarquin::CBasis& basis = workspace.GetBasis();
 	BOOST_REQUIRE_EQUAL(basis.Simulate("data", fidraw, options, log), true);
 
-	cvm::cvector s = basis.GetBasisMatrix()(1);
+    // bit of a hack as the first simulated file is a dpt file
+	cvm::cvector s = basis.GetBasisMatrix()(2);
     
     
     // might want to plot the results for testing purposes
@@ -84,6 +85,7 @@ BOOST_AUTO_TEST_CASE( simulation_test_internal )
 	// options
 	tarquin::Options& options = workspace.GetOptions();
 	options.SetFormat(tarquin::PHILIPS);
+    options.SetIntBasisSet(tarquin::PROTON_BRAIN_NO_PCR);
 
 	// load the water suppressed FID file
 	fidraw.Load("data/philips_spar_sdat_WS.SDAT", options, workspace, log);
