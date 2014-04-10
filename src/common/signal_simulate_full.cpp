@@ -23,10 +23,10 @@ namespace tarquin {
 
         // TODO add these as options...
 		const int cpmg_pulses = 10;
-        const treal t1 = 0.01;
-        const treal t2 = 0.01;
-        const treal t3 = 0.01;
-        const treal t4 = 0.01;
+        const treal t1 = TE/4.0;
+        const treal t2 = TE/4.0;
+        const treal t3 = TE/4.0;
+        const treal t4 = TE/4.0;
 		
 		const treal fs = fidMatch.GetSamplingFrequency();
 		const treal B0 = fidMatch.GetTransmitterFrequency();	

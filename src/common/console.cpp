@@ -44,7 +44,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--te1               te1 time in seconds for PRESS sequence";
 	std::cout << "\n\t--tm                tm time in seconds for STEAM sequence";
 	std::cout << "\n\t--cpmg_pulses       number of pulses for CPMG sequence";
-	std::cout << "\n\t--pul_seq           {press | steam | laser | pulse_acq | cpmg | se | mega_press}";
+	std::cout << "\n\t--pul_seq           {press | steam | slaser | laser | pulse_acq | cpmg | se | mega_press}";
 	std::cout << "\n\t--dyn_av            {default | none | all | subtract | odd | even} water sup. dyn averaging scheme";
 	std::cout << "\n\t--dyn_av_w          {default | none | all | subtract | odd | even} water dyn averaging scheme";
 	std::cout << "\n\t--dyn_freq_corr     {true | false}";
@@ -303,6 +303,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.SetPulSeq(PRESS);
 			else if( strVal == "steam" ) 
 				options.SetPulSeq(STEAM);
+			else if( strVal == "slaser" ) 
+				options.SetPulSeq(SEMI_LASER);
 			else if( strVal == "laser" ) 
 				options.SetPulSeq(LASER);
 			else if( strVal == "pulse_acq" ) 

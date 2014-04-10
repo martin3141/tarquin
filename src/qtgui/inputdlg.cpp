@@ -83,6 +83,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     
     m_ui.cmbPS->addItem("PRESS",             QVariant(tarquin::PRESS));
     m_ui.cmbPS->addItem("STEAM",             QVariant(tarquin::STEAM));
+    m_ui.cmbPS->addItem("sLASER",             QVariant(tarquin::SEMI_LASER));
     m_ui.cmbPS->addItem("LASER",             QVariant(tarquin::LASER));
     m_ui.cmbPS->addItem("Pulse-acquire",     QVariant(tarquin::PULSE_ACQUIRE));
     m_ui.cmbPS->addItem("CPMG",              QVariant(tarquin::CPMG));
