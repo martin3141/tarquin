@@ -26,6 +26,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--water_width       width of hsvd in hz";
 	std::cout << "\n\t--conv_width        width of convolution window in points";
 	std::cout << "\n\t--lipid_filter      {true | false} remove signals upfield of 1.8ppm in hsvd";
+	std::cout << "\n\t--lipid_filter_freq Set ppm of lipid filter";
 	std::cout << "\n\t--swap_row_col      {true | false} swap CSI rows and cols";
 	std::cout << "\n\t--auto_phase        {true | false}";
 	std::cout << "\n\t--auto_ref          {true | false}";
@@ -949,6 +950,21 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_bLipidFilter = true;
 			else
 				options.m_bLipidFilter = false;
+		}
+        
+        else if( strKey == "--lipid_filter_freq" ) 
+		{
+
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_lipid_filt_freq = temp;
 		}
 
         else if( strKey == "--swap_row_col" ) {
