@@ -61,7 +61,7 @@ void tarquin::Preprocessor::operator() ()
 {
 	Task progress(m_log, "Preprocessing");
 
-	const CFID& fidraw            = m_workspace.GetFIDRaw();
+	CFID& fidraw            = m_workspace.GetFIDRaw();
 	Options& options              = m_workspace.GetOptions();
 	CFID& fidproc                 = m_workspace.GetFIDProc();
 	CFID& fidwater                = m_workspace.GetFIDWater();
@@ -537,6 +537,13 @@ void tarquin::Preprocessor::operator() ()
             fidproc.ShiftRef( new_ref, voxel_num-1);
             fidproc.SetPPMRef(*i, old_ref);
         }
+        
+        // prepend points?
+        if ( options.GetPrependPts() > 0 )
+        {
+            fidproc.prepend(options.GetPrependPts());
+            fidraw.prepend(options.GetPrependPts());
+        }
 
       	// are we doing automatic phasing?
 		if( options.GetAutoPhase() && !combine_preproc ) 
@@ -857,7 +864,7 @@ void tarquin::Preprocessor::operator() ()
         }
 
 	}
-}
+    }
 
 
 // Do eddy current correction, as described in introduction of:

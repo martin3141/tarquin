@@ -374,6 +374,23 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_dyn_freq_corr = false;
 		}
 
+        else if( strKey == "--replace_fp" ) {
+			if( strVal == "true" )
+				options.m_replace_fp = true;
+            else
+				options.m_replace_fp = false;
+        }
+
+        else if( strKey == "--prepend_pts" ) {
+            int pts;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> pts;
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_prepend_pts = pts;
+        }
         
         // interal basis
 		// default to none

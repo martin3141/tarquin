@@ -1556,6 +1556,13 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			ifft(Y, y);
 
+            // replace first part of FID with first part of y
+            if ( options.GetReplaceFp() )
+            {
+                for (int n = 0; n < options.GetRangeStart(); n++ )
+                    y[n+1] = yhat[n+1];
+            }
+
 			log.EndTask("done.");
 
 			log.DebugMessage(DEBUG_LEVEL_1, "Final Beta: %.2f", vParams(nIdxBeta));

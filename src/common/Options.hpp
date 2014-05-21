@@ -192,6 +192,9 @@ namespace tarquin
         m_lcm_basis_pts = 4096;
         m_ff = true;
         m_pre_ws_shift = true;
+
+        m_prepend_pts = 0;
+        m_replace_fp = false;
 	}
 
 	//Options(){}
@@ -1219,6 +1222,16 @@ namespace tarquin
 	    return m_fit_list;
 	}
 
+    bool GetReplaceFp()
+	{
+	    return m_replace_fp;
+	}
+    
+    int GetPrependPts()
+	{
+	    return m_prepend_pts;
+	}
+
 	private:
 
 	//! The file format of the incoming FID.
@@ -1523,6 +1536,9 @@ namespace tarquin
 
     //! Number of slices to be fit
     int m_fit_slices;
+
+    int m_prepend_pts;
+    bool m_replace_fp;
 
     };
 

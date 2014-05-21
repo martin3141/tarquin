@@ -608,7 +608,8 @@ void tarquin::CBasis::SaveLCM(string file_name, CFID fid)
     // metabolite
     for ( int n = 0; n < m_matBasis.nsize(); n++ )
     {
-        if ( !has_broad_signal_name(sig_names[n]) && sig_names[n] != "-CrCH2" )
+        //if ( !has_broad_signal_name(sig_names[n]) && sig_names[n] != "-CrCH2" )
+        if ( sig_names[n] != "-CrCH2" )
         {
             basisfile << " $NMUSED" << std::endl;
             basisfile << " FILERAW = \'" << sig_names[n] << "_simulated" << "\'," << std::endl;
@@ -649,8 +650,8 @@ void tarquin::CBasis::SaveLCM(string file_name, CFID fid)
             metab.resize(metab.size() * zf);
             cvm::cvector METAB = fft(metab);
 
-            /*std::cout << " METABO = \'" << sig_names[n] << "\'," << std::endl;
-            plot(metab);
+            //std::cout << " METABO = \'" << sig_names[n] << "\'," << std::endl << std::flush;
+            /*plot(metab);
             plot(METAB);*/
 
             for ( int m = 0; m < m_matBasis.msize(); m++ )

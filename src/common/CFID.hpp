@@ -725,6 +725,24 @@ class CFID
                 SetNumberOfPoints(zero_pt - cut_pts);
             }
         }
+
+        void prepend(int pts)
+        {
+            int extra_pts = pts;
+            for ( size_t n = 0; n < m_cvmFID.size(); n++ )
+            {
+                cvm::cvector &fid = m_cvmFID[n];
+                int new_N = fid.size() + extra_pts;
+                cvm::cvector fid_temp(new_N);
+                for ( size_t m = extra_pts; m < new_N; m++ )
+                {
+                    fid_temp(m+1) = fid(m-extra_pts+1);
+                }
+                SetNumberOfPoints(new_N);
+                fid.resize(new_N);
+                fid = fid_temp;
+            }
+        }
         
         void swap_row_col()
         {

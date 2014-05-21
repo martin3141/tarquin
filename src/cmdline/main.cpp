@@ -375,7 +375,7 @@ int main(int argc, char* argv[])
         if( options.GetBasisSaveFileLCM() != "" ) 
         {
 
-            if( options.GetUsePrecompiled() ) 
+            if( !options.GetUsePrecompiled() ) 
             {
                 basis.SaveLCM(options.GetBasisSaveFileLCM().c_str(),fidproc);
             }
