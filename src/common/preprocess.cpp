@@ -541,8 +541,8 @@ void tarquin::Preprocessor::operator() ()
         // prepend points?
         if ( options.GetPrependPts() > 0 )
         {
-            fidproc.prepend(options.GetPrependPts());
-            fidraw.prepend(options.GetPrependPts());
+            fidproc.prepend(options.GetPrependPts(),*i);
+            fidraw.prepend(options.GetPrependPts(),*i);
         }
 
       	// are we doing automatic phasing?
@@ -571,7 +571,7 @@ void tarquin::Preprocessor::operator() ()
 		{
 			ApplyPhase(*i, fidproc, m_log);
 		}
-
+        
 		// are we doing automatic referencing?
 		// this can be done before phasing if corr is used
 		// this way zero filling can be used without danger of
@@ -864,6 +864,21 @@ void tarquin::Preprocessor::operator() ()
         }
 
 	}
+    
+    // correct number of points
+    if ( options.GetPrependPts() > 0 )
+    {
+        // need to set non processed data to have correct number of points also
+        fidproc.prepend_all(options.GetPrependPts());
+        fidraw.prepend_all(options.GetPrependPts());
+
+
+        int old_pts = fidproc.GetNumberOfPoints();
+        int new_pts = old_pts + options.GetPrependPts();
+        fidproc.SetNumberOfPoints(new_pts);
+        fidraw.SetNumberOfPoints(new_pts);
+    }
+
     }
 
 
@@ -1377,6 +1392,14 @@ void tarquin::AutoPhaseNew(const coord& proc_coord, CFID& fid,const Options& opt
 	fft(yzf, Yzf);
 	Yzf = fftshift(Yzf);
 
+    // bit of a hack to make GetFreqScale return a vector of correct lenght 
+    int old_pts = fid.GetNumberOfPoints();
+    if ( opts.GetPrependPts() > 0 )
+    {
+        int new_pts = old_pts + opts.GetPrependPts();
+        fid.SetNumberOfPoints(new_pts);
+    }
+
 	// get the shifted [-fs/2, ..., 0, ... fs/2) frequency range
 	cvm::rvector freq_range_zf = fid.GetFreqScale(zf);
 
@@ -1386,6 +1409,8 @@ void tarquin::AutoPhaseNew(const coord& proc_coord, CFID& fid,const Options& opt
 	phi(2) = 0.0;
 
     cvm::rvector freq_scale_zf = fid.GetPPMScale(proc_coord, zf);
+
+
     // find points corresponding to ppm start and ppm end
     int left_zf = 1, right_zf = freq_scale_zf.size() - 1;
     for ( int n = 1; n < (freq_scale_zf.size()); n++ ) 
@@ -1473,6 +1498,7 @@ void tarquin::AutoPhaseNew(const coord& proc_coord, CFID& fid,const Options& opt
 	// get the shifted [-fs/2, ..., 0, ... fs/2) frequency range
 	cvm::rvector freq_range = fid.GetFreqScale();
 
+
 	phi(2) = 0;
 
     treal maxY = -std::numeric_limits<treal>::infinity();
@@ -1519,6 +1545,9 @@ void tarquin::AutoPhaseNew(const coord& proc_coord, CFID& fid,const Options& opt
     
     std::cout << fabs(maxY) << std::endl;
     std::cout << fabs(minY) << std::endl;*/
+    
+    if ( opts.GetPrependPts() > 0 ) // bit of a hack
+        fid.SetNumberOfPoints(old_pts);
 
     // change phase by 180 degrees if required
     if ( fabs(minY) > fabs(maxY) && ( opts.GetPulSeq() != MEGA_PRESS ) )

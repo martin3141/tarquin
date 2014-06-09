@@ -1227,7 +1227,7 @@ namespace tarquin
 	    return m_replace_fp;
 	}
     
-    int GetPrependPts()
+    const int GetPrependPts() const
 	{
 	    return m_prepend_pts;
 	}

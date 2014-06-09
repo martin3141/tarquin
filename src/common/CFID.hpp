@@ -726,21 +726,48 @@ class CFID
             }
         }
 
-        void prepend(int pts)
+        void prepend(int pts, const coord& voxel)
         {
+			int n = vox2ind(voxel);
+        	assert( static_cast<size_t>(n) < m_cvmFID.size() );
+			assert( n > -1 );
+
             int extra_pts = pts;
-            for ( size_t n = 0; n < m_cvmFID.size(); n++ )
+            cvm::cvector &fid = m_cvmFID[n];
+            int new_N = fid.size() + extra_pts;
+            cvm::cvector fid_temp(new_N);
+            for ( size_t m = extra_pts; m < new_N; m++ )
             {
+                fid_temp(m+1) = fid(m-extra_pts+1);
+            }
+            //SetNumberOfPoints(new_N); because of the way preprocessing works
+            // this need to be done once, and at the end of preprocessing.
+            // should be a vector really?
+            fid.resize(new_N);
+            fid = fid_temp;
+        }
+
+        void prepend_all(int pts)
+        {
+        	for ( size_t n = 0; n < m_cvmFID.size(); n++ )
+            {
+                int extra_pts = pts;
                 cvm::cvector &fid = m_cvmFID[n];
-                int new_N = fid.size() + extra_pts;
-                cvm::cvector fid_temp(new_N);
-                for ( size_t m = extra_pts; m < new_N; m++ )
+
+                if ( fid.size() == GetNumberOfPoints() )
                 {
-                    fid_temp(m+1) = fid(m-extra_pts+1);
+                    int new_N = GetNumberOfPoints() + extra_pts;
+                    cvm::cvector fid_temp(new_N);
+                    for ( size_t m = extra_pts; m < new_N; m++ )
+                    {
+                        fid_temp(m+1) = fid(m-extra_pts+1);
+                    }
+                    //SetNumberOfPoints(new_N); because of the way preprocessing works
+                    // this need to be done once, and at the end of preprocessing.
+                    // should be a vector really?
+                    fid.resize(new_N);
+                    fid = fid_temp;
                 }
-                SetNumberOfPoints(new_N);
-                fid.resize(new_N);
-                fid = fid_temp;
             }
         }
         
