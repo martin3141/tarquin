@@ -1127,6 +1127,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			else
 				options.m_bPdfExt = false;
 		}
+		
+        else if( strKey == "--ext_csv_fit" ) {
+
+			if( strVal == "true" )
+				options.m_ext_csv_fit = true;
+			else
+				options.m_ext_csv_fit = false;
+		}
 
 		// fast fit?
 		else if( strKey == "--ff" ) {

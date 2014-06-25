@@ -217,13 +217,17 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace)
 
         // export freq_scale, Y, YHAT, BASELINE and S as a csv file
         // write the first line with column headings
-        fout << "PPMScale,Data,Fit,Baseline,";
+        fout << "PPMScale,Data,Fit,Baseline";
 
-        for ( size_t n = 0; n < sig_names.size() - 1; n++ )
-            fout << sig_names[n] << ",";
-
-        // last one without a ","
-        fout << sig_names[sig_names.size()-1];
+        if ( options.GetExtCSVFit() )
+        {
+            fout << ",";
+            for ( size_t n = 0; n < sig_names.size() - 1; n++ )
+                fout << sig_names[n] << ",";
+            
+            // last one without a ","
+            fout << sig_names[sig_names.size()-1];
+        }
 
         fout << std::endl;
 
@@ -233,11 +237,17 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace)
             fout << freq_scale(m) << ",";
             fout << Y(m).real() << ",";
             fout << YHAT(m).real() << ",";
-            fout << BASELINE(m).real() << ",";
-            for ( int n = 1; ( n < s.nsize() ); n++) 
-                fout << S(m,n).real() << ",";
-            // last one without a ","
-            fout << S(m, s.nsize()).real();
+            fout << BASELINE(m).real();
+            
+            if ( options.GetExtCSVFit() )
+            {
+                fout << ",";
+                for ( int n = 1; ( n < s.nsize() ); n++) 
+                    fout << S(m,n).real() << ",";
+                // last one without a ","
+                fout << S(m, s.nsize()).real();
+            }
+
             fout << std::endl;
         }
     }
