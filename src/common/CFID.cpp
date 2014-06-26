@@ -524,6 +524,9 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
 		    throw Exception("Error, more than one voxel in fid and svs_only set to true.");
         }
 
+        // added to just make all voxels selected for analysis
+        m_voi_dim.second = false;
+
         if ( IsKnownVoxelDim() && IsKnownVoiDim() )
         {
             if ( options.GetFitRows() == -1 )
