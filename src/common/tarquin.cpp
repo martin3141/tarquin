@@ -1691,48 +1691,97 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 //std::cout << Q-overlapping_signals+extra_cols << std::endl;
 
                 // do the combined signals now
-                if ( TNAA && ((ahat(NAA_pos) + ahat(NAAG_pos)) > 0) )
+                if ( TNAA )
                 {
+                    double a1 = ahat(NAA_pos)/(ahat(NAA_pos)+ahat(NAAG_pos));
+                    double a2 = ahat(NAAG_pos)/(ahat(NAA_pos)+ahat(NAAG_pos));
+
+                    if ((ahat(NAA_pos) + ahat(NAAG_pos)) == 0)
+                    {
+                        a1 = 0.5;
+                        a2 = 0.5;
+                    }
+
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TNAA_ind+Q-overlapping_signals] = ahat(NAA_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAA_pos].real() + ahat(NAAG_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAAG_pos].real();
-                        D_comb[i+JR.msize()/2][TNAA_ind+Q-overlapping_signals] = ahat(NAA_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAA_pos].imag() + ahat(NAAG_pos)/(ahat(NAA_pos)+ahat(NAAG_pos)) * SpOut[i+nStart-1][NAAG_pos].imag();
+                        if ((ahat(NAA_pos) + ahat(NAAG_pos)) == 0)
+                        {
+                            a1 = 0.5;
+                            a2 = 0.5;
+                        }
+
+                        D_comb[i][TNAA_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][NAA_pos].real() + a2 * SpOut[i+nStart-1][NAAG_pos].real();
+                        D_comb[i+JR.msize()/2][TNAA_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][NAA_pos].imag() + a2 * SpOut[i+nStart-1][NAAG_pos].imag();
                         ahat_comb(TNAA_ind) = ahat(NAA_pos) + ahat(NAAG_pos);
                     }
                 }
-                if ( TCho && ((ahat(PCh_pos) + ahat(GPC_pos)) > 0) )
+                if ( TCho )
                 {
+                    double a1 = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos));
+                    double a2 = ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos));
+
+                    if ((ahat(PCh_pos) + ahat(GPC_pos)) == 0)
+                    {
+                        a1 = 0.5;
+                        a2 = 0.5;
+                    }
+
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos].real() + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos].real();
-                        D_comb[i+JR.msize()/2][TCho_ind+Q-overlapping_signals] = ahat(PCh_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][PCh_pos].imag() + ahat(GPC_pos)/(ahat(PCh_pos)+ahat(GPC_pos)) * SpOut[i+nStart-1][GPC_pos].imag();
+                        D_comb[i][TCho_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][PCh_pos].real() + a2 * SpOut[i+nStart-1][GPC_pos].real();
+                        D_comb[i+JR.msize()/2][TCho_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][PCh_pos].imag() + a2 * SpOut[i+nStart-1][GPC_pos].imag();
                         ahat_comb(TCho_ind) = ahat(PCh_pos) + ahat(GPC_pos);
                     }
                 }
-                if ( TCr && ((ahat(Cr_pos) + ahat(PCr_pos)) > 0) )
+                if ( TCr )
                 {
+                    double a1 = ahat(Cr_pos)/(ahat(Cr_pos)+ahat(PCr_pos));
+                    double a2 = ahat(PCr_pos)/(ahat(Cr_pos)+ahat(PCr_pos));
+
+                    if ((ahat(Cr_pos) + ahat(PCr_pos)) == 0)
+                    {
+                        a1 = 0.5;
+                        a2 = 0.5;
+                    }
+
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TCr_ind+Q-overlapping_signals] = ahat(Cr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][Cr_pos].real() + ahat(PCr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][PCr_pos].real();
-                        D_comb[i+JR.msize()/2][TCr_ind+Q-overlapping_signals] = ahat(Cr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][Cr_pos].imag() + ahat(PCr_pos)/(ahat(Cr_pos)+ahat(PCr_pos)) * SpOut[i+nStart-1][PCr_pos].imag();
+                        D_comb[i][TCr_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Cr_pos].real() + a2 * SpOut[i+nStart-1][PCr_pos].real();
+                        D_comb[i+JR.msize()/2][TCr_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Cr_pos].imag() + a2 * SpOut[i+nStart-1][PCr_pos].imag();
                         ahat_comb(TCr_ind) = ahat(Cr_pos) + ahat(PCr_pos);
                     }
                 }
-                if ( Glx && ((ahat(Glu_pos) + ahat(Gln_pos)) > 0) )
+                if ( Glx )
                 {
+                    double a1 = ahat(Glu_pos)/(ahat(Glu_pos)+ahat(Gln_pos));
+                    double a2 = ahat(Gln_pos)/(ahat(Glu_pos)+ahat(Gln_pos));
+
+                    if ((ahat(Glu_pos) + ahat(Gln_pos)) == 0)
+                    {
+                        a1 = 0.5;
+                        a2 = 0.5;
+                    }
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][Glx_ind+Q-overlapping_signals] = ahat(Glu_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Glu_pos].real() + ahat(Gln_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Gln_pos].real();
-                        D_comb[i+JR.msize()/2][Glx_ind+Q-overlapping_signals] = ahat(Glu_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Glu_pos].imag() + ahat(Gln_pos)/(ahat(Glu_pos)+ahat(Gln_pos)) * SpOut[i+nStart-1][Gln_pos].imag();
+                        D_comb[i][Glx_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Glu_pos].real() + a2 * SpOut[i+nStart-1][Gln_pos].real();
+                        D_comb[i+JR.msize()/2][Glx_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Glu_pos].imag() + a2 * SpOut[i+nStart-1][Gln_pos].imag();
                         ahat_comb(Glx_ind) = ahat(Glu_pos) + ahat(Gln_pos);
                     }
                 }
-                if ( TLM09 && ((ahat(Lip09_pos) + ahat(MM09_pos)) > 0) )
+                if ( TLM09 )
                 {
+                    double a1 = ahat(Lip09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos));
+                    double a2 = ahat(MM09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos));
+
+                    if ((ahat(Lip09_pos) + ahat(MM09_pos)) == 0)
+                    {
+                        a1 = 0.5;
+                        a2 = 0.5;
+                    }
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TLM09_ind+Q-overlapping_signals] = ahat(Lip09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][Lip09_pos].real() + ahat(MM09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][MM09_pos].real();
-                        D_comb[i+JR.msize()/2][TLM09_ind+Q-overlapping_signals] = ahat(Lip09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][Lip09_pos].imag() + ahat(MM09_pos)/(ahat(Lip09_pos)+ahat(MM09_pos)) * SpOut[i+nStart-1][MM09_pos].imag();
+                        D_comb[i][TLM09_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Lip09_pos].real() + a2 * SpOut[i+nStart-1][MM09_pos].real();
+                        D_comb[i+JR.msize()/2][TLM09_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Lip09_pos].imag() + a2 * SpOut[i+nStart-1][MM09_pos].imag();
                         ahat_comb(TLM09_ind) = ahat(Lip09_pos) + ahat(MM09_pos);
                     }
                 }
@@ -1744,34 +1793,63 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                         ahat_comb(TL13_ind) = ahat(Lip13a_pos) + ahat(Lip13b_pos);
                     }
                 }*/
-                if ( TLM13 && ((ahat(Lip13a_pos) + ahat(Lip13b_pos) + ahat(MM12_pos) + ahat(MM14_pos)) > 0) )
+                if ( TLM13 )
                 {
+                    double a1 = ahat(Lip13a_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos));
+                    double a2 = ahat(Lip13b_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos));
+                    double a3 = ahat(MM12_pos)  /(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos));
+                    double a4 = ahat(MM14_pos)  /(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos));
+
+                    if ((ahat(Lip13a_pos) + ahat(Lip13b_pos) + ahat(MM12_pos) + ahat(MM14_pos)) == 0)
+                    {
+                        a1 = 0.25;
+                        a2 = 0.25;
+                        a3 = 0.25;
+                        a4 = 0.25;
+                    }
+
                     for( int i = 1; i <= activeN; ++i )
                     {
                         // HAHAHA Greg will hate this!
-                        D_comb[i][TLM13_ind+Q-overlapping_signals] = ahat(Lip13a_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13a_pos].real() + ahat(Lip13b_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13b_pos].real() + ahat(MM12_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM12_pos].real() + ahat(MM14_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM14_pos].real();
-                        D_comb[i+JR.msize()/2][TLM13_ind+Q-overlapping_signals] = ahat(Lip13a_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13a_pos].imag() + ahat(Lip13b_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][Lip13b_pos].imag() + ahat(MM12_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM12_pos].imag() + ahat(MM14_pos)/(ahat(Lip13a_pos)+ahat(Lip13b_pos)+ahat(MM12_pos)+ahat(MM14_pos)) * SpOut[i+nStart-1][MM14_pos].imag();
+                        D_comb[i][TLM13_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Lip13a_pos].real() + a2 * SpOut[i+nStart-1][Lip13b_pos].real() + a3 * SpOut[i+nStart-1][MM12_pos].real() + a4 * SpOut[i+nStart-1][MM14_pos].real();
+                        D_comb[i+JR.msize()/2][TLM13_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Lip13a_pos].imag() + a2 * SpOut[i+nStart-1][Lip13b_pos].imag() + a3 * SpOut[i+nStart-1][MM12_pos].imag() + a4 * SpOut[i+nStart-1][MM14_pos].imag();
 
                         ahat_comb(TLM13_ind) = ahat(Lip13a_pos) + ahat(Lip13b_pos) + ahat(MM12_pos) + ahat(MM14_pos);
                     }
                 }
 
-                if ( TLM20 && ((ahat(Lip20_pos) + ahat(MM20_pos)) > 0) )
+                if ( TLM20 )
                 {
+                    double a1 = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos));
+                    double a2 = ahat(MM09_pos)/(ahat(Lip20_pos)+ahat(MM20_pos));
+
+                    if ((ahat(Lip20_pos) + ahat(MM20_pos)) == 0)
+                    {
+                        a1 = 0.5;
+                        a2 = 0.5;
+                    }
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TLM20_ind+Q-overlapping_signals] = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][Lip20_pos].real() + ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][MM20_pos].real();
-                        D_comb[i+JR.msize()/2][TLM20_ind+Q-overlapping_signals] = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][Lip20_pos].imag() + ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos)) * SpOut[i+nStart-1][MM20_pos].imag();
+                        D_comb[i][TLM20_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Lip20_pos].real() + a2 * SpOut[i+nStart-1][MM20_pos].real();
+                        D_comb[i+JR.msize()/2][TLM20_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][Lip20_pos].imag() + a2 * SpOut[i+nStart-1][MM20_pos].imag();
                         ahat_comb(TLM20_ind) = ahat(Lip20_pos) + ahat(MM20_pos);
                     }
                 }
 
-                if ( TGABA && ((ahat(GABAA_pos) + ahat(GABAB_pos)) > 0) )
+                if ( TGABA )
                 {
+                    double a1 = ahat(GABAA_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos));
+                    double a2 = ahat(GABAB_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos));
+
+                    if ((ahat(GABAA_pos) + ahat(GABAB_pos)) == 0)
+                    {
+                        a1 = 0.5;
+                        a2 = 0.5;
+                    }
                     for( int i = 1; i <= activeN; ++i )
                     {
-                        D_comb[i][TGABA_ind+Q-overlapping_signals] = ahat(GABAA_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAA_pos].real() + ahat(GABAB_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAB_pos].real();
-                        D_comb[i+JR.msize()/2][TGABA_ind+Q-overlapping_signals] = ahat(GABAA_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAA_pos].imag() + ahat(GABAB_pos)/(ahat(GABAA_pos)+ahat(GABAB_pos)) * SpOut[i+nStart-1][GABAB_pos].imag();
+                        D_comb[i][TGABA_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][GABAA_pos].real() + a2 * SpOut[i+nStart-1][GABAB_pos].real();
+                        D_comb[i+JR.msize()/2][TGABA_ind+Q-overlapping_signals] = a1 * SpOut[i+nStart-1][GABAA_pos].imag() + a2 * SpOut[i+nStart-1][GABAB_pos].imag();
                         ahat_comb(TGABA_ind) = ahat(GABAA_pos) + ahat(GABAB_pos);
                     }
                 }
