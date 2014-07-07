@@ -60,6 +60,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     m_ui.cmbDynRefMode->addItem("31P PCr gamma-ATP",    QVariant(tarquin::PHOSPH_PCR_GAMMAATP));
 
     m_ui.cmbIntBasisSet->addItem("1H brain",                QVariant(tarquin::PROTON_BRAIN));
+    m_ui.cmbIntBasisSet->addItem("1H brain no PCr",                QVariant(tarquin::PROTON_BRAIN_NO_PCR));
     m_ui.cmbIntBasisSet->addItem("1H brain + Gly, Glth",                QVariant(tarquin::PROTON_BRAIN_GLY_GLTH));
     m_ui.cmbIntBasisSet->addItem("1H brain + Gly, Cit, Glth",    QVariant(tarquin::PROTON_BRAIN_GLY_CIT_GLTH));
     m_ui.cmbIntBasisSet->addItem("1H brain full",                QVariant(tarquin::PROTON_BRAIN_FULL));

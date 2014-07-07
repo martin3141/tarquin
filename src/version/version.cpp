@@ -34,5 +34,5 @@ std::string tarquin::version::version_string()
 
 std::string tarquin::version::copyright()
 {
-	return "(c) Copyright 2006-2013 Greg Reynolds and Martin Wilson.";
+	return "(c) Copyright 2006-2014 Greg Reynolds and Martin Wilson.";
 }

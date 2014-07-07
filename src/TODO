@@ -2,6 +2,12 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+Version 4.3.4
+- Bug fix where Cit was included in the default basis set for the GUI.
+- 3D MRSI for Siemens and Philips DICOM and SPAR/SDAT is now supported - TODO
+
+
+
 Version 4.3.3
 - Combined signals such as TNAA and TCho are now listed in the results.
 - Added support for the semi-LASER pulse sequence
