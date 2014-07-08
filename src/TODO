@@ -4,8 +4,9 @@
 
 Version 4.3.4
 - Bug fix where Cit was included in the default basis set for the GUI.
+- Bug fix for GE p-files where the offset to data was incorrect for rdb_header_rev 24,20. - thanks to Felix Raschke for pointing this out.
+- Modest SNR improvement for multi-channel GE SVS coil combination (now weighted by water amplitude where available). Thanks to Felix Raschke and Jamie Near for letting me know that this is a better approach than un-weighted combination.
 - 3D MRSI for Siemens and Philips DICOM and SPAR/SDAT is now supported - TODO
-
 
 
 Version 4.3.3
@@ -16,7 +17,7 @@ Version 4.3.3
 - Bug fix for GE MRI loading
 - Lipid signal at 1.3PPM can be used to automatically reference the PPM axis (useful for liver 1H MRS)
 - CRLB calculation has been improved
-- More felixable options for averaging dynamic water data
+- More flexible options for averaging dynamic water data
 - Dynamic SVS can now be read from dpt files
 
 

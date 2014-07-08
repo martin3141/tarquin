@@ -141,7 +141,11 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     int frame_size_int;
 	frame_size_int = frame_size * 2 * 4;
 	log.LogMessage(LOG_INFO, "Frame size : %i",frame_size_int);
-	int data_offset = p_file_off ; // + frame_size_int;
+    int ver_offset = 0;
+    if ( rdb_header_rev > 20 )
+        ver_offset = frame_size_int;
+
+	int data_offset = p_file_off + ver_offset;
 	log.LogMessage(LOG_INFO, "Offset to data : %i",data_offset);
 
     // find the number of echoes
@@ -742,7 +746,14 @@ void tarquin::CFIDReaderGE::LoadFromOptionsSVS(std::string strFilename, const Op
                 if ( ( n == 0 ) && ( nFrame <= nWaterFrames ) && ( phases.size() < nCoil + 1 ) && ( nWaterFrames > 0 ) )
                 {
                     phases.push_back(exp(-tcomplex(0,1)*arg(tcomplex(sampleReal, sampleImag))));
+                    
+                    // straight amp
                     amps.push_back(abs(tcomplex(sampleReal, sampleImag)));
+                    // root amp
+                    //amps.push_back(pow(abs(tcomplex(sampleReal, sampleImag)),0.5));
+                    // no re-weight
+                    //amps.push_back(1.0);
+                    
                     //std::cout << std::endl << phases[nCoil];
                     //std::cout << std::endl << amps[nCoil];
                 }
@@ -761,23 +772,28 @@ void tarquin::CFIDReaderGE::LoadFromOptionsSVS(std::string strFilename, const Op
                 if ( nEchoes != 2 )
                 {
                     if( nFrame <= nWaterFrames )
-                        yw[n+1] += phases[nCoil]*tcomplex(sampleReal, sampleImag);
+                        yw[n+1] += amps[nCoil]*phases[nCoil]*tcomplex(sampleReal, sampleImag);
                     else if( nFrame <= nFrames-1 )
-                        y[n+1] += phases[nCoil]*tcomplex(sampleReal, sampleImag);
+                        y[n+1] += amps[nCoil]*phases[nCoil]*tcomplex(sampleReal, sampleImag);
                 }
                 else
                 {
                     if( nFrame <= nWaterFrames )
-                        yw[n+1] += phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
+                        yw[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
                     else if( nFrame <= nFrames-1 )
-                        y[n+1] += phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
+                        y[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
                 }
             }
         }
-        // normalise by number of coils
-        y /= treal(nCoils);
+
+        // normalise by number of coils and sum of amplitudes
+        treal amp_sum = 0;
+        for ( size_t n = 0; n < amps.size(); n++ )
+            amp_sum = amp_sum + amps[n];
+
+        y /= treal(nCoils)*amp_sum;
         if ( nWaterFrames > 0 )
-            yw /= treal(nCoils);
+            yw /= treal(nCoils)*amp_sum;
 
         if ( WS && nFrame > nWaterFrames )
             m_fid.AppendFromVector(y);

@@ -17,7 +17,7 @@ int main()
 	drv spin_vec = drv::Constant(spin_no, 0.5);
 	
     // set up the spin system parameters
-    double B0 = 63e6*2;
+    double B0 = 63e6;
 	drv chem_shift_vec(spin_no);
 
     // GABA
@@ -31,11 +31,19 @@ int main()
     */
 
 	// gln
-	chem_shift_vec(0) = 3.753;
+    chem_shift_vec(0) = 3.753;
 	chem_shift_vec(1) = 2.129;
 	chem_shift_vec(2) = 2.109;
 	chem_shift_vec(3) = 2.432;
 	chem_shift_vec(4) = 2.454;
+
+    // Tau
+    /*
+	chem_shift_vec(0) = 3.4206;
+	chem_shift_vec(1) = 3.4206;
+	chem_shift_vec(2) = 3.2459;
+	chem_shift_vec(3) = 3.2459;
+    */
 
 	// lac
     /*
@@ -79,6 +87,13 @@ int main()
 	j_coupling_mat(2,3) = 6.324;
 	j_coupling_mat(2,4) = 9.209;
 	j_coupling_mat(3,4) = -15.371;
+    
+    /*
+	j_coupling_mat(0,2) = 6.742;
+	j_coupling_mat(0,3) = 6.464;
+	j_coupling_mat(1,2) = 6.403;
+	j_coupling_mat(1,3) = 6.792;
+    */
 	
 	//drv group_vec = drv::Constant(spin_no, 2);
 	drv group_vec = drv::Constant(spin_no, 1);
@@ -89,11 +104,21 @@ int main()
 	double fs = 2000;
 	size_t N = 2048;
 	double ref = 4.7;
-	double lambda = 8;
+	double lambda = 10;
 	//double tau = 0.03;
 	//double tau = 0.03;
-	double TE1 = 0.010;
-	double TE2 = 0.026;
+	//double TE1 = 0.010;
+	//double TE2 = 0.026;
+
+	//double TE1 = 0.026;
+	//double TE2 = 0.010;
+
+	double TE1 = 0.015;
+	double TE2 = 0.135;
+
+    double T2 = 0.4;
+    double scale = exp(-(1.0/T2) * (TE1 + TE2));
+
 	//double TE = tau;
 	//double TM = 0.012;
 	//int cpmg_pulses = 6;
@@ -110,7 +135,7 @@ int main()
 	//std::ofstream FID("file_out.csv", std::ios::out);
     //FID << time_sig_mat.col(0) << std::endl;
 
-    std::string strFilename = "3T_asym.dpt";
+    std::string strFilename = "Gln_150ms.dpt";
     std::ofstream fout(strFilename.c_str(), std::ios::out);
 	// setup the stream so that things are formatted properly
 	fout.setf(std::ios::scientific | std::ios::left);
@@ -127,7 +152,7 @@ int main()
 	fout << "Real_FID\t" << "Imag_FID\t" << std::endl;
 
 	for(int n = 0; n < N; n++)
-		fout << real(time_sig_mat.col(0)(n)) << "\t" << imag(time_sig_mat.col(0)(n)) << std::endl;
+		fout << scale*real(time_sig_mat.col(0)(n)) << "\t" << scale*imag(time_sig_mat.col(0)(n)) << std::endl;
 
 	return 0;
 }
