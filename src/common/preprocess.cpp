@@ -75,6 +75,17 @@ void tarquin::Preprocessor::operator() ()
     
     bool lipid_filter = options.GetLipidFilter();
 
+
+    // truncate if requested
+    if ( options.GetTruncatePts() > 0 )
+    {
+        // need to set non processed data to have correct number of points also
+        fidproc.truncate_all(options.GetTruncatePts());
+        fidraw.truncate_all(options.GetTruncatePts());
+        fidproc.SetNumberOfPoints(options.GetTruncatePts());
+        fidraw.SetNumberOfPoints(options.GetTruncatePts());
+    }
+
     // calculate an average spectrum for preprocessing
     CFID fidav = fidproc;
     if ( combine_preproc )

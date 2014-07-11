@@ -746,7 +746,41 @@ class CFID
             fid.resize(new_N);
             fid = fid_temp;
         }
+        
+        /*
+        void truncate(int pts, const coord& voxel)
+        {
+			int n = vox2ind(voxel);
+        	assert( static_cast<size_t>(n) < m_cvmFID.size() );
+			assert( n > -1 );
 
+            cvm::cvector &fid = m_cvmFID[n];
+            cvm::cvector fid_temp(pts);
+            for ( size_t m = 0; m < pts; m++ )
+            {
+                fid_temp(m+1) = fid(m+1);
+            }
+            //SetNumberOfPoints(new_N); because of the way preprocessing works
+            // this need to be done once, and at the end of preprocessing.
+            // should be a vector really?
+            fid.resize(pts);
+            fid = fid_temp;
+        }
+        */
+
+        void truncate_all(int pts)
+        {
+        	for ( size_t n = 0; n < m_cvmFID.size(); n++ )
+            {
+                cvm::cvector &fid = m_cvmFID[n];
+                cvm::cvector fid_temp(pts);
+                for ( size_t m = 0; m < pts; m++ )
+                    fid_temp(m+1) = fid(m+1);
+                fid.resize(pts);
+                fid = fid_temp;
+            }
+        }
+        
         void prepend_all(int pts)
         {
         	for ( size_t n = 0; n < m_cvmFID.size(); n++ )

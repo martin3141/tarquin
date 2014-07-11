@@ -391,6 +391,17 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			}
 			options.m_prepend_pts = pts;
         }
+
+        else if( strKey == "--trunc_pts" ) {
+            int pts;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> pts;
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_truncate_pts = pts;
+        }
         
         // interal basis
 		// default to none

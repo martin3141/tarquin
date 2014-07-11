@@ -194,6 +194,7 @@ namespace tarquin
         m_pre_ws_shift = true;
 
         m_prepend_pts = 0;
+        m_truncate_pts = 0;
         m_replace_fp = false;
 
         m_ext_csv_fit = true;
@@ -1238,6 +1239,11 @@ namespace tarquin
 	{
 	    return m_prepend_pts;
 	}
+    
+    const int GetTruncatePts() const
+	{
+	    return m_truncate_pts;
+	}
 
 	private:
 
@@ -1547,6 +1553,7 @@ namespace tarquin
     int m_prepend_pts;
     bool m_replace_fp;
     bool m_ext_csv_fit;
+    int m_truncate_pts;
 
     };
 
