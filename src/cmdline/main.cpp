@@ -599,13 +599,25 @@ int main(int argc, char* argv[])
 
 		// are we outputting a txt file of results?
 		if( options.GetFilenameTxt() != "" )
+        {
+			log.Out(LOG_INFO) << "\nWriting txt results file.";
 			ExportTxtResults(options.GetFilenameTxt(), workspace);
+			log.Out(LOG_INFO) << "\nDone.";
+        }
 
 		if( options.GetFilenameCSV() != "" ) 
+        {
+			log.Out(LOG_INFO) << "\nWriting csv results file.";
 			ExportCsvResults(options.GetFilenameCSV(), workspace);
+			log.Out(LOG_INFO) << "\nDone.";
+        }
     
         if( options.GetFilenameCSVFit() != "" ) 
+        {
+			log.Out(LOG_INFO) << "\nWriting csv fit file.";
 			ExportCsvFit(options.GetFilenameCSVFit(), workspace);
+			log.Out(LOG_INFO) << "\nDone.";
+        }
 
         if( options.GetFilenameCSVSpectraAligned() != "" ) 
 			ExportCsvSpectraAligned(options.GetFilenameCSVSpectraAligned(), workspace);

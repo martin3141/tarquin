@@ -157,9 +157,9 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace)
 	// create a new options 
 	Options options = workspace.GetOptions();
 
-	CFID yfid = workspace.GetFID();
+	const CFID& yfid = workspace.GetFID();
 	coord_vec fit_list = options.GetFitList();
-	cvec_stdvec yhat_vec = workspace.GetSignalEstimate();
+	const cvec_stdvec& yhat_vec = workspace.GetSignalEstimate();
 
     std::ofstream fout(strFilename.c_str(), std::ios::out);
     
@@ -192,7 +192,7 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace)
         cvm::cvector BASELINE;
         td_conv_ws( RESIDUAL, BASELINE, options.GetBL()*options.GetZF(), 10);	
 
-        cmat_stdvec s_vec = workspace.GetBasisMatrix(); // TODO should be a reference?
+        const cmat_stdvec& s_vec = workspace.GetBasisMatrix(); // TODO should be a reference?
         cvm::cmatrix s = s_vec[p];
 
         CBasis basis = workspace.GetBasis();
@@ -1010,7 +1010,7 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
     cvm::cvector BASELINE;
     td_conv_ws( RESIDUAL, BASELINE, options.GetBL()*options.GetZF(), 10);	
 
-	cmat_stdvec s_vec = workspace.GetBasisMatrix(); // TODO should be a const reference?
+	const cmat_stdvec& s_vec = workspace.GetBasisMatrix(); // TODO should be a const reference?
 	cvm::cmatrix s = s_vec[0]; // TODO
     
     cvm::cmatrix s_proc(s.msize()*options.GetZF(), s.nsize());
