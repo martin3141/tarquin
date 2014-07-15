@@ -671,6 +671,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	log.Out(LOG_INFO) << "\n";
 	return 0;
 }
 

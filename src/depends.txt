@@ -43,6 +43,11 @@ sudo apt-get install -y build-essential cmake liblapack-dev gfortran libf2c2-dev
 also need to manually install protobuf 2.3.0, install into /usr to avoid messing about
 ./configure --prefix=/usr
 
+Linux mint 16
+sudo apt-get install -y build-essential cmake liblapack-dev gfortran libf2c2-dev libfftw3-dev gnuplot libboost-filesystem-dev libboost-thread-dev libboost-test-dev libqt4-dev libqwt5-qt4-dev
+
+also need to manually install protobuf 2.3.0, install into /usr to avoid messing about
+LIBS=-lpthread ./configure --prefix=/usr
 
 
 Installation on OSX snow leopard (new instructions)
