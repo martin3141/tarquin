@@ -9,6 +9,7 @@ Version 4.3.4
 - Bug fix for GE p-files where the offset to data was incorrect for rdb_header_rev 24,20. - Thanks to Felix Raschke for pointing this out.
 - Modest SNR improvement for multi-channel GE SVS coil combination (now weighted by water amplitude where available). Thanks to Felix Raschke and Jamie Near for letting me know that this is a better approach than un-weighted combination.
 
+
 - 3D MRSI for Siemens and Philips DICOM and SPAR/SDAT is now supported - TODO
 
 
