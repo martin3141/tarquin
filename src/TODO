@@ -8,6 +8,7 @@ Version 4.3.4
 - Bug fix where Cit was included in the default basis set for the GUI.
 - Bug fix for GE p-files where the offset to data was incorrect for rdb_header_rev 24,20. - Thanks to Felix Raschke for pointing this out.
 - Modest SNR improvement for multi-channel GE SVS coil combination (now weighted by water amplitude where available). Thanks to Felix Raschke and Jamie Near for letting me know that this is a better approach than un-weighted combination.
+- The number of components used in the HSVD water removal can now be specified (--hsvd_comps)
 
 
 - 3D MRSI for Siemens and Philips DICOM and SPAR/SDAT is now supported - TODO

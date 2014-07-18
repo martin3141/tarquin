@@ -198,6 +198,8 @@ namespace tarquin
         m_replace_fp = false;
 
         m_ext_csv_fit = true;
+        m_hsvd_comps = 50;
+
 	}
 
 	//Options(){}
@@ -390,6 +392,11 @@ namespace tarquin
     treal GetMaxBroadShift() const
 	{
 	    return m_max_broad_shift;
+	}
+    
+    treal GetHSVDComps() const
+	{
+	    return m_hsvd_comps;
 	}
 
 	void SetMetabShiftLimits(treal lower, treal upper, const CFID& fid, const CBasis& basis)
@@ -1554,6 +1561,7 @@ namespace tarquin
     bool m_replace_fp;
     bool m_ext_csv_fit;
     int m_truncate_pts;
+    treal m_hsvd_comps;
 
     };
 

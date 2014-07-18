@@ -429,7 +429,7 @@ void tarquin::Preprocessor::operator() ()
                 pts = pts * 0.9;
 
 			// decompose into linear combination of complex exponentials
-			DecomposeHSVD(y, fidraw.GetSamplingFrequency(), frequencies, dampings, basis, ahat, pts, 50, m_log);
+			DecomposeHSVD(y, fidraw.GetSamplingFrequency(), frequencies, dampings, basis, ahat, pts, options.GetHSVDComps(), m_log);
 
 			assert( ahat.size() == frequencies.size() );
 			assert( basis.msize() == y.size() );
