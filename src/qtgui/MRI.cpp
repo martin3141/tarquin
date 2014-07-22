@@ -49,6 +49,11 @@ void MRI::generate_slices()
     QVector<QRgb> greyscale;
     for(int i = 0; i < 256; i++) 
         greyscale.push_back(QColor(i,i,i).rgb());
+    
+
+    // override dicom values
+    //this->wc = -1;
+    //this->ww = -1;
 
     if ( ( this->wc == -1 ) && ( this-> ww == -1 ) )
     {
@@ -416,6 +421,8 @@ bool MRI::load_from_file(std::string strFilename)
         std::stringstream str_stream(str);
         str_stream >> this->rescale_slope;
     }
+
+    //this->max_val = rescale_slope*this->max_val + rescale_int;
     
     file.Close();
 	file.Open(strFilename);
@@ -555,4 +562,8 @@ void MRI::reorder_slices()
     this->col_dirn = new_col_dirn;
     this->slice_dirn = new_slice_dirn;
     this->pos = new_pos;
+    
+    // reset wc and ww
+    this->wc = -1;
+    this->ww = -1;
 }

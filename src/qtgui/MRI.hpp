@@ -210,6 +210,12 @@ class MRI
             std::cout << "Slice dim : " << this->slice_dim << std::endl;
             std::cout << "Bits all. : " << this->ba << std::endl;
             std::cout << "Bits sto. : " << this->bs << std::endl;
+            std::cout << "Max val.  : " << this->max_val << std::endl;
+            std::cout << "Min val.  : " << this->min_val << std::endl;
+            std::cout << "Slope     : " << this->rescale_slope << std::endl;
+            std::cout << "Intercept : " << this->rescale_int << std::endl;
+            std::cout << "Contrast  : " << this->wc << std::endl;
+            std::cout << "Width     : " << this->ww << std::endl;
         }
 };
 

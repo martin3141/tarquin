@@ -408,6 +408,11 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
 	{
 		CFIDReaderPhilips reader(*this, log);
 		reader.Load(strFilename, options, log);
+        int m_rows_t = m_rows;
+        int m_cols_t = m_cols;
+        m_rows = m_cols_t;
+        m_cols = m_rows_t;
+        swap_row_col();
 	}
 	else if( tarquin::PHILIPS_DCM == options.GetFormat() ) 
 	{
