@@ -24,6 +24,8 @@ class CFIDReaderPhilips : public CFIDReader
 		void ReadFIDFile(std::string strFilename, const Options& opts);
 
 		void EatTokensFID(TokenList::iterator it_token, std::size_t nSamples);
+    
+        void rotate_vec(const cvm::rvector &vec_in, const cvm::rvector &ax, double theta, cvm::rvector& vec_out);
 
         // do we need to fft the data?
         bool m_FFT;

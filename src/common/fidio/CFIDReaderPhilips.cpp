@@ -186,6 +186,15 @@ void tarquin::CFIDReaderPhilips::EatTokens()
     // useful for mega-press
     int rows = 1;
 
+    // geom info
+    float row_off = 0;
+    float col_off = 0;
+    float slice_off = 0;
+
+    float row_ang = 0;
+    float col_ang = 0;
+    float slice_ang = 0;
+
 	for(TokenList::iterator it = m_tokens.begin(); it != m_tokens.end(); it+=2 ) 
 	{
 		std::string strKey   = it->first;
@@ -248,16 +257,110 @@ void tarquin::CFIDReaderPhilips::EatTokens()
         {
             int dim_rows;
             strmValue >> dim_rows;
-			m_fid.SetRows(dim_rows);
+			m_fid.SetCols(dim_rows);
         }
         else if( 0 == strKey.compare("dim3_pnts") || 0 == strKey.compare("SUN_dim3_pnts") ) 
         {
             int cols;
             strmValue >> cols;
-            m_fid.SetCols(cols);
+            m_fid.SetRows(cols);
         }
+		else if( 0 == strKey.compare("ap_off_center") ) 
+        {
+			strmValue >> col_off;
+        }
+		else if( 0 == strKey.compare("lr_off_center") ) 
+        {
+			strmValue >> row_off;
+        }
+		else if( 0 == strKey.compare("cc_off_center") ) 
+        {
+			strmValue >> slice_off;
+        }
+		else if( 0 == strKey.compare("ap_angulation") ) 
+        {
+			strmValue >> row_ang;
+        }
+		else if( 0 == strKey.compare("lr_angulation") ) 
+        {
+			strmValue >> slice_ang;
+        }
+		else if( 0 == strKey.compare("cc_angulation") ) 
+        {
+			strmValue >> col_ang;
+        }
+
     }
+
+    std::cout << std::endl;
+    std::cout << "Row angle    : " << row_ang << std::endl;
+    std::cout << "Col angle    : " << col_ang << std::endl;
+    std::cout << "Slice angle  : " << slice_ang << std::endl;
+    std::cout << "Row offset   : " << row_off << std::endl;
+    std::cout << "Col offset   : " << col_off << std::endl;
+    std::cout << "Slice offset : " << slice_off << std::endl;
+
+    cvm::rvector cvm_true_row(3);
+    cvm_true_row(1) = 1;
+    cvm_true_row(2) = 0;
+    cvm_true_row(3) = 0;
     
+    cvm::rvector cvm_true_col(3);
+    cvm_true_col(1) = 0;
+    cvm_true_col(2) = 1;
+    cvm_true_col(3) = 0;
+
+    cvm::rvector cvm_true_slice(3);
+    cvm_true_slice(1) = 0;
+    cvm_true_slice(2) = 0;
+    cvm_true_slice(3) = 1;
+
+    cvm::rvector new_cvm_row_ori(3);
+    rotate_vec(cvm_true_row, cvm_true_slice, (col_ang)*M_PI/180.0, new_cvm_row_ori);
+    rotate_vec(new_cvm_row_ori, cvm_true_col, (row_ang)*M_PI/180.0, new_cvm_row_ori);
+    rotate_vec(new_cvm_row_ori, cvm_true_row, (slice_ang)*M_PI/180.0, new_cvm_row_ori);
+
+    cvm::rvector new_cvm_col_ori(3);
+    rotate_vec(cvm_true_col, cvm_true_slice, (col_ang)*M_PI/180.0, new_cvm_col_ori);
+    rotate_vec(new_cvm_col_ori, cvm_true_col, (row_ang)*M_PI/180.0, new_cvm_col_ori);
+    rotate_vec(new_cvm_col_ori, cvm_true_row, (slice_ang)*M_PI/180.0, new_cvm_col_ori);
+
+    std::vector<double> row_ori;
+    row_ori.push_back(new_cvm_row_ori(1));
+    row_ori.push_back(new_cvm_row_ori(2));
+    row_ori.push_back(new_cvm_row_ori(3));
+    m_fid.SetRowDirn(row_ori);
+
+    std::vector<double> col_ori;
+    col_ori.push_back(new_cvm_col_ori(1));
+    col_ori.push_back(new_cvm_col_ori(2));
+    col_ori.push_back(new_cvm_col_ori(3));
+    m_fid.SetColDirn(col_ori);
+
+    cvm::rvector cvm_pos_vec(3);
+    cvm_pos_vec(1) = row_off;
+    cvm_pos_vec(2) = col_off;
+    cvm_pos_vec(3) = slice_off;
+
+    std::vector<double> voxel_dim;
+    voxel_dim.resize(3);
+    voxel_dim[0] = 13; 
+    voxel_dim[1] = 13;
+    voxel_dim[2] = 13;
+    m_fid.SetVoxelDim(voxel_dim);
+
+
+    //const std::vector<double>& voxel_dim = m_fid.GetVoxelDim();
+    cvm_pos_vec += -new_cvm_col_ori*voxel_dim[0]*(0.5*(m_fid.GetRows()-1)) -new_cvm_row_ori*voxel_dim[1]*(0.5*(m_fid.GetCols()-1));
+
+
+    std::vector<double> pos_vec; 
+    pos_vec.push_back(cvm_pos_vec(1));
+    pos_vec.push_back(cvm_pos_vec(2));
+    pos_vec.push_back(cvm_pos_vec(3));
+
+    m_fid.SetPos(pos_vec);
+
     //std::cout << m_fid.GetRows() << std::endl;
     //std::cout << m_fid.GetCols() << std::endl;
     //std::cout << rows << std::endl;
@@ -432,3 +535,24 @@ void tarquin::CFIDReaderPhilips::ReadFIDFile(std::string strFilename, const Opti
         throw Exception("Dynamic averaging scheme incompatible with this data format");
 }
 
+void tarquin::CFIDReaderPhilips::rotate_vec(const cvm::rvector &vec_in, const cvm::rvector &ax, double theta, cvm::rvector& vec_out)
+{
+    double ct = cos(theta);
+    double st = sin(theta);
+    cvm::rmatrix rotate_mat(3,3);
+    rotate_mat(1,1) = ct + pow(ax(1),2)*(1-ct);
+    rotate_mat(1,2) = ax(1)*ax(2)*(1-ct)-ax(3)*st;
+    rotate_mat(1,3) = ax(1)*ax(3)*(1-ct)+ax(2)*st;
+    rotate_mat(2,1) = ax(2)*ax(1)*(1-ct)+ax(3)*st;
+    rotate_mat(2,2) = ct+pow(ax(2),2)*(1-ct);
+    rotate_mat(2,3) = ax(2)*ax(3)*(1-ct)-ax(1)*st;
+    rotate_mat(3,1) = ax(3)*ax(1)*(1-ct)-ax(2)*st;
+    rotate_mat(3,2) = ax(3)*ax(2)*(1-ct)+ax(1)*st;
+    rotate_mat(3,3) = ct+pow(ax(3),2)*(1-ct);
+
+    vec_out.resize(3);
+    vec_out = rotate_mat*vec_in;
+
+    // normalise at the end
+    vec_out = vec_out/vec_out.norm2();
+}
