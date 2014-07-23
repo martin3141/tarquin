@@ -195,6 +195,12 @@ void tarquin::CFIDReaderPhilips::EatTokens()
     float col_ang = 0;
     float slice_ang = 0;
 
+    float ap_size = 0;
+    float lr_size = 0;
+    float cc_size = 0;
+    float slice_thickness = 0;
+    float pe_fov = 0;
+
 	for(TokenList::iterator it = m_tokens.begin(); it != m_tokens.end(); it+=2 ) 
 	{
 		std::string strKey   = it->first;
@@ -289,9 +295,29 @@ void tarquin::CFIDReaderPhilips::EatTokens()
         {
 			strmValue >> col_ang;
         }
-
+		else if( 0 == strKey.compare("ap_size") ) 
+        {
+			strmValue >> ap_size;
+        }
+		else if( 0 == strKey.compare("lr_size") ) 
+        {
+			strmValue >> lr_size;
+        }
+		else if( 0 == strKey.compare("cc_size") ) 
+        {
+			strmValue >> cc_size;
+        }
+		else if( 0 == strKey.compare("slice_thickness") ) 
+        {
+			strmValue >> slice_thickness;
+        }
+		else if( 0 == strKey.compare("phase_encoding_fov") ) 
+        {
+			strmValue >> pe_fov;
+        }
     }
-
+    
+    /*
     std::cout << std::endl;
     std::cout << "Row angle    : " << row_ang << std::endl;
     std::cout << "Col angle    : " << col_ang << std::endl;
@@ -299,6 +325,10 @@ void tarquin::CFIDReaderPhilips::EatTokens()
     std::cout << "Row offset   : " << row_off << std::endl;
     std::cout << "Col offset   : " << col_off << std::endl;
     std::cout << "Slice offset : " << slice_off << std::endl;
+    std::cout << "AP size      : " << ap_size << std::endl;
+    std::cout << "LR size      : " << lr_size << std::endl;
+    std::cout << "CC size      : " << cc_size << std::endl;
+    */
 
     cvm::rvector cvm_true_row(3);
     cvm_true_row(1) = 1;
@@ -344,9 +374,26 @@ void tarquin::CFIDReaderPhilips::EatTokens()
 
     std::vector<double> voxel_dim;
     voxel_dim.resize(3);
-    voxel_dim[0] = 13; 
-    voxel_dim[1] = 13;
-    voxel_dim[2] = 13;
+    
+    // if SVS
+    if ( m_fid.GetRows() == 1 && m_fid.GetCols() == 1 ) // these could be the wrong way round, check?
+    {
+        voxel_dim[0] = ap_size; 
+        voxel_dim[1] = lr_size;
+        voxel_dim[2] = cc_size;
+    }
+    else
+    {
+        voxel_dim[0] = pe_fov/m_fid.GetCols(); 
+        voxel_dim[1] = pe_fov/m_fid.GetCols();
+        voxel_dim[2] = slice_thickness;
+    }
+    /*
+    std::cout << m_fid.GetCols() << std::endl;
+    std::cout << m_fid.GetRows() << std::endl;
+    std::cout << pe_fov << std::endl;
+    std::cout << pe_fov/m_fid.GetCols() << std::endl;
+    */
     m_fid.SetVoxelDim(voxel_dim);
 
 

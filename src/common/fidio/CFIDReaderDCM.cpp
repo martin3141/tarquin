@@ -467,6 +467,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
         rotate = 0;
         */
         
+        /*
         std::cout << std::endl;
         std::cout << "Row angle   : " << row_ang << std::endl;
         std::cout << "Col angle   : " << col_ang << std::endl;
@@ -474,6 +475,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
         std::cout << "Row offset   : " << row_off << std::endl;
         std::cout << "Col offset   : " << col_off << std::endl;
         std::cout << "Slice offset : " << slice_off << std::endl;
+        */
 
 
         cvm::rvector new_cvm_row_ori(3);

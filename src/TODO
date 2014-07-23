@@ -3,12 +3,12 @@
 ****************************************************
 
 Version 4.3.4
-- FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large datasets (--trunc_pts).
-- Improvement to reduce memory use when exporting csv fit data.
+- FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large MRSI datasets (--trunc_pts).
+- Improvement to reduce memory use when exporting large csv fit data files.
 - Bug fix where Cit was included in the default basis set for the GUI.
 - Bug fix for GE p-files where the offset to data was incorrect for rdb_header_rev 24,20. - Thanks to Felix Raschke for pointing this out.
 - Modest SNR improvement for multi-channel GE SVS coil combination (now weighted by water amplitude where available). Thanks to Felix Raschke and Jamie Near for letting me know that this is a better approach than un-weighted combination.
-- Improvements to auto MRI window level and window width.
+- Improvements to default MRI window level and window width parameters.
 - Improvements to SPAR/SDAT SVS and 2D MRSI display on MRI.
 - The number of components used in the HSVD water removal can now be specified (--hsvd_comps)
 
