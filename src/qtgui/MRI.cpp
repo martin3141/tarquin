@@ -260,8 +260,27 @@ bool MRI::load_from_file(std::string strFilename)
     std::string str = dims_str.substr(0,dims_bytes);
     std::vector<double> row_col;
     tarquin::str2rvec(str, row_col);
+    
+    // bodge for multi-frame Philips data that has come from PukkaJ
+    if ( row_col[0] == 0 || row_col[1] == 0 )
+    {
+        long dims_bytes = file.MoveToTag("0028","0030",false);
+        if( -1 == dims_bytes )
+            return false;
+
+        std::vector<char> dims(dims_bytes, 0);
+        file.GetFileStream().read(&dims[0], dims_bytes);
+        std::string dims_str(dims.begin(), dims.end());
+        //std::cout << "Pixel Spacing : " << dims_str.substr(0,dims_bytes) << std::endl;
+        // convert pixel spacing to doubles
+        std::string str = dims_str.substr(0,dims_bytes);
+        tarquin::str2rvec(str, row_col);
+    }
+
     this->row_dim = row_col[0];
     this->col_dim = row_col[1];
+
+
 
     // find position tags
     long pos_bytes = file.MoveToTag("0020","0032");
