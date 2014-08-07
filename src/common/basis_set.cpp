@@ -5,17 +5,23 @@
 namespace tarquin
 {
 	void getCrCH2(std::vector<std::vector<double> >& doubmat);
+	void getCrCH2_RT(std::vector<std::vector<double> >& doubmat);
 	void getAla(std::vector<std::vector<double> >& doubmat);
 	void getAsp(std::vector<std::vector<double> >& doubmat);
+	void getCho_RT(std::vector<std::vector<double> >& doubmat);
 	void getCr(std::vector<std::vector<double> >& doubmat);
+	void getCr_RT(std::vector<std::vector<double> >& doubmat);
 	void getGABA(std::vector<std::vector<double> >& doubmat);
 	void getMEGAGABA(std::vector<std::vector<double> >& doubmat);
 	void getGPC(std::vector<std::vector<double> >& doubmat);
 	void getGlc(std::vector<std::vector<double> >& doubmat);
 	void getGln(std::vector<std::vector<double> >& doubmat);
 	void getGlu(std::vector<std::vector<double> >& doubmat);
+	void getGlu_RT(std::vector<std::vector<double> >& doubmat);
 	void getGua(std::vector<std::vector<double> >& doubmat);
+	void getIns_RT(std::vector<std::vector<double> >& doubmat);
 	void getIns(std::vector<std::vector<double> >& doubmat);
+	void getLac_RT(std::vector<std::vector<double> >& doubmat);
 	void getLac(std::vector<std::vector<double> >& doubmat);
 	void getLip09(std::vector<std::vector<double> >& doubmat, double B0);
 	void getLip13a(std::vector<std::vector<double> >& doubmat, double B0);
@@ -29,6 +35,7 @@ namespace tarquin
 	void getMM30(std::vector<std::vector<double> >& doubmat, double B0);
 	void getMM38(std::vector<std::vector<double> >& doubmat, double B0);
 	void getNAA(std::vector<std::vector<double> >& doubmat);
+	void getNAA_RT(std::vector<std::vector<double> >& doubmat);
 	void getNAAG(std::vector<std::vector<double> >& doubmat);
 	void getPCh(std::vector<std::vector<double> >& doubmat);
 	void getScyllo(std::vector<std::vector<double> >& doubmat);
@@ -71,6 +78,10 @@ void tarquin::getMetaboliteDescription(basis_vector_e metab, std::string& desc)
 			desc = "-CrCH2.csv";
 			break;
 
+		case BV_CRCH2_RT:
+			desc = "-CrCH2.csv";
+			break;
+
 		case BV_ALA:
 			desc = "Ala.csv";
 			break;
@@ -78,8 +89,16 @@ void tarquin::getMetaboliteDescription(basis_vector_e metab, std::string& desc)
 		case BV_ASP:
 			desc = "Asp.csv";
 			break;
+		
+        case BV_CHO_RT:
+            desc = "Cho.csv";
+            break;
 
-		case BV_CR:
+		case BV_CR: 
+            desc = "Cr.csv";
+            break;
+		
+        case BV_CR_RT:
 			desc = "Cr.csv";
 			break;
         
@@ -115,6 +134,10 @@ void tarquin::getMetaboliteDescription(basis_vector_e metab, std::string& desc)
 			desc = "Glth.csv";
 			break;
 
+		case BV_GLU_RT:
+			desc = "Glu.csv";
+			break;
+
 		case BV_GLU:
 			desc = "Glu.csv";
 			break;
@@ -126,8 +149,16 @@ void tarquin::getMetaboliteDescription(basis_vector_e metab, std::string& desc)
 		case BV_INS:
 			desc = "Ins.csv";
 			break;
+		
+        case BV_INS_RT:
+			desc = "Ins.csv";
+			break;
 
 		case BV_LAC:
+			desc = "Lac.csv";
+			break;
+
+		case BV_LAC_RT:
 			desc = "Lac.csv";
 			break;
 
@@ -176,6 +207,10 @@ void tarquin::getMetaboliteDescription(basis_vector_e metab, std::string& desc)
 			break;
 
 		case BV_NAA:
+			desc = "NAA.csv";
+			break;
+
+		case BV_NAA_RT:
 			desc = "NAA.csv";
 			break;
 
@@ -292,6 +327,10 @@ void tarquin::getMetaboliteMatrix(
 		case BV_CRCH2:
 			getCrCH2(doubmat);
 			break;
+            
+		case BV_CRCH2_RT:
+			getCrCH2_RT(doubmat);
+			break;
 
 		case BV_ALA:
 			getAla(doubmat);
@@ -301,8 +340,16 @@ void tarquin::getMetaboliteMatrix(
 			getAsp(doubmat);
 			break;
 
+		case BV_CHO_RT:
+			getCho_RT(doubmat);
+			break;
+
 		case BV_CR:
 			getCr(doubmat);
+			break;
+
+		case BV_CR_RT:
+			getCr_RT(doubmat);
 			break;
 
         case BV_PCR:
@@ -341,6 +388,10 @@ void tarquin::getMetaboliteMatrix(
 			getGlu(doubmat);
 			break;
 
+		case BV_GLU_RT:
+			getGlu_RT(doubmat);
+			break;
+
 		case BV_GUA:
 			getGua(doubmat);
 			break;
@@ -348,9 +399,17 @@ void tarquin::getMetaboliteMatrix(
 		case BV_INS:
 			getIns(doubmat);
 			break;
+		
+        case BV_INS_RT:
+			getIns_RT(doubmat);
+			break;
 
 		case BV_LAC:
 			getLac(doubmat);
+			break;
+
+		case BV_LAC_RT:
+			getLac_RT(doubmat);
 			break;
 
 		case BV_LIP09:
@@ -399,6 +458,10 @@ void tarquin::getMetaboliteMatrix(
 
 		case BV_NAA:
 			getNAA(doubmat);
+			break;
+
+		case BV_NAA_RT:
+			getNAA_RT(doubmat);
 			break;
 
 		case BV_NAAG:
@@ -1040,8 +1103,145 @@ void tarquin::getLac(std::vector<std::vector<double> >& doubmat)
 	doubmat.push_back(doubvec);
 }
 
+void tarquin::getLac_RT(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(8, d_nan);
+	std::vector<double> doubvec(8, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = 0;
+	doubvec[2] = 0.5;
+	doubvec[3] = 4.0974;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 1.3142;
+	doubvec[4] = 6.933;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 1.3142;
+	doubvec[4] = 6.933;
+	doubvec[5] = 0;
+	doubvec[6] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 1.3142;
+	doubvec[4] = 6.933;
+	doubvec[5] = 0;
+	doubvec[6] = 0;
+	doubvec[7] = 0;
+	doubmat.push_back(doubvec);
+}
+
 
 void tarquin::getIns(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(10, d_nan);
+	std::vector<double> doubvec(10, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.5217;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 0;
+	doubvec[2] = 0.5;
+	doubvec[3] = 4.0538;
+	doubvec[4] = 2.889;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.5217;
+	doubvec[4] = 0;
+	doubvec[5] = 3.006;
+	doubvec[6] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.6144;
+	doubvec[4] = 0;
+	doubvec[5] = 0;
+	doubvec[6] = 9.997;
+	doubvec[7] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.269;
+	doubvec[4] = 0;
+	doubvec[5] = 0;
+	doubvec[6] = 0;
+	doubvec[7] = 9.485;
+	doubvec[8] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.6144;
+	doubvec[4] = 9.998;
+	doubvec[5] = 0;
+	doubvec[6] = 0;
+	doubvec[7] = 0;
+	doubvec[8] = 9.482;
+	doubvec[9] = 0;
+	doubmat.push_back(doubvec);
+}
+
+void tarquin::getIns_RT(std::vector<std::vector<double> >& doubmat)
 {
 	double d_nan = std::numeric_limits<double>::quiet_NaN();
 	std::vector<double> nan_doubvec(10, d_nan);
@@ -1149,6 +1349,86 @@ void tarquin::getGua(std::vector<std::vector<double> >& doubmat)
 }
 
 void tarquin::getGlu(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(9, d_nan);
+	std::vector<double> doubvec(9, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 5;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.7433;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.0375;
+	doubvec[4] = 7.331;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.12;
+	doubvec[4] = 4.651;
+	doubvec[5] = -14.849;
+	doubvec[6] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.3378;
+	doubvec[4] = 0;
+	doubvec[5] = 6.413;
+	doubvec[6] = 8.478;
+	doubvec[7] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 5;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.352;
+	doubvec[4] = 0;
+	doubvec[5] = 8.406;
+	doubvec[6] = 6.875;
+	doubvec[7] = -15.915;
+	doubvec[8] = 0;
+	doubmat.push_back(doubvec);
+}
+
+void tarquin::getGlu_RT(std::vector<std::vector<double> >& doubmat)
 {
 	double d_nan = std::numeric_limits<double>::quiet_NaN();
 	std::vector<double> nan_doubvec(9, d_nan);
@@ -1770,6 +2050,29 @@ void tarquin::getCrCH2(std::vector<std::vector<double> >& doubmat)
 	doubmat.push_back(doubvec);
 }
 
+void tarquin::getCrCH2_RT(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(6, d_nan);
+	std::vector<double> doubvec(6, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = -2;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.913;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+}
+
+
 void tarquin::getAla(std::vector<std::vector<double> >& doubmat)
 {
 	double d_nan = std::numeric_limits<double>::quiet_NaN();
@@ -2112,6 +2415,89 @@ void tarquin::getPCh(std::vector<std::vector<double> >& doubmat)
 	doubmat.push_back(doubvec);
 }
 
+void tarquin::getCho_RT(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(10, d_nan);
+	std::vector<double> doubvec(10, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 3;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = 9;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.185;
+	doubvec[4] = 0;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 0;
+	doubvec[2] = 0.5;
+	doubvec[3] = 0;
+	doubvec[4] = 0.57;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 4.054;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 4.054;
+	doubvec[4] = -14.1;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.501;
+	doubvec[4] = 3.14;
+	doubvec[5] = 7.011;
+	doubvec[6] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.501;
+	doubvec[4] = 6.979;
+	doubvec[5] = 3.168;
+	doubvec[6] = -14.07;
+	doubvec[7] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 0;
+	doubvec[2] = 0.5;
+	doubvec[3] = 0;
+	doubvec[4] = 2.572;
+	doubvec[5] = 2.681;
+	doubvec[6] = 0;
+	doubvec[7] = 0;
+	doubvec[8] = 0;
+	doubmat.push_back(doubvec);
+}
 
 void tarquin::getCr(std::vector<std::vector<double> >& doubmat)
 {
@@ -2147,6 +2533,42 @@ void tarquin::getCr(std::vector<std::vector<double> >& doubmat)
 	doubvec[4] = 0;
 	doubmat.push_back(doubvec);
 }
+
+void tarquin::getCr_RT(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(6, d_nan);
+	std::vector<double> doubvec(6, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = 3;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.027;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 2;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.913;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+}
+
 
 void tarquin::getPCr(std::vector<std::vector<double> >& doubmat)
 {
@@ -2253,6 +2675,78 @@ void tarquin::getNAA(std::vector<std::vector<double> >& doubmat)
 		cout << endl;
 	}*/
 }
+
+void tarquin::getNAA_RT(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(7, d_nan);
+	std::vector<double> doubvec(7, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 2;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 3;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 3;
+	doubvec[2] = 0;
+	doubvec[4] = 2.5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = 3;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.008;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 2;
+	doubvec[1] = 0;
+	doubvec[2] = 0.5;
+	doubvec[3] = 4.3817;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.6727;
+	doubvec[4] = 3.861;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.4863;
+	doubvec[4] = 9.821;
+	doubvec[5] = -15.592;
+	doubvec[6] = 0;
+	doubmat.push_back(doubvec);
+
+	// print the doubmat
+	/*for (vector< vector<double> >::size_type u = 0; u < naa_doubmat.size(); u++) {
+		for (vector<double>::size_type v = 0; v < naa_doubmat[u].size(); v++) {
+			cout << naa_doubmat[u][v] << " ";
+		}
+		cout << endl;
+	}*/
+}
+
 
 void tarquin::getTNAA(std::vector<std::vector<double> >& doubmat)
 {

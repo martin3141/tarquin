@@ -4,7 +4,7 @@
 
 Version 4.3.5
 - Bug fix for GE p-files Rdb reader rev : 14.3 where the offset to data was incorrect by one frame. This caused a crash at the reconstruction stage.
-- Internal basis set option for 'braino' phantoms has now been added. - TODO
+- Internal basis set option for 'braino' phantoms has now been added.
 
 Version 4.3.4
 - FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large MRSI datasets (--trunc_pts).

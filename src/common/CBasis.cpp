@@ -257,6 +257,16 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_GLX_C );
         metabolites.push_back( BV_GLX_D );
     }
+    else if ( options.GetIntBasisSet() == PROTON_BRAINO )
+    {
+        metabolites.push_back( BV_CHO_RT );
+        metabolites.push_back( BV_CR_RT );
+        metabolites.push_back( BV_CRCH2_RT );
+        metabolites.push_back( BV_GLU_RT );
+        metabolites.push_back( BV_INS_RT );
+        metabolites.push_back( BV_LAC_RT );
+        metabolites.push_back( BV_NAA_RT );
+    }
     else if ( options.GetIntBasisSet() == PHOSPH_BRAIN_DECOUP )
     {
         metabolites.push_back( BV_31P_ATP );

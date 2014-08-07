@@ -53,6 +53,7 @@ namespace tarquin
 		PROTON_BRAIN_FULL,       // Std brain metabolites + Gly + Glth + PEth
 		PROTON_BRAIN_LE,       // Std brain metabolites + Gly + Cit
 		PROTON_MEGAPRESS_GABA,
+		PROTON_BRAINO,
 		PHOSPH_BRAIN_DECOUP
 	};
 

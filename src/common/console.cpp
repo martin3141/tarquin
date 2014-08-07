@@ -41,7 +41,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--basis_csv         path to basis (CSV files)";
 	std::cout << "\n\t--basis_xml         path to basis (precompiled XML files)";
 	std::cout << "\n\t--basis_lcm         path to basis (LCModel .basis format)";
-	std::cout << "\n\t--int_basis         {1h_brain | 1h_brain_gly_glth | 1h_brain_gly_cit_glth | 1h_brain_full | 1h_brain_le | megapress_gaba | 31p_brain}";
+	std::cout << "\n\t--int_basis         {1h_brain | 1h_brain_gly_glth | 1h_brain_gly_cit_glth | 1h_brain_full | 1h_brain_le | megapress_gaba | braino | 31p_brain}";
 	std::cout << "\n\t--echo              echo time in seconds";
 	std::cout << "\n\t--te1               te1 time in seconds for PRESS sequence";
 	std::cout << "\n\t--tm                tm time in seconds for STEAM sequence";
@@ -419,6 +419,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.SetIntBasisSet(PROTON_BRAIN_LE);
 			else if( strVal == "megapress_gaba" ) 
 				options.SetIntBasisSet(PROTON_MEGAPRESS_GABA);
+			else if( strVal == "braino" ) 
+				options.SetIntBasisSet(PROTON_BRAINO);
 			else if( strVal == "31p_brain" ) 
 				options.SetIntBasisSet(PHOSPH_BRAIN_DECOUP);
 			else {
