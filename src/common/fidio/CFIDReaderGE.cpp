@@ -142,7 +142,7 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
 	frame_size_int = frame_size * 2 * 4;
 	log.LogMessage(LOG_INFO, "Frame size : %i",frame_size_int);
     int ver_offset = 0;
-    if ( rdb_header_rev > 20 )
+    if ( rdb_header_rev > 14 ) // could this be required for lower versions?
         ver_offset = frame_size_int;
 
 	int data_offset = p_file_off + ver_offset;
@@ -790,6 +790,8 @@ void tarquin::CFIDReaderGE::LoadFromOptionsSVS(std::string strFilename, const Op
         treal amp_sum = 0;
         for ( size_t n = 0; n < amps.size(); n++ )
             amp_sum = amp_sum + amps[n];
+
+        //std::cout << amp_sum << std::endl;
 
         y /= treal(nCoils)*amp_sum;
         if ( nWaterFrames > 0 )

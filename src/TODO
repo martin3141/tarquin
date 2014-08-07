@@ -2,6 +2,10 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+Version 4.3.5
+- Bug fix for GE p-files Rdb reader rev : 14.3 where the offset to data was incorrect by one frame.
+- Internal basis set for 'braino' phantoms has now been added. - TODO
+
 Version 4.3.4
 - FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large MRSI datasets (--trunc_pts).
 - Improvement to reduce memory use when exporting large csv fit data files.
