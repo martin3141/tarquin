@@ -211,6 +211,8 @@ class CFID
         void ShiftGrid(double row_shift, double col_shift, double slice_shift, CBoswell& log);
         
         void zfill_kspace(size_t factor, Options& options, CBoswell& log);
+        
+        void trans_kspace(Options& options, CBoswell& log);
 
         void AverageData(Options& options);
         

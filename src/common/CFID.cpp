@@ -83,6 +83,65 @@ void tarquin::CFID::ShiftGrid(double row_shift, double col_shift, double slice_s
     // over-write the FID array
 }
 
+void tarquin::CFID::trans_kspace(Options& options, CBoswell& log)
+{
+
+    log.LogMessage(LOG_INFO, "Transforming to k-space");
+
+    // convert FID array into k-space planes, one per time point,
+    // by performing the 2D fft
+    cmat_stdvec kspace;
+    for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+    {
+        //std::cout << std::endl << m_rows << " " << m_cols << std::endl;
+        cvm::cmatrix temp_mat(m_rows, m_cols);
+        for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+        {
+            for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+            {
+
+	            coord voxel(row, col, 1); 
+                cvm::cvector& temp_fid = GetVectorFID(voxel);
+                temp_mat(row, col) = temp_fid(time_pt);
+            }
+        }
+
+        // 2D ifft on temp_mat
+        temp_mat = ifft(temp_mat);
+        temp_mat = fftshift(temp_mat);
+        // transpose
+        cvm::cmatrix temp_mat_trans = ~temp_mat;
+        cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
+        temp_mat_trans = temp_mat_conj;
+        temp_mat_trans = ifft(temp_mat_trans);
+        temp_mat_trans = fftshift(temp_mat_trans);
+        // transpose back
+        temp_mat = ~temp_mat_trans;
+        cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
+        temp_mat = temp_mat_conj2;
+
+        kspace.push_back(temp_mat);
+    }
+    
+    // convert zfilled k-space back to fid list
+    cvec_stdvec new_fid;
+
+    cvm::cmatrix temp_mat(m_rows, m_cols);
+    for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+    {
+        for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+        {
+            cvm::cvector temp_fid(m_nPoints);
+            for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+            {
+                temp_fid(time_pt) = kspace[time_pt-1](row,col);
+            }
+            new_fid.push_back(temp_fid);
+        }
+    }
+    m_cvmFID = new_fid;
+}
+
 void tarquin::CFID::zfill_kspace(size_t factor, Options& options, CBoswell& log)
 {
 
@@ -464,6 +523,8 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
     // zero-fill k-space if requested
     if ( options.GetZfillKspace() != 1 )
         zfill_kspace(options.GetZfillKspace(), options, log);
+    
+    //trans_kspace(options, log);
 
 	// set the point range to sensible values if not set to something else 
 	if( 0 == options.GetRangeStart() && options.GetPulSeq() == MEGA_PRESS )
@@ -748,6 +809,8 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
     // zero-fill k-space if requested
     if ( options.GetZfillKspace() != 1 )
         zfill_kspace(options.GetZfillKspace(), options, log);
+
+    //trans_kspace(options, log);
 
     // set default values for some parameters
     std::pair<treal, bool> def_ref;
