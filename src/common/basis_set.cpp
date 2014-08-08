@@ -1133,14 +1133,14 @@ void tarquin::getLac_RT(std::vector<std::vector<double> >& doubmat)
 	doubvec[1] = 1;
 	doubvec[2] = 0.5;
 	doubvec[3] = 1.3142;
-	doubvec[4] = 6.933;
+	doubvec[4] = 6.7;
 	doubvec[5] = 0;
 	doubmat.push_back(doubvec);
 	doubvec[0] = 2;
 	doubvec[1] = 1;
 	doubvec[2] = 0.5;
 	doubvec[3] = 1.3142;
-	doubvec[4] = 6.933;
+	doubvec[4] = 6.7;
 	doubvec[5] = 0;
 	doubvec[6] = 0;
 	doubmat.push_back(doubvec);
@@ -1148,7 +1148,7 @@ void tarquin::getLac_RT(std::vector<std::vector<double> >& doubmat)
 	doubvec[1] = 1;
 	doubvec[2] = 0.5;
 	doubvec[3] = 1.3142;
-	doubvec[4] = 6.933;
+	doubvec[4] = 6.7;
 	doubvec[5] = 0;
 	doubvec[6] = 0;
 	doubvec[7] = 0;
@@ -2067,7 +2067,7 @@ void tarquin::getCrCH2_RT(std::vector<std::vector<double> >& doubmat)
 	doubvec[0] = 1;
 	doubvec[1] = -2;
 	doubvec[2] = 0.5;
-	doubvec[3] = 3.913;
+	doubvec[3] = 3.922;
 	doubvec[4] = 0;
 	doubmat.push_back(doubvec);
 }
@@ -2564,7 +2564,7 @@ void tarquin::getCr_RT(std::vector<std::vector<double> >& doubmat)
 	doubvec[0] = 2;
 	doubvec[1] = 2;
 	doubvec[2] = 0.5;
-	doubvec[3] = 3.913;
+	doubvec[3] = 3.922;
 	doubvec[4] = 0;
 	doubmat.push_back(doubvec);
 }
@@ -2725,8 +2725,8 @@ void tarquin::getNAA_RT(std::vector<std::vector<double> >& doubmat)
 	doubvec[0] = 3;
 	doubvec[1] = 1;
 	doubvec[2] = 0.5;
-	doubvec[3] = 2.6727;
-	doubvec[4] = 3.861;
+	doubvec[3] = 2.6827;
+	doubvec[4] = 3.65;
 	doubvec[5] = 0;
 	doubmat.push_back(doubvec);
 	doubvec[0] = 4;
