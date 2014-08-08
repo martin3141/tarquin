@@ -194,6 +194,25 @@ for file in fileListMatch:
 \end{verbatim}
 This script recursively searches for all files within in the \texttt{dir} variable.  Each file that ends with the letters \texttt{MRS} is considered to be a data file and is stored in the \texttt{fileListMatch} vector.  TARQUIN is then run on each data file, using the default brain basis set, assuming the data is in the Siemens format.  TARQUIN outputs a pdf plot of the fit and a text file containing the metabolite quantities with the same name at the data file appended with the extensions .pdf and .txt respectively.  Where the analysis of large datasets is required, scripting can be a very useful tool for saving you a huge amount of time and wrist strain!
 
+\section{Output parameters}
+Below is a table to define some useful parameters available from the TARQUIN results output.
+
+\begin{tabular}{l l}
+Parameter & Description \\
+\hline
+\texttt{Q} & standard deviation of the fit residual (between around 0.5-4 PPM) \\& divided by the standard deviation of the noise region. \\
+\texttt{SNR} & ratio between the maximum in the spectrum minus baseline \\& divided by 2xRMS of the residual between 0.5-4 PPM. \\
+\texttt{SNR max} & ratio between the maximum in the spectrum minus baseline \\& divided by 2xRMS of the spectral noise level. \\
+\texttt{SNR metab} & ratio between the maximum in the spectrum minus baseline \\& divided by 2xRMS of the residual in the metabolite region \\& (1.9-4.0ppm) to exclude lipids from biasing the value. \\
+\texttt{spec noise} & estimate of the spectral RMS noise level. \\
+\texttt{init beta} & initial estimate of T2* prior to fitting. \\
+\texttt{final beta} & final estimate of T2* determined during fitting. \\
+\texttt{final beta (PPM)} & as above in units of PPM.\\
+\texttt{water width (Hz)} & FWHM width of water peak in units of Hz where available. \\
+\texttt{water width (PPM)} & As above in units of PPM. \\
+\texttt{water freq (Hz)} & Difference between water frequency and the centre of the spectral \\& width in Hz. \\
+\end{tabular}
+
 \section{Data types}
 \subsection{PRESS}
 \subsubsection{Timings and simulation}
