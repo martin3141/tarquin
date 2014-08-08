@@ -238,6 +238,13 @@ For assessing data quality, the following parameters (given in the csv results o
 \item SNR max - assess the ratio between the maximum metabolite signal height and the noise level. Reduction in SNR could be related to poorer homogeneity of the magnetic field or failure of a particular coil element.
 \end{enumerate}
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{figs/braino_fit.pdf}
+\caption{An example fit to the braino phantom (1.5T, PRESS TE=30ms).}
+\label{braino_fit}
+\end{figure}
+
 
 \subsection{MEGA-PRESS}
 A basic MEGA-PRESS analysis to estimate the concentration of GABA can be performed using TARQUIN. To perform analysis using the gui take the following steps:
@@ -259,7 +266,7 @@ Edit on and off scans can be visualised/analysed separately by changing the ``Dy
 
 \section{Data formats}
 \subsection{GE p-files}
-TARQUIN will read GE SVS p-files and combine data from multi-coil arrays where appropriate. A single phase factor (per coil) is applied to data from each coil before combination. Where water unsuppressed data is available this factor is taken from the phase of the first data point in the first unsuppressed frame. Where only water suppressed data is available, this phase factor is taken from the first data point in the first suppressed frame.
+TARQUIN will read GE SVS p-files and combine data from multi-coil arrays where appropriate. A single phase and multiplicative factor (per coil) is applied to data from each coil before combination. Where water unsuppressed data is available this factor is taken from the phase and magnitude of the first data point in the first unsuppressed frame. Where only water suppressed data is available, this phase factor is taken from the first data point in the first suppressed frame.
 
 %\section{Fitting Details}
 %The main algorithmic details and validation is described in the following paper: \cite{tarquin_paper}.  Any expansions and changes to the original algorithm will be described in the following section.
