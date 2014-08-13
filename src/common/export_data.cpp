@@ -489,6 +489,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
         // advance to the next voxel
         ++i_Q;
+        ++i_metab_fwhm;
         ++i_BLV;
         ++i_snr;
         ++i_spec_noise;
