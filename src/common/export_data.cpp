@@ -436,12 +436,15 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     fout << "Fit diagnostics" << std::endl;
 	fout << "Row" << "," << "Col" << "," << "Slice" << ","; 
 	// output the row column names
-	fout << "Q,SNR,SNR max,SNR metab,spec noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water width (Hz),water width (PPM),water freq (Hz),baseline var,initial residual,final residual,stopping reason,version" << std::endl;
+	fout << "Q,metab FWHM (PPM),metab FWHM (Hz),SNR,SNR max,SNR metab,spec noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water FWHM (Hz),water FWHM (PPM),water freq (Hz),baseline var,initial residual,final residual,stopping reason,version" << std::endl;
 	
 	// output fitting info
     // Q
     const std::vector<double>& Q_vec = workspace.GetQ();
     std::vector<double>::const_iterator i_Q = Q_vec.begin();
+
+    const std::vector<double>& metab_fwhm_vec = workspace.GetMetabFWHM();
+    std::vector<double>::const_iterator i_metab_fwhm = metab_fwhm_vec.begin();
 
     const std::vector<double>& BLV_vec = workspace.GetBLV();
     std::vector<double>::const_iterator i_BLV = BLV_vec.begin();
@@ -482,7 +485,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
 		// write the voxel info
 		fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
-        fout << *i_Q << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << "," << info[fit][0] << "," << info[fit][1] << "," << stop << "," << version::version_string() << std::endl;
+        fout << *i_Q << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << "," << info[fit][0] << "," << info[fit][1] << "," << stop << "," << version::version_string() << std::endl;
 
         // advance to the next voxel
         ++i_Q;
@@ -711,10 +714,14 @@ void ExportTxtResults(const std::string& strFilename, const Workspace& workspace
         fout << std::endl;
         fout << "Fit quality" << std::endl;
         fout << "-----------" << std::endl;
+        const std::vector<double> metab_fwhm = workspace.GetMetabFWHM();
+        fout << "Metab FWHM (PPM) : " << metab_fwhm[fit] << std::endl;
+        fout << "Metab FWHM (Hz)  : " << metab_fwhm[fit]*(yfid.GetTransmitterFrequency()/1.0e6) << std::endl;
         const pair_vec snr = yfid.GetSNR();
-        fout << "SNR : " << snr[fit].first << std::endl;
+        fout << "SNR residual     : " << snr[fit].first << std::endl;
         const std::vector<double> Q = workspace.GetQ();
-        fout << "Q   : " << Q[fit] << std::endl;
+        fout << "SNR max          : " << snr[fit].first * Q[fit] << std::endl;
+        fout << "Q                : " << Q[fit] << std::endl;
         fout << std::endl;
         fout << "Fitting parameters" << std::endl;
         fout << "------------------" << std::endl;
@@ -741,15 +748,15 @@ void ExportTxtResults(const std::string& strFilename, const Workspace& workspace
         fout << "Water att        : " << options.GetWAtt() << std::endl;
         if ( options.GetFilenameWater() == "" )
         {
-            fout << "Water width (Hz)  : NA" << std::endl; 
-            fout << "Water width (PPM) : NA" << std::endl; 
-            fout << "Water freq (Hz)   : NA" << std::endl; 
+            fout << "Water FWHM (Hz)  : NA" << std::endl; 
+            fout << "Water FWHM (PPM) : NA" << std::endl; 
+            fout << "Water freq (Hz)  : NA" << std::endl; 
         }
         else
         {
-            fout << "Water width (Hz)  : " << workspace.GetWaterWidth(fit) << std::endl; 
-            fout << "Water width (PPM) : " << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << std::endl; 
-            fout << "Water freq (Hz)   : " << workspace.GetWaterFreq(fit) << std::endl; 
+            fout << "Water FWHM (Hz)  : " << workspace.GetWaterWidth(fit) << std::endl; 
+            fout << "Water FWHM (PPM) : " << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << std::endl; 
+            fout << "Water freq (Hz)  : " << workspace.GetWaterFreq(fit) << std::endl; 
         }
 
         fout << std::endl;
@@ -905,6 +912,9 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
     // Q
     const std::vector<double>& Q_vec = workspace.GetQ();
     
+    // FWHM
+    const std::vector<double>& metab_fwhm_vec = workspace.GetMetabFWHM();
+    
     // baseline var
     const std::vector<double>& BLV_vec = workspace.GetBLV();
 
@@ -916,23 +926,25 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
 
     fout << "\\n";
 
-    fout << "SNR residul       = " << snr[0].first << "\\n";
+    fout << "Metab FWHM (PPM)  = " << metab_fwhm_vec[0] << "\\n";
+    fout << "Metab FWHM (Hz)   = " << metab_fwhm_vec[0]*(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
     fout << "SNR max           = " << snr[0].first * Q_vec[0] << "\\n";
+    fout << "SNR residul       = " << snr[0].first << "\\n";
     fout << "Q                 = " << Q_vec[0] << "\\n";
-
-    fout << "Water width (Hz)  = ";
-    if ( options.GetFilenameWater() == "" )
-        fout << "NA\\n";
-    else
-        fout << workspace.GetWaterWidth(0) << "\\n";
-
-    fout << "Water width (PPM) = ";
+    
+    fout << "Water FWHM (PPM)  = ";
     if ( options.GetFilenameWater() == "" )
         fout << "NA\\n";
     else
         fout << workspace.GetWaterWidth(0)/(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
 
-    fout << "Water freq  (Hz)  = ";
+    fout << "Water FWHM (Hz)   = ";
+    if ( options.GetFilenameWater() == "" )
+        fout << "NA\\n";
+    else
+        fout << workspace.GetWaterWidth(0) << "\\n";
+
+    fout << "Water freq (Hz)   = ";
     if ( options.GetFilenameWater() == "" )
         fout << "NA\\n";
     else

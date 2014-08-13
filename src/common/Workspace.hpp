@@ -261,6 +261,15 @@ namespace tarquin
 				return m_Q;
 			}
 
+            std::vector<double>& GetMetabFWHM()
+			{
+				return m_metab_fwhm;
+			}
+
+            const std::vector<double>& GetMetabFWHM() const
+			{
+				return m_metab_fwhm;
+			}
 
 			void SetQ(std::vector<double> Q)
 			{
@@ -564,6 +573,9 @@ namespace tarquin
 
 			//! Fit quality
 			std::vector<double> m_Q;
+			
+			//! Metabolite FWHM
+            std::vector<double> m_metab_fwhm;
 			
             //! Baseline variability
             std::vector<double> m_blv;

@@ -185,7 +185,7 @@ namespace tarquin
         m_press_TE1 = 0.0126;
         m_steam_TM = 0.012;
         m_cpmg_N = 10;
-        m_gnuplot_cex = 1;
+        m_gnuplot_cex = 2;
         m_threads = 0;
         m_pre_hsvd = false;
         m_old_phase = false;

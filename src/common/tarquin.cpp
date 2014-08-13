@@ -2052,6 +2052,57 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			cvm::rvector freq_scale = fid.GetPPMScale(*fit_it, zf);
 
 			cvm::rvector freq_scale_singlet = fid.GetPPMScale(*fit_it, zf*2);
+
+            // guess metabolite FWHM
+            int max_data_pt = YHAT_singlet.real().indofmax();
+            double max_val = YHAT_singlet(max_data_pt).real();
+
+            // guess init beta based on the fwhm of prod_shift_cut_metabs
+            // find the right base of the peak
+            int right_pt = -1;
+            if ( singlet_found )
+            {
+                for ( int n = max_data_pt + 2; n < YHAT_singlet.size(); n++ )
+                {
+                    if ( YHAT_singlet.real()(n) < (max_val/2.0) )
+                    {
+                        right_pt = n-1;
+                        log.LogMessage(LOG_INFO, "FWHM right ppm = %f", freq_scale_singlet(right_pt));
+                        break;
+                    }
+                }
+            }
+
+            int left_pt = -1;
+            if ( singlet_found )
+            {
+                // find the left base of the peak
+                for ( int n = max_data_pt - 2; n > 0; n-- )
+                {
+                    if ( YHAT_singlet.real()(n) < (max_val/2.0) )
+                    {
+                        left_pt = n+1;
+                        log.LogMessage(LOG_INFO, "FWHM left ppm = %f", freq_scale_singlet(left_pt));
+                        break;
+                    }
+                }
+            }
+            
+            if ( left_pt == -1 || right_pt == -1 )
+            {
+                log.DebugMessage(DEBUG_LEVEL_1, "Warning, metabolite FWHM calc failed, carry on regardless.");
+                std::vector<double>& metab_fwhm_vec = work.GetMetabFWHM();
+                metab_fwhm_vec.push_back(-1);
+            }
+            else
+            {
+                double metab_fwhm = freq_scale_singlet(left_pt)-freq_scale_singlet(right_pt);
+                std::vector<double>& metab_fwhm_vec = work.GetMetabFWHM();
+                metab_fwhm_vec.push_back(metab_fwhm);
+                log.LogMessage(LOG_INFO, "Metabolite FWHM (ppm) = %f", metab_fwhm);
+            }
+
+
             //plot(freq_scale_singlet,YHAT_singlet);
 
             //std::cout << std::endl << "HI: " << options.GetPPMend() << std::endl;
