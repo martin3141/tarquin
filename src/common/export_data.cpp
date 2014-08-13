@@ -926,9 +926,50 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
 		fout << "-";
 
     fout << "\\n";
+    fout << "QC INFORMATION\\n";
+    
+    bool qc_state = true;
+    fout << "Metabolite linewidth : ";
+    
+    double metab_fwhm = metab_fwhm_vec[0];
+    if ( (metab_fwhm > 0.1) || (metab_fwhm == -1) )
+    {
+        fout << "FAIL\\n";
+        qc_state = false;
+    }
+    else if ( ( metab_fwhm <= 0.1 ) && ( metab_fwhm > 0.7 ) )
+        fout << "PASS (borderline)\\n";
+    else if ( ( metab_fwhm <= 0.7 ) && ( metab_fwhm > 0.5 ) )
+        fout << "PASS (average)\\n";
+    else if ( ( metab_fwhm <= 0.4 ) )
+        fout << "PASS (good)\\n";
 
+    fout << "SNR                  : ";
+    double snr_qc = snr[0].first;
+    if (snr_qc < 4)
+    {
+        fout << "FAIL\\n";
+        qc_state = false;
+    }
+    else if ( ( snr_qc >= 4 ) && ( snr_qc < 10 ) )
+        fout << "PASS (borderline)\\n";
+    else if ( ( snr_qc >= 10 ) && ( snr_qc < 20 ) )
+        fout << "PASS (average)\\n";
+    else if ( ( snr_qc >= 20 ) )
+        fout << "PASS (good)\\n";
+
+    if ( qc_state )
+        fout << "Overall QC           : PASS\\n";
+    else
+        fout << "Overall QC           : FAIL\\n";
+    
+    for(size_t m = 0; m < 40; m++)
+		fout << "-";
+    fout << "\\n";
+
+    fout << "DIAGNOSTICS\\n";
     fout << "Metab FWHM (PPM)  = " << metab_fwhm_vec[0] << "\\n";
-    fout << "Metab FWHM (Hz)   = " << metab_fwhm_vec[0]*(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
+    //fout << "Metab FWHM (Hz)   = " << metab_fwhm_vec[0]*(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
     fout << "SNR max           = " << snr[0].first * Q_vec[0] << "\\n";
     fout << "SNR residul       = " << snr[0].first << "\\n";
     fout << "Q                 = " << Q_vec[0] << "\\n";
@@ -939,23 +980,25 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
     else
         fout << workspace.GetWaterWidth(0)/(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
 
-    fout << "Water FWHM (Hz)   = ";
+    /*fout << "Water FWHM (Hz)   = ";
     if ( options.GetFilenameWater() == "" )
         fout << "NA\\n";
     else
         fout << workspace.GetWaterWidth(0) << "\\n";
+        */
 
-    fout << "Water freq (Hz)   = ";
+    /*fout << "Water freq (Hz)   = ";
     if ( options.GetFilenameWater() == "" )
         fout << "NA\\n";
     else
         fout << workspace.GetWaterFreq(0) << "\\n";
+        */
 
     fout << "Init beta         = " << options.GetInitBetaUsed(0) << "\\n";
     fout << "Final beta        = " << workspace.GetParas(0)(nIdxBeta) << "\\n";
     fout << "Final beta (PPM)  = " << pow(-workspace.GetParas(0)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
-    fout << "Phi0 (deg)        = " << yfid.GetPhi0()[0].first * 180/M_PI << "\\n";
-    fout << "Phi1 (deg/PPM)    = " << -yfid.GetPhi1()[0].first * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI << "\\n";
+    //fout << "Phi0 (deg)        = " << yfid.GetPhi0()[0].first * 180/M_PI << "\\n";
+    //fout << "Phi1 (deg/PPM)    = " << -yfid.GetPhi1()[0].first * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI << "\\n";
     //fout << "Baseline var      = " << BLV_vec[0] << "\\n";
     fout << "Start point       = " << options.GetRangeStart() << "\\n";
     fout << "End point         = " << options.GetRangeEnd() << "\\n";
