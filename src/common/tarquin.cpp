@@ -1529,6 +1529,48 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			// synthesize estimate
 			yhat = SpOut * cvm::cvector(ahat);
 
+            cvm::rvector ahat_singlet(ahat.size());
+            
+            bool singlet_found = false;
+            
+            if ( NAA_found )
+            {
+                ahat_singlet(NAA_pos) = ahat(NAA_pos);
+                singlet_found = true;
+            }
+
+            if ( NAAG_found )
+            {
+                ahat_singlet(NAAG_pos) = ahat(NAAG_pos);
+                singlet_found = true;
+            }
+
+            if ( Cr_found )
+            {
+                ahat_singlet(Cr_pos) = ahat(Cr_pos);
+                singlet_found = true;
+            }
+            
+            if ( PCr_found )
+            {
+                ahat_singlet(PCr_pos) = ahat(PCr_pos);
+                singlet_found = true;
+            }
+
+            if ( GPC_found )
+            {
+                ahat_singlet(GPC_pos) = ahat(GPC_pos);
+                singlet_found = true;
+            }
+
+            if ( PCh_found )
+            {
+                ahat_singlet(PCh_pos) = ahat(PCh_pos);
+                singlet_found = true;
+            }
+
+            cvm::cvector yhat_singlet = SpOut * cvm::cvector(ahat_singlet);
+
 			//
 			// Apply phasing parameters to signal we fitted to for output.
 			//
@@ -1959,6 +2001,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			// measure of fit quality
 			cvm::cvector yz = y; 
 			cvm::cvector yhatz = yhat; 
+			cvm::cvector yhatz_singlet = yhat_singlet;
 
 			//int zf = 1;
 			// zero fill if less than 4096 points
@@ -1971,6 +2014,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			yz.resize(yz.size()*zf);
 			yhatz.resize(yhatz.size()*zf);
+			yhatz_singlet.resize(yhatz_singlet.size()*zf*2);
 
 			// copy last pts points of real fid to end of zfilled fid
 			int pts = 5;
@@ -1985,12 +2029,16 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			Y.resize(yz.size());
 			cvm::cvector YHAT(yhatz.size());
+			cvm::cvector YHAT_singlet(yhatz_singlet.size());
 
 			fft(yz, Y);
 			fft(yhatz, YHAT);
+			fft(yhatz_singlet, YHAT_singlet);
 
 			Y = fftshift(Y);
 			YHAT = fftshift(YHAT);
+			YHAT_singlet = fftshift(YHAT_singlet);
+
 
 			cvm::cvector residual = yz-yhatz;
 			cvm::cvector baseline = residual;
@@ -2002,6 +2050,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			td_conv_ws( RESIDUAL, BASELINE, options.GetBL()*options.GetZF(), 10);	
 
 			cvm::rvector freq_scale = fid.GetPPMScale(*fit_it, zf);
+
+			cvm::rvector freq_scale_singlet = fid.GetPPMScale(*fit_it, zf*2);
+            //plot(freq_scale_singlet,YHAT_singlet);
 
             //std::cout << std::endl << "HI: " << options.GetPPMend() << std::endl;
 
