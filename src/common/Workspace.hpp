@@ -261,6 +261,26 @@ namespace tarquin
 				return m_Q;
 			}
 
+			const std::vector<double>& GetQ_rel() const
+			{
+				return m_Q_rel;
+			}
+            
+            std::vector<double>& GetQ_rel()
+			{
+				return m_Q_rel;
+			}
+
+			const std::vector<double>& GetMetabRat() const
+			{
+				return m_metab_rat;
+			}
+            
+            std::vector<double>& GetMetabRat()
+			{
+				return m_metab_rat;
+			}
+
             std::vector<double>& GetMetabFWHM()
 			{
 				return m_metab_fwhm;
@@ -573,6 +593,10 @@ namespace tarquin
 
 			//! Fit quality
 			std::vector<double> m_Q;
+
+			std::vector<double> m_Q_rel;
+			
+            std::vector<double> m_metab_rat;
 			
 			//! Metabolite FWHM
             std::vector<double> m_metab_fwhm;

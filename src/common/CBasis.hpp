@@ -112,7 +112,6 @@ namespace tarquin
 				return m_matSum;
 			}
 
-			//! Return the matrix that maps groups to metabolites.
 			const std::vector<bool>& GetBroadSig() const
 			{
 				return m_broad_sig;

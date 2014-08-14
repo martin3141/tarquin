@@ -1569,8 +1569,22 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 singlet_found = true;
             }
 
+            // find yhat for singlets only TODO add Cho to list
             cvm::cvector yhat_singlet = SpOut * cvm::cvector(ahat_singlet);
+            
+            cvm::rvector ahat_metab(ahat.size());
+            const std::vector<bool> broad_vec = basis.GetBroadSig();
 
+		    for( int n = 0; n < broad_vec.size(); n++ )	
+            {
+                if ( !broad_vec[n] )
+                    ahat_metab(n+1) = ahat(n+1);
+            }
+
+
+            // find yhat for metabs only
+            cvm::cvector yhat_metab = SpOut * cvm::cvector(ahat_metab);
+            
 			//
 			// Apply phasing parameters to signal we fitted to for output.
 			//
@@ -2002,6 +2016,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			cvm::cvector yz = y; 
 			cvm::cvector yhatz = yhat; 
 			cvm::cvector yhatz_singlet = yhat_singlet;
+			cvm::cvector yhatz_metab = yhat_metab;
 
 			//int zf = 1;
 			// zero fill if less than 4096 points
@@ -2015,6 +2030,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			yz.resize(yz.size()*zf);
 			yhatz.resize(yhatz.size()*zf);
 			yhatz_singlet.resize(yhatz_singlet.size()*zf*2);
+			yhatz_metab.resize(yhatz_metab.size()*zf);
 
 			// copy last pts points of real fid to end of zfilled fid
 			int pts = 5;
@@ -2030,14 +2046,17 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			Y.resize(yz.size());
 			cvm::cvector YHAT(yhatz.size());
 			cvm::cvector YHAT_singlet(yhatz_singlet.size());
+			cvm::cvector YHAT_metab(yhatz_metab.size());
 
 			fft(yz, Y);
 			fft(yhatz, YHAT);
 			fft(yhatz_singlet, YHAT_singlet);
+			fft(yhatz_metab, YHAT_metab);
 
 			Y = fftshift(Y);
 			YHAT = fftshift(YHAT);
 			YHAT_singlet = fftshift(YHAT_singlet);
+			YHAT_metab = fftshift(YHAT_metab);
 
 
 			cvm::cvector residual = yz-yhatz;
@@ -2102,8 +2121,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 log.LogMessage(LOG_INFO, "Metabolite FWHM (ppm) = %f", metab_fwhm);
             }
 
-
             //plot(freq_scale_singlet,YHAT_singlet);
+            //plot(freq_scale_singlet,YHAT);
+            //plot(freq_scale_singlet,YHAT_metab);
 
             //std::cout << std::endl << "HI: " << options.GetPPMend() << std::endl;
 
@@ -2173,6 +2193,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) /noise_min;
 			double SNR_res = Ymax/(2*stdev(RESIDUAL.real() - BASELINE.real(),left,right) );
+            double max_res = (RESIDUAL.real() - BASELINE.real()).norminf();
 
 			//double SNR_true = Ymax/( 2*noise_min );
 
@@ -2199,10 +2220,17 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			Q_vec.push_back(Fit_Q);
 			log.LogMessage(LOG_INFO, "Fit quality = %f", Fit_Q);
 
+			std::vector<double>& Q_rel_vec = work.GetQ_rel();
+			Q_rel_vec.push_back(max_res/Ymax*100.0);
+
 			std::vector<double>& SpecNoise = work.GetSpecNoise();
             SpecNoise.push_back(noise_min);
 			log.LogMessage(LOG_INFO, "Spec noise  = %f", noise_min);
-
+            
+            double metab_ratio = 100.0*YHAT_metab.norm1()/YHAT.norm1();
+            std::vector<double>& metab_rat = work.GetMetabRat();
+            metab_rat.push_back(metab_ratio);
+			//log.LogMessage(LOG_INFO, "Metab ratio = %f", metab_ratio);
 
 			cvm::rvector BASELINE_REAL_DIFF;
             diff(BASELINE_REAL, BASELINE_REAL_DIFF);
@@ -2225,20 +2253,23 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
             cvm::rvector resids = BASELINE_REAL_DIFF - line_fit;
 
+            double baseline_dev = stdev(BASELINE_REAL,1,BASELINE_REAL.size()) / Ymax;
+			//log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev);
+			log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev*100.0);
+			log.LogMessage(LOG_INFO, "Ymax         = %f", Ymax);
             
             //double baseline_var = BASELINE_REAL_DIFF.norminf();
             double baseline_var = resids.norm1()/Ymax/resids.size();
 			log.LogMessage(LOG_INFO, "Baseline var = %f", baseline_var);
 
         	std::vector<double>& BLV_vec = work.GetBLV();
-			BLV_vec.push_back(baseline_var);
+			BLV_vec.push_back(baseline_dev);
 
 
-            //plot(freq_scale_cut_cut, resids);
-
-            //plot(freq_scale_cut, BASELINE_REAL);
-            //plot(freq_scale_cut_cut, BASELINE_REAL_DIFF);
-            //plot(freq_scale_cut_cut, line_fit);
+            /*plot(freq_scale_cut_cut, resids);
+            plot(freq_scale_cut, BASELINE_REAL);
+            plot(freq_scale_cut_cut, BASELINE_REAL_DIFF);
+            plot(freq_scale_cut_cut, line_fit);*/
 
 			//
 			// Compute the normalised value
