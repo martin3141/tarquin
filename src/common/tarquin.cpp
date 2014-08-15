@@ -2172,7 +2172,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 					Ymax = std::abs ( Y(n).real() - BASELINE(n).real() ) ;
 
                 BASELINE_REAL(n-left+1) = BASELINE(n).real();
-                RESIDUAL_REAL(n-left+1) = RESIDUAL(n).real() - BASELINE(n).real();
+                RESIDUAL_REAL(n-left+1) = RESIDUAL(n).real();
                 freq_scale_cut(n-left+1) = freq_scale(n);
 			}
             
