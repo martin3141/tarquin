@@ -1573,17 +1573,21 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             cvm::cvector yhat_singlet = SpOut * cvm::cvector(ahat_singlet);
             
             cvm::rvector ahat_metab(ahat.size());
+            cvm::rvector ahat_broad(ahat.size());
             const std::vector<bool> broad_vec = basis.GetBroadSig();
 
 		    for( int n = 0; n < broad_vec.size(); n++ )	
             {
                 if ( !broad_vec[n] )
                     ahat_metab(n+1) = ahat(n+1);
+                else
+                    ahat_broad(n+1) = ahat(n+1);
             }
 
 
             // find yhat for metabs only
             cvm::cvector yhat_metab = SpOut * cvm::cvector(ahat_metab);
+            cvm::cvector yhat_broad = SpOut * cvm::cvector(ahat_broad);
             
 			//
 			// Apply phasing parameters to signal we fitted to for output.
@@ -2017,6 +2021,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			cvm::cvector yhatz = yhat; 
 			cvm::cvector yhatz_singlet = yhat_singlet;
 			cvm::cvector yhatz_metab = yhat_metab;
+			cvm::cvector yhatz_broad = yhat_broad;
 
 			//int zf = 1;
 			// zero fill if less than 4096 points
@@ -2031,6 +2036,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			yhatz.resize(yhatz.size()*zf);
 			yhatz_singlet.resize(yhatz_singlet.size()*zf*2);
 			yhatz_metab.resize(yhatz_metab.size()*zf);
+			yhatz_broad.resize(yhatz_broad.size()*zf);
 
 			// copy last pts points of real fid to end of zfilled fid
 			int pts = 5;
@@ -2047,16 +2053,19 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			cvm::cvector YHAT(yhatz.size());
 			cvm::cvector YHAT_singlet(yhatz_singlet.size());
 			cvm::cvector YHAT_metab(yhatz_metab.size());
+			cvm::cvector YHAT_broad(yhatz_broad.size());
 
 			fft(yz, Y);
 			fft(yhatz, YHAT);
 			fft(yhatz_singlet, YHAT_singlet);
 			fft(yhatz_metab, YHAT_metab);
+			fft(yhatz_broad, YHAT_broad);
 
 			Y = fftshift(Y);
 			YHAT = fftshift(YHAT);
 			YHAT_singlet = fftshift(YHAT_singlet);
 			YHAT_metab = fftshift(YHAT_metab);
+			YHAT_broad = fftshift(YHAT_broad);
 
 
 			cvm::cvector residual = yz-yhatz;
@@ -2111,7 +2120,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             {
                 log.DebugMessage(DEBUG_LEVEL_1, "Warning, metabolite FWHM calc failed, carry on regardless.");
                 std::vector<double>& metab_fwhm_vec = work.GetMetabFWHM();
-                metab_fwhm_vec.push_back(-1);
+                metab_fwhm_vec.push_back(std::numeric_limits<double>::infinity());
             }
             else
             {
@@ -2232,6 +2241,11 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             double metab_ratio = 100.0*YHAT_metab.norm1()/YHAT.norm1();
             std::vector<double>& metab_rat = work.GetMetabRat();
             metab_rat.push_back(metab_ratio);
+
+            double peak_metab_ratio = 100.0*YHAT_broad.norminf() / YHAT_metab.norminf();
+            std::vector<double>& peak_metab_rat = work.GetPeakMetabRat();
+            peak_metab_rat.push_back(peak_metab_ratio);
+
 			//log.LogMessage(LOG_INFO, "Metab ratio = %f", metab_ratio);
 
 			cvm::rvector BASELINE_REAL_DIFF;

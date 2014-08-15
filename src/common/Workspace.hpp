@@ -281,6 +281,16 @@ namespace tarquin
 				return m_metab_rat;
 			}
 
+			const std::vector<double>& GetPeakMetabRat() const
+			{
+				return m_peak_metab_rat;
+			}
+            
+            std::vector<double>& GetPeakMetabRat()
+			{
+				return m_peak_metab_rat;
+			}
+
             std::vector<double>& GetMetabFWHM()
 			{
 				return m_metab_fwhm;
@@ -597,6 +607,8 @@ namespace tarquin
 			std::vector<double> m_Q_rel;
 			
             std::vector<double> m_metab_rat;
+            
+            std::vector<double> m_peak_metab_rat;
 			
 			//! Metabolite FWHM
             std::vector<double> m_metab_fwhm;

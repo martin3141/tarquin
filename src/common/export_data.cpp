@@ -436,7 +436,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     fout << "Fit diagnostics" << std::endl;
 	fout << "Row" << "," << "Col" << "," << "Slice" << ","; 
 	// output the row column names
-	fout << "Q,max res,metab ratio,metab FWHM (PPM),metab FWHM (Hz),SNR,SNR max,SNR metab,spec noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water FWHM (Hz),water FWHM (PPM),water freq (Hz),baseline dev,initial residual,final residual,stopping reason,version" << std::endl;
+	fout << "Q,max res,metab ratio,peak metab ratio,metab FWHM (PPM),metab FWHM (Hz),SNR,SNR max,SNR metab,spec noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water FWHM (Hz),water FWHM (PPM),water freq (Hz),baseline dev,initial residual,final residual,stopping reason,version" << std::endl;
 	
 	// output fitting info
     // Q
@@ -448,6 +448,9 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
     const std::vector<double>& metab_rat = workspace.GetMetabRat();
     std::vector<double>::const_iterator i_metab_rat = metab_rat.begin();
+
+    const std::vector<double>& peak_metab_rat = workspace.GetPeakMetabRat();
+    std::vector<double>::const_iterator i_peak_metab_rat = peak_metab_rat.begin();
 
     const std::vector<double>& metab_fwhm_vec = workspace.GetMetabFWHM();
     std::vector<double>::const_iterator i_metab_fwhm = metab_fwhm_vec.begin();
@@ -491,12 +494,13 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
 		// write the voxel info
 		fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
-        fout << *i_Q << "," << *i_Q_rel << "," << *i_metab_rat << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << "," << info[fit][0] << "," << info[fit][1] << "," << stop << "," << version::version_string() << std::endl;
+        fout << *i_Q << "," << *i_Q_rel << "," << *i_metab_rat << "," << *i_peak_metab_rat << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << "," << info[fit][0] << "," << info[fit][1] << "," << stop << "," << version::version_string() << std::endl;
 
         // advance to the next voxel
         ++i_Q;
         ++i_Q_rel;
         ++i_metab_rat;
+        ++i_peak_metab_rat;
         ++i_metab_fwhm;
         ++i_BLV;
         ++i_snr;
