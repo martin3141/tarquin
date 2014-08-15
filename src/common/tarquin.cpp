@@ -2161,6 +2161,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			double Ymax = 0;
 			cvm::rvector BASELINE_REAL(right-left+1);
+			cvm::rvector RESIDUAL_REAL(right-left+1);
 			cvm::rvector freq_scale_cut(right-left+1);
 			// find max of y for SNR calculation
 			// should it be "- BASELINE(n).real()" ?
@@ -2171,6 +2172,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 					Ymax = std::abs ( Y(n).real() - BASELINE(n).real() ) ;
 
                 BASELINE_REAL(n-left+1) = BASELINE(n).real();
+                RESIDUAL_REAL(n-left+1) = RESIDUAL(n).real() - BASELINE(n).real();
                 freq_scale_cut(n-left+1) = freq_scale(n);
 			}
             
@@ -2180,7 +2182,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			double noise_min = std::numeric_limits<double>::infinity();
 			double noise_temp = 0;
-			int block_size = 200;
+			int block_size = 100;
 			for ( int n = 1; n < (RESIDUAL.size()+1) - block_size; n = n + block_size ) 
 			{
 				noise_temp = stdev(RESIDUAL.real(),n,n+block_size-1);
@@ -2193,7 +2195,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) /noise_min;
 			double SNR_res = Ymax/(2*stdev(RESIDUAL.real() - BASELINE.real(),left,right) );
-            double max_res = (RESIDUAL.real() - BASELINE.real()).norminf();
+            double max_res = (RESIDUAL_REAL - BASELINE_REAL).norminf();
 
 			//double SNR_true = Ymax/( 2*noise_min );
 
