@@ -1111,8 +1111,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             GABAB_pos = 1 + std::find(metab_names.begin(), metab_names.end(), "GABA_B") - metab_names.begin();
         }
 
-
-
         std::vector<std::string> &metab_names_comb = work.GetMetabNamesComb();
 
         int cnt = 1;
@@ -1576,10 +1574,16 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             cvm::rvector ahat_broad(ahat.size());
             const std::vector<bool> broad_vec = basis.GetBroadSig();
 
+		    std::vector<std::string> metab_names = basis.GetSignalNames();
 		    for( int n = 0; n < broad_vec.size(); n++ )	
             {
                 if ( !broad_vec[n] )
-                    ahat_metab(n+1) = ahat(n+1);
+                {
+			        if ( ( metab_names[n] != "Lac" ) && ( metab_names[n] != "Ala" ) )
+                    {
+                        ahat_metab(n+1) = ahat(n+1);
+                    }
+                }
                 else
                     ahat_broad(n+1) = ahat(n+1);
             }
