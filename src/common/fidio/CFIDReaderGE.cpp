@@ -746,12 +746,10 @@ void tarquin::CFIDReaderGE::LoadFromOptionsSVS(std::string strFilename, const Op
                 if ( ( n == 0 ) && ( nFrame <= nWaterFrames ) && ( phases.size() < nCoil + 1 ) && ( nWaterFrames > 0 ) )
                 {
                     phases.push_back(exp(-tcomplex(0,1)*arg(tcomplex(sampleReal, sampleImag))));
-                    
-                    // straight amp
                     amps.push_back(abs(tcomplex(sampleReal, sampleImag)));
-                    // root amp
-                    //amps.push_back(pow(abs(tcomplex(sampleReal, sampleImag)),0.5));
-                    // no re-weight
+
+                    // no corrections
+                    //phases.push_back(exp(-tcomplex(0,1)));
                     //amps.push_back(1.0);
                     
                     //std::cout << std::endl << phases[nCoil];
