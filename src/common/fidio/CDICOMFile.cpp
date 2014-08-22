@@ -168,6 +168,7 @@ long tarquin::CDICOMFile::MoveToTag(std::string strGroup, std::string strElement
 		}
 
 		//fprintf(stdout, "\n(G,E) = (%s,%s), VR = %s, length = 0x%x", strCurrentGroup.c_str(), strCurrentElement.c_str(), szCurrentVR, value_length);
+        //std::cout << std::string(szCurrentVR) << std::endl;
 		//fprintf(stdout, "\n(G,E) = (%s,%s), VR = %s, length = 0x%x", strCurrentGroup.c_str(), strCurrentElement.c_str(), szCurrentVR, value_length);
 
 		// If this is a sequence element, the 'length' may be undefined, i.e. have this value,
@@ -185,6 +186,25 @@ long tarquin::CDICOMFile::MoveToTag(std::string strGroup, std::string strElement
         if( strCurrentGroup == "FFFE" && strCurrentElement == "E000" ) 
 			continue;
         
+        // Philips stuff
+        if( strCurrentGroup == "5200" && strCurrentElement == "9229" ) // I know this is a sequence 
+			continue;
+
+        if( strCurrentGroup == "0020" && strCurrentElement == "9116" ) // I know this is a sequence 
+			continue;
+
+        if( strCurrentGroup == "5200" && strCurrentElement == "9230" ) // I know this is a sequence 
+			continue;
+
+        if( strCurrentGroup == "0018" && strCurrentElement == "9114" ) // I know this is a sequence 
+			continue;
+
+        if( strCurrentGroup == "0020" && strCurrentElement == "9113" ) // I know this is a sequence 
+			continue;
+        
+        if( strCurrentGroup == "2005" && strCurrentElement == "140F" ) // I know this is a sequence 
+			continue;
+
 		// is this the field we are looking for?
 		if( strGroup == strCurrentGroup && strElement == strCurrentElement ) 
 			return value_length;

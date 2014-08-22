@@ -174,7 +174,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
 	file.GetFileStream().read((char*)&echo, 8);
 
     m_fid.SetEchoTime(echo/1000);
-    //std::cout << "TE : " << echo/1000 << std::endl;
+    std::cout << "TE : " << echo/1000 << std::endl;
 
     // find the acquisition type
     //long str_bytes = file.MoveToTag("0018","9200");
@@ -188,11 +188,15 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
     
     // ImageOrientationPatient
     long ori_bytes = file.MoveToTag("0020","0037");
+    if( -1 == ori_bytes )
+    {
+		throw Exception("Could not find ImageOrientationPatient");
+    }
     std::vector<char> ori(ori_bytes, 0);
 	file.GetFileStream().read(&ori[0], ori_bytes);
     
 	std::string ori_str(ori.begin(), ori.end());
-    //std::cout << "Orientation : " << ori_str.substr(0,ori_bytes) << std::endl;
+    std::cout << "Orientation : " << ori_str.substr(0,ori_bytes) << std::endl;
     std::string ori_str_cut = ori_str.substr(0,ori_bytes);
     std::vector<double> ori_vec;
     str2rvec(ori_str_cut, ori_vec);
