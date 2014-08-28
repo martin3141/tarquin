@@ -436,7 +436,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     fout << "Fit diagnostics" << std::endl;
 	fout << "Row" << "," << "Col" << "," << "Slice" << ","; 
 	// output the row column names
-	fout << "Q,max res,metab ratio,peak metab ratio,metab FWHM (PPM),metab FWHM (Hz),SNR,SNR max,SNR metab,spec noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water FWHM (Hz),water FWHM (PPM),water freq (Hz),baseline dev,initial residual,final residual,stopping reason,version" << std::endl;
+	fout << "Q,max res,metab ratio,peak metab ratio,metab FWHM (PPM),metab FWHM (Hz),SNR,SNR max,SNR metab,spec noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water FWHM (Hz),water FWHM (PPM),water freq (Hz),baseline dev,initial residual,final residual,stopping reason" << std::endl;
 	
 	// output fitting info
     // Q
@@ -494,7 +494,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
 		// write the voxel info
 		fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
-        fout << *i_Q << "," << *i_Q_rel << "," << *i_metab_rat << "," << *i_peak_metab_rat << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << "," << info[fit][0] << "," << info[fit][1] << "," << stop << "," << version::version_string() << std::endl;
+        fout << *i_Q << "," << *i_Q_rel << "," << *i_metab_rat << "," << *i_peak_metab_rat << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << "," << info[fit][0] << "," << info[fit][1] << "," << stop << std::endl;
 
         // advance to the next voxel
         ++i_Q;
@@ -617,6 +617,45 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
         fout << "VoiDim,Unknown" << std::endl;
     }
 
+    fout << "Data parameters" << std::endl;
+    fout << "Fs (Hz)," << yfid.GetSamplingFrequency() << std::endl;
+    fout << "Ft (Hz)," << yfid.GetTransmitterFrequency() << std::endl;
+    fout << "N," << yfid.GetNumberOfPoints() << std::endl;
+    fout << "TE (s)," << yfid.GetEchoTime() << std::endl;
+
+    std::string format_str;
+    if( tarquin::NOTSET == options.GetFormat() ) 
+        format_str = "not set";
+    else if( tarquin::DANGER == options.GetFormat() ) 
+        format_str = "dpt";
+    else if( tarquin::SIEMENS == options.GetFormat() ) 
+        format_str = "siemens";
+    else if( tarquin::DCM == options.GetFormat() ) 
+        format_str = "dcm";
+    else if( tarquin::RDA == options.GetFormat() ) 
+        format_str = "rda";
+    else if( tarquin::PHILIPS == options.GetFormat() ) 
+        format_str = "philips";
+    else if( tarquin::PHILIPS_DCM == options.GetFormat() ) 
+        format_str = "philips_dcm";
+    else if( tarquin::GE == options.GetFormat() ) 
+        format_str = "ge";
+    else if( tarquin::SHF == options.GetFormat() ) 
+        format_str = "shf";
+    else if( tarquin::LCM == options.GetFormat() ) 
+        format_str = "lcm";
+    else if( tarquin::VARIAN == options.GetFormat() ) 
+        format_str = "varian";
+    else if( tarquin::BRUKER == options.GetFormat() ) 
+        format_str = "bruker";
+    else if( tarquin::JMRUI_TXT == options.GetFormat() ) 
+        format_str = "jmrui_txt";
+
+    fout << "Format," << format_str << std::endl;
+    
+    fout << std::endl;
+
+    fout << "TARQUIN version," << version::version_string() << std::endl;
 
 }
 
