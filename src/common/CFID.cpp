@@ -572,77 +572,79 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
     }*/
 
 
-	// SVS	
-    if ( m_cols * m_rows * m_slices == 1 )
+    if ( !m_wref )
     {
-	    coord fit_spec(1, 1, 1); 
-	    fit_list.push_back(fit_spec);
-    }
-    else
-    {
-        if ( options.GetSVSOnly() && !m_dyn )
+        // SVS	
+        if ( m_cols * m_rows * m_slices == 1 )
         {
-            std::cout << std::endl << "Cols   " << m_cols << std::endl;
-            std::cout << "Rows   " << m_rows << std::endl;
-            std::cout << "Slices " << m_slices << std::endl;
-            std::cout << "Dyn    " << m_dyn << std::endl;
-            log.LogMessage(LOG_ERROR, "Error, more than one voxel in fid and svs_only set to true.");
-		    throw Exception("Error, more than one voxel in fid and svs_only set to true.");
-        }
-
-        // added to just make all voxels selected for analysis
-        m_voi_dim.second = false;
-
-        if ( IsKnownVoxelDim() && IsKnownVoiDim() )
-        {
-            if ( options.GetFitRows() == -1 )
-            {
-                int fit_rows = int(m_voi_dim.first[0] / m_voxel_dim.first[0]);
-                if (fit_rows % 2 == 0)
-                    options.SetFitRows(fit_rows);
-                else
-                    options.SetFitRows(fit_rows-1);
-            }
-
-            if ( options.GetFitCols() == -1 )
-            {
-                int fit_cols = int(m_voi_dim.first[1] / m_voxel_dim.first[1]);
-                if (fit_cols % 2 == 0)
-                    options.SetFitCols(fit_cols);
-                else
-                    options.SetFitCols(fit_cols-1);
-            }
+            coord fit_spec(1, 1, 1); 
+            fit_list.push_back(fit_spec);
         }
         else
         {
-            if ( options.GetFitRows() == -1 )
-                options.SetFitRows(m_rows);
-            if ( options.GetFitCols() == -1 )
-                options.SetFitCols(m_cols);
-        }
-
-		// CSI full
-        const int row_start   = static_cast<int>(m_rows/2.0 - options.GetFitRows()/2.0 + 1.0);
-        const int row_end     = static_cast<int>(m_rows/2.0 + options.GetFitRows()/2.0);
-        const int col_start   = static_cast<int>(m_cols/2.0 - options.GetFitCols()/2.0 + 1.0);
-        const int col_end     = static_cast<int>(m_cols/2.0 + options.GetFitCols()/2.0);
-        const int slice_start = 1; // TODO
-        const int slice_end   = 1; // TODO
-
-        for ( int slice = slice_start; slice < slice_end + 1; slice++ )
-        {
-            for ( int col = col_start; col < col_end + 1; col++ )
+            if ( options.GetSVSOnly() && !m_dyn )
             {
-                for ( int row = row_start; row < row_end + 1; row++ )
+                std::cout << std::endl << "Cols   " << m_cols << std::endl;
+                std::cout << "Rows   " << m_rows << std::endl;
+                std::cout << "Slices " << m_slices << std::endl;
+                std::cout << "Dyn    " << m_dyn << std::endl;
+                log.LogMessage(LOG_ERROR, "Error, more than one voxel in fid and svs_only set to true.");
+                throw Exception("Error, more than one voxel in fid and svs_only set to true.");
+            }
+
+            // added to just make all voxels selected for analysis
+            m_voi_dim.second = false;
+
+            if ( IsKnownVoxelDim() && IsKnownVoiDim() )
+            {
+                if ( options.GetFitRows() == -1 )
                 {
-                    coord fit_spec(row, col, slice); 
-                    fit_list.push_back(fit_spec);
+                    int fit_rows = int(m_voi_dim.first[0] / m_voxel_dim.first[0]);
+                    if (fit_rows % 2 == 0)
+                        options.SetFitRows(fit_rows);
+                    else
+                        options.SetFitRows(fit_rows-1);
+                }
+
+                if ( options.GetFitCols() == -1 )
+                {
+                    int fit_cols = int(m_voi_dim.first[1] / m_voxel_dim.first[1]);
+                    if (fit_cols % 2 == 0)
+                        options.SetFitCols(fit_cols);
+                    else
+                        options.SetFitCols(fit_cols-1);
+                }
+            }
+            else
+            {
+                if ( options.GetFitRows() == -1 )
+                    options.SetFitRows(m_rows);
+                if ( options.GetFitCols() == -1 )
+                    options.SetFitCols(m_cols);
+            }
+
+            // CSI full
+            const int row_start   = static_cast<int>(m_rows/2.0 - options.GetFitRows()/2.0 + 1.0);
+            const int row_end     = static_cast<int>(m_rows/2.0 + options.GetFitRows()/2.0);
+            const int col_start   = static_cast<int>(m_cols/2.0 - options.GetFitCols()/2.0 + 1.0);
+            const int col_end     = static_cast<int>(m_cols/2.0 + options.GetFitCols()/2.0);
+            const int slice_start = 1; // TODO
+            const int slice_end   = 1; // TODO
+
+            for ( int slice = slice_start; slice < slice_end + 1; slice++ )
+            {
+                for ( int col = col_start; col < col_end + 1; col++ )
+                {
+                    for ( int row = row_start; row < row_end + 1; row++ )
+                    {
+                        coord fit_spec(row, col, slice); 
+                        fit_list.push_back(fit_spec);
+                    }
                 }
             }
         }
+        options.SetFitList(fit_list);
     }
-
-	options.SetFitList(fit_list);
 
 	// set default values for some parameters
     // if ref has been specified then override
@@ -756,9 +758,13 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
         AverageData(options);
 
     // check if we need to average WUS data due to missmatch between WUS and WS scans
-    if ( m_wref && (m_cols * m_rows * m_slices != m_cvmFID.size()) )
+    if ( m_wref )
     {
-        AverageData(options);
+        int WUS_fids = workspace.GetFIDRaw().GetVoxelCount();
+        //std::cout << std::endl << WUS_fids << std::endl;
+        //std::cout << m_cvmFID.size() << std::endl;
+        if ( WUS_fids != m_cvmFID.size() )
+            AverageData(options, WUS_fids);
     }
 
     if ( options.GetFullEcho() )
@@ -867,14 +873,17 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
     // check if we need to average WUS data due to missmatch between WUS and WS scans
     if ( m_wref && (m_cols * m_rows * m_slices != m_cvmFID.size()) )
     {
+        //std::cout << "I'm here" << std::endl;
         AverageData(options);
     }
 }
 
-void tarquin::CFID::AverageData(Options& options)
+void tarquin::CFID::AverageData(Options& options, int missmatch)
 {
     int pts = GetNumberOfPoints();
     int fids = m_cvmFID.size();
+
+    //std::cout << "Averaging data" << std::endl;
 
     //std::cout << fids << std::endl;
 
@@ -921,6 +930,8 @@ void tarquin::CFID::AverageData(Options& options)
                 new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 == 0 ) ) // n even?
                 new_fid = new_fid - m_cvmFID[n] / fids;
+            else if ( options.GetDynAvW() == NONE ) // if we got here it's because of a missmatch between WS and W dyanmics, so just add up fids regardless and duplicate later to match WS
+                new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAvW() == DEFAULT )
             {
                 std::cout << "ERROR, averaging should not be default here." << std::endl;
@@ -939,9 +950,13 @@ void tarquin::CFID::AverageData(Options& options)
     }
 
     m_cvmFID.clear();
+
+    std::cout << m_cols << std::endl;
+    std::cout << m_rows << std::endl;
+    std::cout << m_slices << std::endl;
     
     // do we need to duplicate the fid?
-    if ( fids != m_cols * m_rows * m_slices )
+    if ( (fids != m_cols * m_rows * m_slices) )
     {
         if ( m_wref ) // are we water data?
         {
@@ -954,7 +969,22 @@ void tarquin::CFID::AverageData(Options& options)
             assert(0);
         }
     }
-    else // just the one fid out then
+    else if ( missmatch > 0 )
+    {
+        if ( m_wref ) // are we water data?
+        {
+            for ( size_t n = 0; n < missmatch; n++ )
+                m_cvmFID.push_back(new_fid);
+
+            m_cols = missmatch;
+        }
+        else
+        {
+            std::cout << std::endl << "Mismatch in fid numbers." << std::endl;
+            assert(0);
+        }
+    }
+    else // just the one fid out after averaging then
     {
         m_cvmFID.push_back(new_fid);
         m_cols = 1;

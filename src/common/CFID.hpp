@@ -214,7 +214,7 @@ class CFID
         
         void trans_kspace(Options& options, CBoswell& log);
 
-        void AverageData(Options& options);
+        void AverageData(Options& options, int missmatch = 0);
         
         void FreqCorrData(const Options& options);
 

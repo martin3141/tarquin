@@ -6,9 +6,11 @@ Version 4.3.5
 - Bug fix for GE p-files Rdb reader rev : 14.3 where the offset to data was incorrect by one frame. This caused a crash at the reconstruction stage.
 - Internal basis set option for 'braino' phantoms has now been added.
 - Added metabolite FWHM linewidth estimate to output for QC purposes.
-- Gnuplot font sizes are now correct for more recent versions of the package.
-- Added QC information to output.
-- Improvements for reading Philips DICOM MRS
+- Dafult Gnuplot font sizes are now correct for more recent versions of the package.
+- Improvements for reading Philips DICOM MRS.
+- Bug fix for where dynamic WS scans didn't match W scans.
+
+
 
 Version 4.3.4
 - FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large MRSI datasets (--trunc_pts).
@@ -19,6 +21,7 @@ Version 4.3.4
 - Improvements to default MRI window level and window width parameters.
 - Improvements to SPAR/SDAT SVS and 2D MRSI display on MRI.
 - The number of components used in the HSVD water removal can now be specified (--hsvd_comps)
+
 
 
 - 3D MRSI for Siemens and Philips DICOM and SPAR/SDAT is now supported - TODO

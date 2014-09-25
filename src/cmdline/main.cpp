@@ -197,8 +197,12 @@ int main(int argc, char* argv[])
 
 
 		// are we loading a reference FID?
-		if( options.GetFilenameWater() != "" || fidraw.GetCWF() == true ) 
+
+		//if( (options.GetFilenameWater() != "") && ( fidraw.GetCWF() == false ) )  this one may be better
+
+		if( options.GetFilenameWater() != "" || fidraw.GetCWF() == true )
 		{
+            //std::cout << fidraw.GetCWF() << std::endl;
 			CFID& fidWater = workspace.GetFIDWater();
 
 			// initialise the water FID to have the same parameters as the WS FID
