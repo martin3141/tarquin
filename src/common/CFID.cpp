@@ -951,9 +951,9 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
 
     m_cvmFID.clear();
 
-    std::cout << m_cols << std::endl;
+    /*std::cout << m_cols << std::endl;
     std::cout << m_rows << std::endl;
-    std::cout << m_slices << std::endl;
+    std::cout << m_slices << std::endl;*/
     
     // do we need to duplicate the fid?
     if ( (fids != m_cols * m_rows * m_slices) )
