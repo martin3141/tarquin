@@ -2265,27 +2265,50 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             
             cvm::rvector mc;
             //lsqf(testx, testy, mc);
-            lsqf(freq_scale_cut_cut, BASELINE_REAL_DIFF, mc);
+            lsqf(freq_scale_cut, BASELINE_REAL, mc);
             //std::cout << std::endl << mc << std::endl;
             
 			cvm::rvector line_fit;
-            get_fit(freq_scale_cut_cut, line_fit, mc);
+            get_fit(freq_scale_cut, line_fit, mc);
 
-            cvm::rvector resids = BASELINE_REAL_DIFF - line_fit;
+            cvm::rvector resids = BASELINE_REAL - line_fit;
+            //plot(freq_scale_cut,BASELINE_REAL);
+            //plot(freq_scale_cut,resids);
 
-            double baseline_dev = stdev(BASELINE_REAL,1,BASELINE_REAL.size()) / Ymax;
+            //double baseline_dev = stdev(BASELINE_REAL,1,BASELINE_REAL.size()) / Ymax;
+            double baseline_dev = stdev(resids,1,resids.size()) / Ymax;
 			//log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev);
-			log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev*100.0);
+			log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev);
 			log.LogMessage(LOG_INFO, "Ymax         = %f", Ymax);
             
             //double baseline_var = BASELINE_REAL_DIFF.norminf();
-            double baseline_var = resids.norm1()/Ymax/resids.size();
-			log.LogMessage(LOG_INFO, "Baseline var = %f", baseline_var);
+            //double baseline_var = resids.norm1()/Ymax/resids.size();
+			//log.LogMessage(LOG_INFO, "Baseline var = %f", baseline_var);
 
         	std::vector<double>& BLV_vec = work.GetBLV();
 			BLV_vec.push_back(baseline_dev);
 
+            cvm::rvector mc_lims;
+            double dlims_freq[] = {freq_scale_cut(1),freq_scale_cut(freq_scale_cut.size())};
+            cvm::rvector freq_lims(dlims_freq,2,1);
+            double dlims_bl[] = {BASELINE_REAL(1),BASELINE_REAL(BASELINE_REAL.size())};
+            cvm::rvector bl_lims(dlims_bl,2,1);
+            lsqf(freq_lims, bl_lims, mc_lims);
+			cvm::rvector line_fit_lims;
+            get_fit(freq_scale_cut, line_fit_lims, mc_lims);
+            cvm::rvector BASELINE_LIMS = BASELINE_REAL-line_fit_lims;
+            double baseline_shape = 0;
+            for ( int n = 1; n < BASELINE_LIMS.size(); n++ )
+                baseline_shape += BASELINE_LIMS(n);
 
+            baseline_shape = baseline_shape / BASELINE_REAL.size() / Ymax;
+			log.LogMessage(LOG_INFO, "BSL         = %f", baseline_shape);
+
+        	std::vector<double>& BLS_vec = work.GetBLS();
+			BLS_vec.push_back(baseline_shape);
+
+            //plot(freq_scale_cut, BASELINE_REAL);
+            //plot(freq_scale_cut, BASELINE_LIMS);
             /*plot(freq_scale_cut_cut, resids);
             plot(freq_scale_cut, BASELINE_REAL);
             plot(freq_scale_cut_cut, BASELINE_REAL_DIFF);

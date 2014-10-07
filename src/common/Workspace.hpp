@@ -321,6 +321,21 @@ namespace tarquin
 				m_blv = blv;
 			}
             
+            const std::vector<double>& GetBLS() const
+			{
+				return m_bls;
+			}
+            
+            std::vector<double>& GetBLS()
+			{
+				return m_bls;
+			}
+
+			void SetBLS(std::vector<double> bls)
+			{
+				m_bls = bls;
+			}
+            
             const std::vector<double>& GetSpecNoise() const
 			{
 				return m_spec_noise;
@@ -615,6 +630,9 @@ namespace tarquin
 			
             //! Baseline variability
             std::vector<double> m_blv;
+            
+            //! Baseline shape
+            std::vector<double> m_bls;
             
             //! Spectral noise
             std::vector<double> m_spec_noise;
