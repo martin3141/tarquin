@@ -436,7 +436,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     fout << "Fit diagnostics" << std::endl;
 	fout << "Row" << "," << "Col" << "," << "Slice" << ","; 
 	// output the row column names
-	fout << "Q,max res,metab ratio,peak metab ratio,metab FWHM (PPM),metab FWHM (Hz),SNR,SNR max,SNR metab,spec noise,td noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water FWHM (Hz),water FWHM (PPM),water freq (Hz),baseline dev,baseline shape,initial residual,final residual,stopping reason" << std::endl;
+	fout << "Q,max res,metab ratio,peak metab ratio,metab FWHM (PPM),metab FWHM (Hz),SNR,SNR max,SNR metab,spec noise,td noise,ref,init beta,final beta,final beta (PPM),phi0 (deg),phi1 (deg/PPM),water amp,water FWHM (Hz),water FWHM (PPM),water freq (Hz),baseline dev,max baseline,min baseline,baseline shape,initial residual,final residual,stopping reason" << std::endl;
 	
 	// output fitting info
     // Q
@@ -457,6 +457,12 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
     const std::vector<double>& BLV_vec = workspace.GetBLV();
     std::vector<double>::const_iterator i_BLV = BLV_vec.begin();
+
+    const std::vector<double>& max_bl_vec = workspace.GetMaxBL();
+    std::vector<double>::const_iterator i_max_bl = max_bl_vec.begin();
+
+    const std::vector<double>& min_bl_vec = workspace.GetMinBL();
+    std::vector<double>::const_iterator i_min_bl = min_bl_vec.begin();
 
     const std::vector<double>& BLS_vec = workspace.GetBLS();
     std::vector<double>::const_iterator i_BLS = BLS_vec.begin();
@@ -500,7 +506,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
 		// write the voxel info
 		fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
-        fout << *i_Q << "," << *i_Q_rel << "," << *i_metab_rat << "," << *i_peak_metab_rat << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << *i_td_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << "," << *i_BLS << "," << info[fit][0] << "," << info[fit][1] << "," << stop << std::endl;
+        fout << *i_Q << "," << *i_Q_rel << "," << *i_metab_rat << "," << *i_peak_metab_rat << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << *i_td_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << ","<< *i_max_bl << "," << *i_min_bl << "," << *i_BLS << "," << info[fit][0] << "," << info[fit][1] << "," << stop << std::endl;
 
         // advance to the next voxel
         ++i_Q;
@@ -509,6 +515,8 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
         ++i_peak_metab_rat;
         ++i_metab_fwhm;
         ++i_BLV;
+        ++i_max_bl;
+        ++i_min_bl;
         ++i_BLS;
         ++i_snr;
         ++i_spec_noise;
@@ -996,11 +1004,11 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
         fout << "FAIL\\n";
         qc_state = false;
     }
-    else if ( ( metab_fwhm <= 0.1 ) && ( metab_fwhm > 0.7 ) )
+    else if ( ( metab_fwhm <= 0.1 ) && ( metab_fwhm > 0.07 ) )
         fout << "PASS (borderline)\\n";
-    else if ( ( metab_fwhm <= 0.7 ) && ( metab_fwhm > 0.5 ) )
+    else if ( ( metab_fwhm <= 0.07 ) && ( metab_fwhm > 0.05 ) )
         fout << "PASS (average)\\n";
-    else if ( ( metab_fwhm <= 0.4 ) )
+    else if ( ( metab_fwhm <= 0.04 ) )
         fout << "PASS (good)\\n";
 
     fout << "SNR                  : ";

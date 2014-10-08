@@ -316,6 +316,26 @@ namespace tarquin
 				return m_blv;
 			}
 
+            const std::vector<double>& GetMaxBL() const
+			{
+				return m_max_bl;
+			}
+            
+            std::vector<double>& GetMaxBL()
+			{
+				return m_max_bl;
+			}
+
+            const std::vector<double>& GetMinBL() const
+			{
+				return m_min_bl;
+			}
+            
+            std::vector<double>& GetMinBL()
+			{
+				return m_min_bl;
+			}
+
 			void SetBLV(std::vector<double> blv)
 			{
 				m_blv = blv;
@@ -645,6 +665,10 @@ namespace tarquin
 			
             //! Baseline variability
             std::vector<double> m_blv;
+
+            //! Max/min BL
+            std::vector<double> m_max_bl;
+            std::vector<double> m_min_bl;
             
             //! Baseline shape
             std::vector<double> m_bls;

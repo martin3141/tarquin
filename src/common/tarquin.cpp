@@ -1915,6 +1915,26 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             //double baseline_var = BASELINE_REAL_DIFF.norminf();
             //double baseline_var = resids.norm1()/Ymax/resids.size();
 			//log.LogMessage(LOG_INFO, "Baseline var = %f", baseline_var);
+            
+            // find max and min bl
+            double min_bl = std::numeric_limits<double>::infinity();
+            double max_bl = -std::numeric_limits<double>::infinity();
+            for ( int n = 1; n < resids.size(); n++ )
+            {
+                if ( resids(n) > max_bl )
+                    max_bl = resids(n);
+
+                if ( resids(n) < min_bl )
+                    min_bl = resids(n);
+            }
+            max_bl = max_bl / Ymax;
+            min_bl = min_bl / Ymax;
+
+        	std::vector<double>& max_bl_vec = work.GetMaxBL();
+			max_bl_vec.push_back(max_bl);
+        	std::vector<double>& min_bl_vec = work.GetMinBL();
+			min_bl_vec.push_back(min_bl);
+
 
         	std::vector<double>& BLV_vec = work.GetBLV();
 			BLV_vec.push_back(baseline_dev);
