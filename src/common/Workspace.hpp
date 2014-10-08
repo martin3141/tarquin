@@ -351,6 +351,21 @@ namespace tarquin
 				m_spec_noise = spec_noise;
 			}
 
+            const std::vector<double>& GetTdNoise() const
+			{
+				return m_td_noise;
+			}
+            
+            std::vector<double>& GetTdNoise()
+			{
+				return m_td_noise;
+			}
+
+			void SetTdNoise(std::vector<double> td_noise)
+			{
+				m_td_noise = td_noise;
+			}
+
             const std::vector<double>& GetMetabSNR() const
 			{
 				return m_metab_snr;
@@ -636,6 +651,9 @@ namespace tarquin
             
             //! Spectral noise
             std::vector<double> m_spec_noise;
+
+            //! Time domain noise
+            std::vector<double> m_td_noise;
             
             //! Metabolite SNR
             std::vector<double> m_metab_snr;

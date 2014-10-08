@@ -12,7 +12,8 @@ namespace tarquin
 	{
 		public:
 
-			fft_wrap(const cvm::cvector& in, cvm::cvector& out)
+			fft_wrap(const cvm::cvector& in, cvm::cvector& out) :
+                m_out(out)
 			{
 				m_plan = fftw_plan_dft_1d(in.size(), (fftw_complex*)in.get(), (fftw_complex*)out.get(), FFTW_FORWARD, FFTW_ESTIMATE);
 			}
@@ -20,6 +21,9 @@ namespace tarquin
 			void operator() ()
 			{
 				fftw_execute(m_plan);
+				
+                double scale = 1.0; // m_out.size();
+				m_out *= scale;
 			}
 
 			~fft_wrap()
@@ -28,6 +32,7 @@ namespace tarquin
 			}
 
 			fftw_plan    m_plan;
+			cvm::cvector& m_out;
 	};
     
     class ifft_wrap

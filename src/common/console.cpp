@@ -375,6 +375,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_dyn_freq_corr = false;
 		}
 
+        // td or fd for noise estimate
+        else if( strKey == "--crlb_td" ) {
+			if( strVal == "true" )
+				options.m_crlb_td = true;
+			else
+				options.m_crlb_td = false;
+		}
+
         else if( strKey == "--replace_fp" ) {
 			if( strVal == "true" )
 				options.m_replace_fp = true;

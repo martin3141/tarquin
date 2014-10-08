@@ -1269,7 +1269,11 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                     td_noise_min = td_noise_temp;
             }
 
-			double sigma = td_noise_min*td_noise_min;
+
+            // Save noise estimate
+			std::vector<double>& TdNoise = work.GetTdNoise();
+            TdNoise.push_back(td_noise_min);
+			log.LogMessage(LOG_INFO, "Time domain noise  = %f", td_noise_min);
 
 			//plot(y);
 
@@ -1633,6 +1637,318 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			log.DebugMessage(DEBUG_LEVEL_1, "Final Phi0: %.2f", vParams(nIdxPhi0));
 			log.DebugMessage(DEBUG_LEVEL_1, "Final Phi1: %.2f", vParams(nIdxPhi1));
 
+
+			// measure of fit quality
+			cvm::cvector yz = y; 
+			cvm::cvector yhatz = yhat; 
+			cvm::cvector yhatz_singlet = yhat_singlet;
+			cvm::cvector yhatz_metab = yhat_metab;
+			cvm::cvector yhatz_broad = yhat_broad;
+
+			//int zf = 1;
+			// zero fill if less than 4096 points
+			//if ( y.size() < 4096 )
+			//	zf = round(4096.0f/ float(y.size()) );
+
+            int zf = options.GetZF();
+
+			//zf = 1;
+
+			yz.resize(yz.size()*zf);
+			yhatz.resize(yhatz.size()*zf);
+			yhatz_singlet.resize(yhatz_singlet.size()*zf*2);
+			yhatz_metab.resize(yhatz_metab.size()*zf);
+			yhatz_broad.resize(yhatz_broad.size()*zf);
+
+			// copy last pts points of real fid to end of zfilled fid
+			int pts = 5;
+			if ( zf > 1 )
+			{
+				for ( int n = 1 ; n < pts + 1; n++)
+				{
+					yz(yz.size()-pts+n) = yz(yz.size()/zf-pts+n);
+					yz(yz.size()/zf-pts+n) = 0;
+				}
+			}
+
+			Y.resize(yz.size());
+			cvm::cvector YHAT(yhatz.size());
+			cvm::cvector YHAT_singlet(yhatz_singlet.size());
+			cvm::cvector YHAT_metab(yhatz_metab.size());
+			cvm::cvector YHAT_broad(yhatz_broad.size());
+
+			fft(yz, Y);
+			fft(yhatz, YHAT);
+			fft(yhatz_singlet, YHAT_singlet);
+			fft(yhatz_metab, YHAT_metab);
+			fft(yhatz_broad, YHAT_broad);
+
+			Y = fftshift(Y);
+			YHAT = fftshift(YHAT);
+			YHAT_singlet = fftshift(YHAT_singlet);
+			YHAT_metab = fftshift(YHAT_metab);
+			YHAT_broad = fftshift(YHAT_broad);
+
+
+			cvm::cvector residual = yz-yhatz;
+			cvm::cvector baseline = residual;
+
+            //plot(residual);
+
+			cvm::cvector RESIDUAL = fft(residual);
+			RESIDUAL = fftshift(RESIDUAL);
+
+			//cvm::cvector RES_TEST = fftshift(RESIDUAL);
+            //cvm::cvector res_test = ifft(RES_TEST);
+            //plot(res_test);
+            
+            //plot(RESIDUAL);
+
+			cvm::cvector BASELINE;
+			td_conv_ws( RESIDUAL, BASELINE, options.GetBL()*options.GetZF(), 10);	
+
+			cvm::rvector freq_scale = fid.GetPPMScale(*fit_it, zf);
+
+			cvm::rvector freq_scale_singlet = fid.GetPPMScale(*fit_it, zf*2);
+
+            // guess metabolite FWHM
+            int max_data_pt = YHAT_singlet.real().indofmax();
+            double max_val = YHAT_singlet(max_data_pt).real();
+
+            // guess init beta based on the fwhm of prod_shift_cut_metabs
+            // find the right base of the peak
+            int right_pt = -1;
+            if ( singlet_found )
+            {
+                for ( int n = max_data_pt + 2; n < YHAT_singlet.size(); n++ )
+                {
+                    if ( YHAT_singlet.real()(n) < (max_val/2.0) )
+                    {
+                        right_pt = n-1;
+                        log.LogMessage(LOG_INFO, "FWHM right ppm = %f", freq_scale_singlet(right_pt));
+                        break;
+                    }
+                }
+            }
+
+            int left_pt = -1;
+            if ( singlet_found )
+            {
+                // find the left base of the peak
+                for ( int n = max_data_pt - 2; n > 0; n-- )
+                {
+                    if ( YHAT_singlet.real()(n) < (max_val/2.0) )
+                    {
+                        left_pt = n+1;
+                        log.LogMessage(LOG_INFO, "FWHM left ppm = %f", freq_scale_singlet(left_pt));
+                        break;
+                    }
+                }
+            }
+            
+            if ( left_pt == -1 || right_pt == -1 )
+            {
+                log.DebugMessage(DEBUG_LEVEL_1, "Warning, metabolite FWHM calc failed, carry on regardless.");
+                std::vector<double>& metab_fwhm_vec = work.GetMetabFWHM();
+                metab_fwhm_vec.push_back(std::numeric_limits<double>::infinity());
+            }
+            else
+            {
+                double metab_fwhm = freq_scale_singlet(left_pt)-freq_scale_singlet(right_pt);
+                std::vector<double>& metab_fwhm_vec = work.GetMetabFWHM();
+                metab_fwhm_vec.push_back(metab_fwhm);
+                log.LogMessage(LOG_INFO, "Metabolite FWHM (ppm) = %f", metab_fwhm);
+            }
+
+            //plot(freq_scale_singlet,YHAT_singlet);
+            //plot(freq_scale_singlet,YHAT);
+            //plot(freq_scale_singlet,YHAT_metab);
+
+            //std::cout << std::endl << "HI: " << options.GetPPMend() << std::endl;
+
+			// find points corresponding to ppm start and ppm end
+			int left = 1, right = freq_scale.size()-1;
+			for ( int n = 1; n < (freq_scale.size()); n++ ) 
+			{
+				if ( ( freq_scale(n) > options.GetPPMend() ) && ( freq_scale(n+1) <= options.GetPPMend() ) )
+					left = n;
+				if ( ( freq_scale(n) > options.GetPPMstart() ) && ( freq_scale(n+1) <= options.GetPPMstart() ) )
+					right = n;
+			}
+
+            if ( left == 1 || right == (freq_scale.size() - 1) )
+                log.LogMessage(LOG_INFO, "Warning, one of the PPM limits is outside the bandwidth.");
+
+            // find points corresponding to metab start end
+			int metab_left = 1, metab_right = freq_scale.size()-1;
+			for ( int n = 1; n < (freq_scale.size()); n++ ) 
+			{
+				if ( ( freq_scale(n) > 4.0 ) && ( freq_scale(n+1) <= 4.0 ) )
+					metab_left = n;
+				if ( ( freq_scale(n) > 1.9 ) && ( freq_scale(n+1) <= 1.9 ) )
+					metab_right = n;
+			}
+            
+            if ( metab_left == 1 || metab_right == (freq_scale.size() - 1) )
+                log.LogMessage(LOG_INFO, "Warning, one of the metab PPM limits is outside the bandwidth.");
+
+            // find max point  in metab region
+            double Ymax_metab = 0;
+			for ( int n = metab_left; n < metab_right+1; n++ ) 
+				if ( Ymax_metab < std::abs ( Y(n).real() - BASELINE(n).real() ) )
+					Ymax_metab = std::abs ( Y(n).real() - BASELINE(n).real() );
+
+			double Ymax = 0;
+			cvm::rvector BASELINE_REAL(right-left+1);
+			cvm::rvector RESIDUAL_REAL(right-left+1);
+			cvm::rvector freq_scale_cut(right-left+1);
+			// find max of y for SNR calculation
+			// should it be "- BASELINE(n).real()" ?
+			for ( int n = left; n < right+1; n++ ) 
+			{
+				//std::cout << std::abs( Y(n).real() - BASELINE(n).real() ) << std::endl;
+				if ( Ymax < std::abs ( Y(n).real() - BASELINE(n).real() ) )
+					Ymax = std::abs ( Y(n).real() - BASELINE(n).real() ) ;
+
+                BASELINE_REAL(n-left+1) = BASELINE(n).real();
+                RESIDUAL_REAL(n-left+1) = RESIDUAL(n).real();
+                freq_scale_cut(n-left+1) = freq_scale(n);
+			}
+            
+			cvm::rvector freq_scale_cut_cut(right-left);
+			for ( int n = 1; n < right-left; n++ ) 
+                freq_scale_cut_cut(n) = freq_scale_cut(n);
+
+			double spec_noise_min = std::numeric_limits<double>::infinity();
+			double spec_noise_temp = 0;
+			int block_size = 100;
+			for ( int n = 1; n < (RESIDUAL.size()+1) - block_size; n = n + block_size ) 
+			{
+				spec_noise_temp = stdev(RESIDUAL.real(),n,n+block_size-1);
+				if ( spec_noise_temp < spec_noise_min )
+					spec_noise_min = spec_noise_temp;
+			}
+            
+            spec_noise_min = spec_noise_min / pow(y.size(),0.5);
+
+			std::vector<double>& SpecNoise = work.GetSpecNoise();
+            SpecNoise.push_back(spec_noise_min);
+			log.LogMessage(LOG_INFO, "Spec noise            = %f", spec_noise_min);
+
+            //plot(RESIDUAL);
+
+			//    std::cout << std::endl << "stdev of res = " << noise_min << std::endl;
+			//   std::cout << "stdev of fit res = " << stdev(RESIDUAL.real() - BASELINE.real(),left,right) << std::endl;
+
+			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) /spec_noise_min;
+			double SNR_res = Ymax/(2*stdev(RESIDUAL.real() - BASELINE.real(),left,right) );
+            double max_res = (RESIDUAL_REAL - BASELINE_REAL).norminf();
+
+			//double SNR_true = Ymax/( 2*noise_min );
+
+			log.LogMessage(LOG_INFO, "sdev noise = %f", stdev(RESIDUAL.real() - BASELINE.real(),left,right));
+
+			// Save SNR
+			pair_vec& SNR = fid.GetSNR();
+			SNR.push_back(std::make_pair(SNR_res, true));
+
+			log.LogMessage(LOG_INFO, "SNR residual = %f", SNR_res);
+			//log.LogMessage(LOG_INFO, "SNR true     = %f", SNR_true);
+			log.LogMessage(LOG_INFO, "SNR max      = %f", SNR_res*Fit_Q);
+            
+            double SNR_max_metab = Ymax_metab / ( 2 * spec_noise_min );
+            std::vector<double>& MetabSNR_vec = work.GetMetabSNR();
+			MetabSNR_vec.push_back(SNR_max_metab);
+
+			log.LogMessage(LOG_INFO, "Ymax       = %f", Ymax);
+			log.LogMessage(LOG_INFO, "Ymax metab = %f", Ymax_metab);
+
+
+			// Save Q
+			std::vector<double>& Q_vec = work.GetQ();
+			Q_vec.push_back(Fit_Q);
+			log.LogMessage(LOG_INFO, "Fit quality = %f", Fit_Q);
+
+			std::vector<double>& Q_rel_vec = work.GetQ_rel();
+			Q_rel_vec.push_back(max_res/Ymax*100.0);
+
+            
+            double metab_ratio = 100.0*YHAT_metab.norm1()/YHAT.norm1();
+            std::vector<double>& metab_rat = work.GetMetabRat();
+            metab_rat.push_back(metab_ratio);
+
+            double peak_metab_ratio = 100.0*YHAT_broad.norminf() / YHAT_metab.norminf();
+            std::vector<double>& peak_metab_rat = work.GetPeakMetabRat();
+            peak_metab_rat.push_back(peak_metab_ratio);
+
+			//log.LogMessage(LOG_INFO, "Metab ratio = %f", metab_ratio);
+
+			cvm::rvector BASELINE_REAL_DIFF;
+            diff(BASELINE_REAL, BASELINE_REAL_DIFF);
+
+            
+            //double a[] = {1., 2., 3., 4.};
+            //double b[] = {1., 2., 3., 4.};
+            //double a[] = {4., 3., 2., 1.};
+            //double b[] = {4., 3., 2., 1.};
+            //const cvm::rvector testx(a, 4); 
+            //const cvm::rvector testy(b, 4); 
+            
+            cvm::rvector mc;
+            //lsqf(testx, testy, mc);
+            lsqf(freq_scale_cut, BASELINE_REAL, mc);
+            //std::cout << std::endl << mc << std::endl;
+            
+			cvm::rvector line_fit;
+            get_fit(freq_scale_cut, line_fit, mc);
+
+            cvm::rvector resids = BASELINE_REAL - line_fit;
+            //plot(freq_scale_cut,BASELINE_REAL);
+            //plot(freq_scale_cut,resids);
+
+            //double baseline_dev = stdev(BASELINE_REAL,1,BASELINE_REAL.size()) / Ymax;
+            double baseline_dev = stdev(resids,1,resids.size()) / Ymax;
+			//log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev);
+			log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev);
+			log.LogMessage(LOG_INFO, "Ymax         = %f", Ymax);
+            
+            //double baseline_var = BASELINE_REAL_DIFF.norminf();
+            //double baseline_var = resids.norm1()/Ymax/resids.size();
+			//log.LogMessage(LOG_INFO, "Baseline var = %f", baseline_var);
+
+        	std::vector<double>& BLV_vec = work.GetBLV();
+			BLV_vec.push_back(baseline_dev);
+
+            cvm::rvector mc_lims;
+            double dlims_freq[] = {freq_scale_cut(1),freq_scale_cut(freq_scale_cut.size())};
+            cvm::rvector freq_lims(dlims_freq,2,1);
+            double dlims_bl[] = {BASELINE_REAL(1),BASELINE_REAL(BASELINE_REAL.size())};
+            cvm::rvector bl_lims(dlims_bl,2,1);
+            lsqf(freq_lims, bl_lims, mc_lims);
+			cvm::rvector line_fit_lims;
+            get_fit(freq_scale_cut, line_fit_lims, mc_lims);
+            cvm::rvector BASELINE_LIMS = BASELINE_REAL-line_fit_lims;
+            double baseline_shape = 0;
+            for ( int n = 1; n < BASELINE_LIMS.size(); n++ )
+                baseline_shape += BASELINE_LIMS(n);
+
+            baseline_shape = baseline_shape / BASELINE_REAL.size() / Ymax;
+			log.LogMessage(LOG_INFO, "BSL         = %f", baseline_shape);
+
+        	std::vector<double>& BLS_vec = work.GetBLS();
+			BLS_vec.push_back(baseline_shape);
+
+            //plot(freq_scale_cut, BASELINE_REAL);
+            //plot(freq_scale_cut, BASELINE_LIMS);
+            /*plot(freq_scale_cut_cut, resids);
+            plot(freq_scale_cut, BASELINE_REAL);
+            plot(freq_scale_cut_cut, BASELINE_REAL_DIFF);
+            plot(freq_scale_cut_cut, line_fit);*/
+
+
+
+
+
 			//
 			// Attempt to compute the Cramer Rao Lower Bounds of the estimates
 			//
@@ -1706,6 +2022,17 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			// make the fisher information matrix
 			cvm::srmatrix FC = (~D)*D;
+            
+            // estimate noise from TD or FD???
+			double sigma = 0;
+		    if ( options.GetCRLB_TD() )
+            {
+                sigma = td_noise_min*td_noise_min;
+            }
+            else
+            {
+                sigma = spec_noise_min*spec_noise_min;
+            }
             
 			//cvm::srmatrix fisher = FC.real();
 			cvm::srmatrix fisher = FC;
@@ -2019,300 +2346,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             }
 
 
-
-			// measure of fit quality
-			cvm::cvector yz = y; 
-			cvm::cvector yhatz = yhat; 
-			cvm::cvector yhatz_singlet = yhat_singlet;
-			cvm::cvector yhatz_metab = yhat_metab;
-			cvm::cvector yhatz_broad = yhat_broad;
-
-			//int zf = 1;
-			// zero fill if less than 4096 points
-			//if ( y.size() < 4096 )
-			//	zf = round(4096.0f/ float(y.size()) );
-
-            int zf = options.GetZF();
-
-			//zf = 1;
-
-			yz.resize(yz.size()*zf);
-			yhatz.resize(yhatz.size()*zf);
-			yhatz_singlet.resize(yhatz_singlet.size()*zf*2);
-			yhatz_metab.resize(yhatz_metab.size()*zf);
-			yhatz_broad.resize(yhatz_broad.size()*zf);
-
-			// copy last pts points of real fid to end of zfilled fid
-			int pts = 5;
-			if ( zf > 1 )
-			{
-				for ( int n = 1 ; n < pts + 1; n++)
-				{
-					yz(yz.size()-pts+n) = yz(yz.size()/zf-pts+n);
-					yz(yz.size()/zf-pts+n) = 0;
-				}
-			}
-
-			Y.resize(yz.size());
-			cvm::cvector YHAT(yhatz.size());
-			cvm::cvector YHAT_singlet(yhatz_singlet.size());
-			cvm::cvector YHAT_metab(yhatz_metab.size());
-			cvm::cvector YHAT_broad(yhatz_broad.size());
-
-			fft(yz, Y);
-			fft(yhatz, YHAT);
-			fft(yhatz_singlet, YHAT_singlet);
-			fft(yhatz_metab, YHAT_metab);
-			fft(yhatz_broad, YHAT_broad);
-
-			Y = fftshift(Y);
-			YHAT = fftshift(YHAT);
-			YHAT_singlet = fftshift(YHAT_singlet);
-			YHAT_metab = fftshift(YHAT_metab);
-			YHAT_broad = fftshift(YHAT_broad);
-
-
-			cvm::cvector residual = yz-yhatz;
-			cvm::cvector baseline = residual;
-
-			cvm::cvector RESIDUAL = fft(residual);
-			RESIDUAL = fftshift(RESIDUAL);
-
-			cvm::cvector BASELINE;
-			td_conv_ws( RESIDUAL, BASELINE, options.GetBL()*options.GetZF(), 10);	
-
-			cvm::rvector freq_scale = fid.GetPPMScale(*fit_it, zf);
-
-			cvm::rvector freq_scale_singlet = fid.GetPPMScale(*fit_it, zf*2);
-
-            // guess metabolite FWHM
-            int max_data_pt = YHAT_singlet.real().indofmax();
-            double max_val = YHAT_singlet(max_data_pt).real();
-
-            // guess init beta based on the fwhm of prod_shift_cut_metabs
-            // find the right base of the peak
-            int right_pt = -1;
-            if ( singlet_found )
-            {
-                for ( int n = max_data_pt + 2; n < YHAT_singlet.size(); n++ )
-                {
-                    if ( YHAT_singlet.real()(n) < (max_val/2.0) )
-                    {
-                        right_pt = n-1;
-                        log.LogMessage(LOG_INFO, "FWHM right ppm = %f", freq_scale_singlet(right_pt));
-                        break;
-                    }
-                }
-            }
-
-            int left_pt = -1;
-            if ( singlet_found )
-            {
-                // find the left base of the peak
-                for ( int n = max_data_pt - 2; n > 0; n-- )
-                {
-                    if ( YHAT_singlet.real()(n) < (max_val/2.0) )
-                    {
-                        left_pt = n+1;
-                        log.LogMessage(LOG_INFO, "FWHM left ppm = %f", freq_scale_singlet(left_pt));
-                        break;
-                    }
-                }
-            }
-            
-            if ( left_pt == -1 || right_pt == -1 )
-            {
-                log.DebugMessage(DEBUG_LEVEL_1, "Warning, metabolite FWHM calc failed, carry on regardless.");
-                std::vector<double>& metab_fwhm_vec = work.GetMetabFWHM();
-                metab_fwhm_vec.push_back(std::numeric_limits<double>::infinity());
-            }
-            else
-            {
-                double metab_fwhm = freq_scale_singlet(left_pt)-freq_scale_singlet(right_pt);
-                std::vector<double>& metab_fwhm_vec = work.GetMetabFWHM();
-                metab_fwhm_vec.push_back(metab_fwhm);
-                log.LogMessage(LOG_INFO, "Metabolite FWHM (ppm) = %f", metab_fwhm);
-            }
-
-            //plot(freq_scale_singlet,YHAT_singlet);
-            //plot(freq_scale_singlet,YHAT);
-            //plot(freq_scale_singlet,YHAT_metab);
-
-            //std::cout << std::endl << "HI: " << options.GetPPMend() << std::endl;
-
-			// find points corresponding to ppm start and ppm end
-			int left = 1, right = freq_scale.size()-1;
-			for ( int n = 1; n < (freq_scale.size()); n++ ) 
-			{
-				if ( ( freq_scale(n) > options.GetPPMend() ) && ( freq_scale(n+1) <= options.GetPPMend() ) )
-					left = n;
-				if ( ( freq_scale(n) > options.GetPPMstart() ) && ( freq_scale(n+1) <= options.GetPPMstart() ) )
-					right = n;
-			}
-
-            if ( left == 1 || right == (freq_scale.size() - 1) )
-                log.LogMessage(LOG_INFO, "Warning, one of the PPM limits is outside the bandwidth.");
-
-            // find points corresponding to metab start end
-			int metab_left = 1, metab_right = freq_scale.size()-1;
-			for ( int n = 1; n < (freq_scale.size()); n++ ) 
-			{
-				if ( ( freq_scale(n) > 4.0 ) && ( freq_scale(n+1) <= 4.0 ) )
-					metab_left = n;
-				if ( ( freq_scale(n) > 1.9 ) && ( freq_scale(n+1) <= 1.9 ) )
-					metab_right = n;
-			}
-            
-            if ( metab_left == 1 || metab_right == (freq_scale.size() - 1) )
-                log.LogMessage(LOG_INFO, "Warning, one of the metab PPM limits is outside the bandwidth.");
-
-            // find max point  in metab region
-            double Ymax_metab = 0;
-			for ( int n = metab_left; n < metab_right+1; n++ ) 
-				if ( Ymax_metab < std::abs ( Y(n).real() - BASELINE(n).real() ) )
-					Ymax_metab = std::abs ( Y(n).real() - BASELINE(n).real() );
-
-			double Ymax = 0;
-			cvm::rvector BASELINE_REAL(right-left+1);
-			cvm::rvector RESIDUAL_REAL(right-left+1);
-			cvm::rvector freq_scale_cut(right-left+1);
-			// find max of y for SNR calculation
-			// should it be "- BASELINE(n).real()" ?
-			for ( int n = left; n < right+1; n++ ) 
-			{
-				//std::cout << std::abs( Y(n).real() - BASELINE(n).real() ) << std::endl;
-				if ( Ymax < std::abs ( Y(n).real() - BASELINE(n).real() ) )
-					Ymax = std::abs ( Y(n).real() - BASELINE(n).real() ) ;
-
-                BASELINE_REAL(n-left+1) = BASELINE(n).real();
-                RESIDUAL_REAL(n-left+1) = RESIDUAL(n).real();
-                freq_scale_cut(n-left+1) = freq_scale(n);
-			}
-            
-			cvm::rvector freq_scale_cut_cut(right-left);
-			for ( int n = 1; n < right-left; n++ ) 
-                freq_scale_cut_cut(n) = freq_scale_cut(n);
-
-			double noise_min = std::numeric_limits<double>::infinity();
-			double noise_temp = 0;
-			int block_size = 100;
-			for ( int n = 1; n < (RESIDUAL.size()+1) - block_size; n = n + block_size ) 
-			{
-				noise_temp = stdev(RESIDUAL.real(),n,n+block_size-1);
-				if ( noise_temp < noise_min )
-					noise_min = noise_temp;
-			}
-
-			//    std::cout << std::endl << "stdev of res = " << noise_min << std::endl;
-			//   std::cout << "stdev of fit res = " << stdev(RESIDUAL.real() - BASELINE.real(),left,right) << std::endl;
-
-			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) /noise_min;
-			double SNR_res = Ymax/(2*stdev(RESIDUAL.real() - BASELINE.real(),left,right) );
-            double max_res = (RESIDUAL_REAL - BASELINE_REAL).norminf();
-
-			//double SNR_true = Ymax/( 2*noise_min );
-
-			log.LogMessage(LOG_INFO, "sdev noise = %f", stdev(RESIDUAL.real() - BASELINE.real(),left,right));
-
-			// Save SNR
-			pair_vec& SNR = fid.GetSNR();
-			SNR.push_back(std::make_pair(SNR_res, true));
-
-			log.LogMessage(LOG_INFO, "SNR residual = %f", SNR_res);
-			//log.LogMessage(LOG_INFO, "SNR true     = %f", SNR_true);
-			log.LogMessage(LOG_INFO, "SNR max      = %f", SNR_res*Fit_Q);
-            
-            double SNR_max_metab = Ymax_metab / ( 2 * noise_min );
-            std::vector<double>& MetabSNR_vec = work.GetMetabSNR();
-			MetabSNR_vec.push_back(SNR_max_metab);
-
-			log.LogMessage(LOG_INFO, "Ymax       = %f", Ymax);
-			log.LogMessage(LOG_INFO, "Ymax metab = %f", Ymax_metab);
-
-
-			// Save Q
-			std::vector<double>& Q_vec = work.GetQ();
-			Q_vec.push_back(Fit_Q);
-			log.LogMessage(LOG_INFO, "Fit quality = %f", Fit_Q);
-
-			std::vector<double>& Q_rel_vec = work.GetQ_rel();
-			Q_rel_vec.push_back(max_res/Ymax*100.0);
-
-			std::vector<double>& SpecNoise = work.GetSpecNoise();
-            SpecNoise.push_back(noise_min);
-			log.LogMessage(LOG_INFO, "Spec noise  = %f", noise_min);
-            
-            double metab_ratio = 100.0*YHAT_metab.norm1()/YHAT.norm1();
-            std::vector<double>& metab_rat = work.GetMetabRat();
-            metab_rat.push_back(metab_ratio);
-
-            double peak_metab_ratio = 100.0*YHAT_broad.norminf() / YHAT_metab.norminf();
-            std::vector<double>& peak_metab_rat = work.GetPeakMetabRat();
-            peak_metab_rat.push_back(peak_metab_ratio);
-
-			//log.LogMessage(LOG_INFO, "Metab ratio = %f", metab_ratio);
-
-			cvm::rvector BASELINE_REAL_DIFF;
-            diff(BASELINE_REAL, BASELINE_REAL_DIFF);
-
-            
-            //double a[] = {1., 2., 3., 4.};
-            //double b[] = {1., 2., 3., 4.};
-            //double a[] = {4., 3., 2., 1.};
-            //double b[] = {4., 3., 2., 1.};
-            //const cvm::rvector testx(a, 4); 
-            //const cvm::rvector testy(b, 4); 
-            
-            cvm::rvector mc;
-            //lsqf(testx, testy, mc);
-            lsqf(freq_scale_cut, BASELINE_REAL, mc);
-            //std::cout << std::endl << mc << std::endl;
-            
-			cvm::rvector line_fit;
-            get_fit(freq_scale_cut, line_fit, mc);
-
-            cvm::rvector resids = BASELINE_REAL - line_fit;
-            //plot(freq_scale_cut,BASELINE_REAL);
-            //plot(freq_scale_cut,resids);
-
-            //double baseline_dev = stdev(BASELINE_REAL,1,BASELINE_REAL.size()) / Ymax;
-            double baseline_dev = stdev(resids,1,resids.size()) / Ymax;
-			//log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev);
-			log.LogMessage(LOG_INFO, "Baseline dev = %f", baseline_dev);
-			log.LogMessage(LOG_INFO, "Ymax         = %f", Ymax);
-            
-            //double baseline_var = BASELINE_REAL_DIFF.norminf();
-            //double baseline_var = resids.norm1()/Ymax/resids.size();
-			//log.LogMessage(LOG_INFO, "Baseline var = %f", baseline_var);
-
-        	std::vector<double>& BLV_vec = work.GetBLV();
-			BLV_vec.push_back(baseline_dev);
-
-            cvm::rvector mc_lims;
-            double dlims_freq[] = {freq_scale_cut(1),freq_scale_cut(freq_scale_cut.size())};
-            cvm::rvector freq_lims(dlims_freq,2,1);
-            double dlims_bl[] = {BASELINE_REAL(1),BASELINE_REAL(BASELINE_REAL.size())};
-            cvm::rvector bl_lims(dlims_bl,2,1);
-            lsqf(freq_lims, bl_lims, mc_lims);
-			cvm::rvector line_fit_lims;
-            get_fit(freq_scale_cut, line_fit_lims, mc_lims);
-            cvm::rvector BASELINE_LIMS = BASELINE_REAL-line_fit_lims;
-            double baseline_shape = 0;
-            for ( int n = 1; n < BASELINE_LIMS.size(); n++ )
-                baseline_shape += BASELINE_LIMS(n);
-
-            baseline_shape = baseline_shape / BASELINE_REAL.size() / Ymax;
-			log.LogMessage(LOG_INFO, "BSL         = %f", baseline_shape);
-
-        	std::vector<double>& BLS_vec = work.GetBLS();
-			BLS_vec.push_back(baseline_shape);
-
-            //plot(freq_scale_cut, BASELINE_REAL);
-            //plot(freq_scale_cut, BASELINE_LIMS);
-            /*plot(freq_scale_cut_cut, resids);
-            plot(freq_scale_cut, BASELINE_REAL);
-            plot(freq_scale_cut_cut, BASELINE_REAL_DIFF);
-            plot(freq_scale_cut_cut, line_fit);*/
 
 			//
 			// Compute the normalised value

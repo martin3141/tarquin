@@ -200,6 +200,7 @@ namespace tarquin
 
         m_ext_csv_fit = true;
         m_hsvd_comps = 50;
+        m_crlb_td = true;
 
 	}
 
@@ -398,6 +399,11 @@ namespace tarquin
     treal GetHSVDComps() const
 	{
 	    return m_hsvd_comps;
+	}
+
+    bool GetCRLB_TD() const
+	{
+	    return m_crlb_td;
 	}
 
 	void SetMetabShiftLimits(treal lower, treal upper, const CFID& fid, const CBasis& basis)
@@ -1563,6 +1569,7 @@ namespace tarquin
     bool m_ext_csv_fit;
     int m_truncate_pts;
     treal m_hsvd_comps;
+    bool m_crlb_td;
 
     };
 
