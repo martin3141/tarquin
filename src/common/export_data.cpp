@@ -1004,9 +1004,9 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
         fout << "FAIL\\n";
         qc_state = false;
     }
-    else if ( ( metab_fwhm <= 0.1 ) && ( metab_fwhm > 0.07 ) )
+    else if ( ( metab_fwhm <= 0.1 ) && ( metab_fwhm > 0.075 ) )
         fout << "PASS (borderline)\\n";
-    else if ( ( metab_fwhm <= 0.07 ) && ( metab_fwhm > 0.05 ) )
+    else if ( ( metab_fwhm <= 0.075 ) && ( metab_fwhm > 0.05 ) )
         fout << "PASS (average)\\n";
     else if ( ( metab_fwhm <= 0.04 ) )
         fout << "PASS (good)\\n";
