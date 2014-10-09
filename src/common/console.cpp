@@ -383,6 +383,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_crlb_td = false;
 		}
 
+        // allow negative amps
+        else if( strKey == "--nnls" ) {
+			if( strVal == "true" )
+				options.m_nnls = true;
+			else
+				options.m_nnls = false;
+		}
+
         else if( strKey == "--replace_fp" ) {
 			if( strVal == "true" )
 				options.m_replace_fp = true;

@@ -11,10 +11,10 @@ namespace tarquin {
     {
 	assert( vx.size() == mA.nsize() );
 
-	//m_mX.resize(mA.nsize(), mA.msize());
-	//m_mX = mA.pinv(0.01);
-	//vx = m_mX*vb;
-	//return;
+	/*m_mX.resize(mA.nsize(), mA.msize());
+	m_mX = mA.pinv(NUMERICAL_TOL_NNLS);
+	vx = m_mX*vb;
+	return;*/
 
 	// the set of elements in x that are 0 (set of columns of A not used)
 	std::set<integer> Z;

@@ -19,6 +19,8 @@ namespace tarquin
              * \param x is the result vector.
              */
             void solve(cvm::rmatrix& mA, cvm::rvector& vb, cvm::rvector& vx, bool bUseStartingValue = false); 
+
+            void solve_neg(cvm::rmatrix& mA, cvm::rvector& vb, cvm::rvector& vx, bool bUseStartingValue = false);
     };
 }
 

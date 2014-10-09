@@ -2,6 +2,17 @@
 #include <set>
 #include <cmath>
 
+void tarquin::FNNLSSolverBJ::solve_neg(cvm::rmatrix& mA, cvm::rvector& vb, cvm::rvector& vx, bool bUseStartingValue)
+{
+    assert( vx.size() == mA.nsize() );
+    cvm::rmatrix m_mX;
+
+    m_mX.resize(mA.nsize(), mA.msize());
+    m_mX = mA.pinv(NUMERICAL_TOL_NNLS);
+    vx = m_mX*vb;
+    return;
+}
+
 
 void tarquin::FNNLSSolverBJ::solve(cvm::rmatrix& Z, cvm::rvector& x, cvm::rvector& d, bool use_starting_value)
 {

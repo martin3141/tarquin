@@ -312,10 +312,13 @@ void tarquin::residual_objective_all(
 
 	//CNNLSSolverLH nnls;
     //NNLSSolverBJ nnls;
+    
     FNNLSSolverBJ nnls;
+    
+    //Solver nnls;
+
 
 	// estimate amplitudes
-
 
 	cvm::rvector yActive_aug = params.m_yActive;
 	cvm::rmatrix Sp_aug = params.m_Sp;
@@ -549,10 +552,28 @@ void tarquin::residual_objective_all(
         //plot(temp);
     }
 
-    if ( soft_cons)
-        nnls.solve(Sp_aug, yActive_aug, params.m_ahat, opts.GetFastFit());
+    if ( soft_cons )
+    {
+        if ( opts.GetNNLS() )
+        {
+            nnls.solve(Sp_aug, yActive_aug, params.m_ahat, opts.GetFastFit());
+        }
+        else
+        {
+            nnls.solve_neg(Sp_aug, yActive_aug, params.m_ahat, opts.GetFastFit());
+        }
+    }
     else
-        nnls.solve(params.m_Sp, params.m_yActive, params.m_ahat, opts.GetFastFit());
+    {
+        if ( opts.GetNNLS() )
+        {
+            nnls.solve(params.m_Sp, params.m_yActive, params.m_ahat, opts.GetFastFit());
+        }
+        else
+        {
+            nnls.solve_neg(params.m_Sp, params.m_yActive, params.m_ahat, opts.GetFastFit());
+        }
+    }
     //
 	//nnls.solve(params.m_Sp, params.m_yActive, params.m_ahat, true);
 	
@@ -677,7 +698,7 @@ void tarquin::jacobian_func(
 	// find inactive set (i.e. non-zero amplitudes of columns of S)
 	std::set<integer> F;
 	for( integer n = 1; n <= Q; n++ )
-		if( params.m_ahat(n) > 0.0 ) 
+		if( params.m_ahat(n) != 0.0 )  // changed by MW Oct 14 to deal with allowed neg values
 			F.insert(n);
 
 	// the basis set has been adjusted so that non of the basis vectors have a > 0 amplitude
@@ -1304,6 +1325,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			//CNNLSSolverLH nnls;
             //NNLSSolverBJ nnls;
             FNNLSSolverBJ nnls;
+            //Solver nnls;
 
 			for( integer c = 1; c <= M; c++ ) 
 			{
@@ -1335,7 +1357,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			// find number of elements which are greater than zero
 			std::set<integer> F;
 			for( integer n = 1; n <= Q; n++ )
-				if( params.m_ahat(n) > 0.0 ) 
+				if( params.m_ahat(n) != 0.0 )  // changed by MW Oct 14 to allow dealing with neg values
 					F.insert(n);
 
 			// the data was so bad that no solution can be found
@@ -1840,7 +1862,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			//    std::cout << std::endl << "stdev of res = " << noise_min << std::endl;
 			//   std::cout << "stdev of fit res = " << stdev(RESIDUAL.real() - BASELINE.real(),left,right) << std::endl;
 
-			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) /spec_noise_min;
+			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) /spec_noise_min/pow(y.size(),0.5);
 			double SNR_res = Ymax/(2*stdev(RESIDUAL.real() - BASELINE.real(),left,right) );
             double max_res = (RESIDUAL_REAL - BASELINE_REAL).norminf();
 
@@ -1856,7 +1878,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			//log.LogMessage(LOG_INFO, "SNR true     = %f", SNR_true);
 			log.LogMessage(LOG_INFO, "SNR max      = %f", SNR_res*Fit_Q);
             
-            double SNR_max_metab = Ymax_metab / ( 2 * spec_noise_min );
+            double SNR_max_metab = Ymax_metab / ( 2 * spec_noise_min / pow(y.size(),0.5) );
             std::vector<double>& MetabSNR_vec = work.GetMetabSNR();
 			MetabSNR_vec.push_back(SNR_max_metab);
 
