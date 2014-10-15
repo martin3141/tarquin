@@ -1008,7 +1008,7 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
         fout << "PASS (borderline)\\n";
     else if ( ( metab_fwhm <= 0.075 ) && ( metab_fwhm > 0.05 ) )
         fout << "PASS (average)\\n";
-    else if ( ( metab_fwhm <= 0.04 ) )
+    else if ( ( metab_fwhm <= 0.05 ) )
         fout << "PASS (good)\\n";
 
     double snr_qc = snr[0].first;
