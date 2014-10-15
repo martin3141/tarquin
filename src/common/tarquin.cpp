@@ -1447,6 +1447,86 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 					vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, 
 					iterations, opts, info, NULL, NULL, (void*)&params);
 
+            if ( false )
+            {
+                // fit full signal - back to t=0
+                cvm::rvector yActive_full( 2*nEnd );
+                for(integer n = 0; n < nEnd; n++) 
+                {
+                    yActive_full(n+1)         = y(n+1).real();
+                    yActive_full(n+1+nEnd) = y(n+1).imag();
+                }
+
+                dlevmar_bc_der(residual_objective_all, jacobian_func, 
+                        vParams, yActive_full, P, 2*nEnd, vLowerBounds, vUpperBounds, 
+                        iterations, opts, info, NULL, NULL, (void*)&params);
+
+                cvm::cmatrix GpOut_init;
+                cvm::cmatrix SpOut_init;
+                cvm::cvector yhat_init;
+
+                GpOut_init.resize(N, M);
+                SpOut_init.resize(N, Q);
+                yhat_init.resize(N);
+                
+                // NEED THIS?
+                //vParams(nIdxBeta) = pow(vParams(nIdxBeta),1) * options.GetBetaScale(); // MAGIC BETA SCALE
+
+                for( integer c = 1; c <= M; c++ ) 
+                {
+                    // indices to parameter vector	
+                    std::size_t nIdxShift = c;
+                    std::size_t nIdxAlpha = c+M;
+
+                    // the parameters to apply
+                    tcomplex jomega(0, 2.0 * M_PI * vParams(nIdxShift));
+                    treal alpha = vParams(nIdxAlpha);
+                    treal beta  = vParams(nIdxBeta);
+
+                    // for each (sample of the active part of the signal == row of G)
+                    for( integer n = 1; n <= N; n++ ) 
+                    {
+                        // the modified sample of the group matrix 
+                        tcomplex z = G(n, c) * exp(-t(n)*alpha -t(n)*t(n)*beta + t(n)*jomega);
+
+                        // modify sample and put in right place in active matrix
+                        GpOut_init(n, c) = z;
+                    }
+                }
+
+			    SpOut_init = GpOut_init * basis.GetSummationMatrix();
+
+                // Adjust phase
+			    std::size_t nIdxPhi0  = 2*M+2; 
+			    std::size_t nIdxPhi1  = 2*M+3;
+                treal phi0_init = vParams(nIdxPhi0); 
+                treal phi1_init = vParams(nIdxPhi1);
+
+                cvm::cvector Y_init(y.size());
+                fft(y, Y_init);
+
+                for( integer n = 0; n < Y_init.size(); n++ ) 
+                {
+                    treal freq = shift_freq_range[n+1];
+                    Y_init[n+1] = Y_init[n+1] * exp( tcomplex(0, -phi0_init -phi1_init*2.0*M_PI*freq) );
+                }
+
+			    cvm::cvector y_init;
+                ifft(Y_init, y_init);
+
+			    // synthesize estimate
+			    yhat_init = SpOut_init * cvm::cvector(ahat);
+                  
+                cvm::cvector Yhat_init(y.size());
+                fft(yhat_init, Yhat_init);
+
+			    Y_init = fftshift(Y_init);
+			    Yhat_init = fftshift(Yhat_init);
+
+                plot(Yhat_init);
+                //plot(Y_init);
+            }
+
 			// call the optimiser numerical Jacobian 
 			//dlevmar_bc_dif(residual_objective_all, vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, iterations, opts, info, NULL, NULL, (void*)&params);
 

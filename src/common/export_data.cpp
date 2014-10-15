@@ -996,7 +996,7 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
     fout << "QC INFORMATION\\n";
     
     bool qc_state = true;
-    fout << "Metabolite linewidth : ";
+    fout << "Metab FWHM (PPM) = " << metab_fwhm_vec[0] <<  " : ";
     
     double metab_fwhm = metab_fwhm_vec[0];
     if ( (metab_fwhm > 0.1) || (metab_fwhm == -1) )
@@ -1011,8 +1011,8 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
     else if ( ( metab_fwhm <= 0.04 ) )
         fout << "PASS (good)\\n";
 
-    fout << "SNR                  : ";
     double snr_qc = snr[0].first;
+    fout << "SNR              = " << snr_qc << "   : " ;
     if (snr_qc < 4)
     {
         fout << "FAIL\\n";
@@ -1026,19 +1026,18 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
         fout << "PASS (good)\\n";
 
     if ( qc_state )
-        fout << "Overall QC           : PASS\\n";
+        fout << "Overall QC                : PASS\\n";
     else
-        fout << "Overall QC           : FAIL\\n";
+        fout << "Overall QC                : FAIL\\n";
     
     for(size_t m = 0; m < 40; m++)
 		fout << "-";
     fout << "\\n";
 
     fout << "DIAGNOSTICS\\n";
-    fout << "Metab FWHM (PPM)  = " << metab_fwhm_vec[0] << "\\n";
     //fout << "Metab FWHM (Hz)   = " << metab_fwhm_vec[0]*(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
     fout << "SNR max           = " << snr[0].first * Q_vec[0] << "\\n";
-    fout << "SNR residul       = " << snr[0].first << "\\n";
+    //fout << "SNR residul       = " << snr[0].first << "\\n";
     fout << "Q                 = " << Q_vec[0] << "\\n";
     
     fout << "Water FWHM (PPM)  = ";
