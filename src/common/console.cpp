@@ -391,6 +391,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_nnls = false;
 		}
 
+        // soft cons
+        else if( strKey == "--soft_cons" ) {
+			if( strVal == "true" )
+				options.m_soft_cons = true;
+			else
+				options.m_soft_cons = false;
+		}
+
         else if( strKey == "--replace_fp" ) {
 			if( strVal == "true" )
 				options.m_replace_fp = true;

@@ -202,6 +202,7 @@ namespace tarquin
         m_hsvd_comps = 50;
         m_crlb_td = true;
         m_nnls = true;
+        m_soft_cons = true;
 	}
 
 	//Options(){}
@@ -409,6 +410,11 @@ namespace tarquin
     bool GetNNLS() const
 	{
 	    return m_nnls;
+	}
+
+    bool GetSoftCons() const
+	{
+	    return m_soft_cons;
 	}
 
 	void SetMetabShiftLimits(treal lower, treal upper, const CFID& fid, const CBasis& basis)
@@ -1576,6 +1582,7 @@ namespace tarquin
     treal m_hsvd_comps;
     bool m_crlb_td;
     bool m_nnls;
+    bool m_soft_cons;
 
     };
 

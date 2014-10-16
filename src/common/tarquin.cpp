@@ -323,7 +323,7 @@ void tarquin::residual_objective_all(
 	cvm::rvector yActive_aug = params.m_yActive;
 	cvm::rmatrix Sp_aug = params.m_Sp;
     
-    bool soft_cons = true;
+    bool soft_cons = opts.GetSoftCons();
 
 	if ( soft_cons )
 	{
