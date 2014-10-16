@@ -65,7 +65,32 @@ install fftw3
 install QWT (5.2.1 works)
 
 
+Installation on OSX 10.9
+---------------------------------------------------
+Install xcode from appstore
+Run from command line "xcode-select --install"
+Install homebrew package manager
+
+brew install gcc (for gfortran)
+install protobuf 2.3.0 (apply the following fix https://code.google.com/p/protobuf/issues/detail?id=570)
+    ./configure
+    make
+    make install
+
+
+install QWT (5.2.1 works)
+    find and edit src.pro and force CONFIG += staticlib to get a static library
+    qmake
+    make
+    make install
+
+Other issues
+May need to fiddle with task_adaptors.hpp if you get error messages about TIME_UTC_
+
+
+
 Installation on OSX snow leopard (old instructions)
+---------------------------------------------------
 
 install xcode from DVD
 compile F2C instructions from : http://hpc.sourceforge.net/ 

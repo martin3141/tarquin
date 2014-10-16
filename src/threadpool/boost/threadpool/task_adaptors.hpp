@@ -135,7 +135,7 @@ namespace boost { namespace threadpool
         if(m_break_s > 0 || m_break_ns > 0)
         { // Sleep some time before first execution
           xtime xt;
-#ifdef PLATFORM_WINDOWS
+#ifdef TIME_UTC_CHANGE 
           xtime_get(&xt, TIME_UTC_);
 #else
 		  xtime_get(&xt, TIME_UTC);
@@ -150,7 +150,7 @@ namespace boost { namespace threadpool
           if(m_break_s > 0 || m_break_ns > 0)
           {
             xtime xt;
-#ifdef PLATFORM_WINDOWS
+#ifdef TIME_UTC_CHANGE
             xtime_get(&xt, TIME_UTC_);
 #else
 			xtime_get(&xt, TIME_UTC);

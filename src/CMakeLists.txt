@@ -57,6 +57,8 @@ endif()
 if( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
 
 	add_definitions(-DPLATFORM_LINUX)
+	
+    add_definitions(-DTIME_UTC_CHANGE)
 
 	#add_definitions(-isysroot /Developer/SDKs/MacOSX10.5.sdk)
 	#add_definitions(-mmacosx-version-min=10.5)
@@ -100,6 +102,7 @@ endif()
 if( WIN32 )
 
 	add_definitions(-DPLATFORM_WINDOWS)
+    add_definitions(-DTIME_UTC_CHANGE)
 	add_definitions(-DNOMINMAX)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-DEIGEN_SSE2_ON_MSVC_2008_OR_LATER)
