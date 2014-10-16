@@ -40,25 +40,25 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
 	//setWindowTitle(  QString::fromStdString(title) ); 
 
 	// connect up actions on the file menu
-	connect(m_ui.actionQuick_Fit, SIGNAL(activated()), this, SLOT(OnFileQF()));
-	connect(m_ui.actionOpen_FID,        SIGNAL(activated()), this, SLOT(OnFileOpenFID()));
-	connect(m_ui.actionOpen_fit,        SIGNAL(activated()), this, SLOT(OnFileOpenFit()));
-	connect(m_ui.actionSave_fit,        SIGNAL(activated()), this, SLOT(OnFileSaveFit()));
-	connect(m_ui.actionAbout,           SIGNAL(activated()), this, SLOT(OnFileAbout()));
-	connect(m_ui.actionPrint_Plot,      SIGNAL(activated()), this, SLOT(OnFilePrint()));
-	connect(m_ui.actionPrint_Localisation,      SIGNAL(activated()), this, SLOT(OnFilePrintLocalisation()));
-	connect(m_ui.actionPDF,      SIGNAL(activated()), this, SLOT(OnFileExportPDF()));
-	connect(m_ui.actionPNG,      SIGNAL(activated()), this, SLOT(OnFileExportPNG()));
-	connect(m_ui.actionJPEG,      SIGNAL(activated()), this, SLOT(OnFileExportJPEG()));
-	connect(m_ui.action_localisation_PDF,      SIGNAL(activated()), this, SLOT(OnFileExportLocalisationPDF()));
-	connect(m_ui.action_localisation_PNG,      SIGNAL(activated()), this, SLOT(OnFileExportLocalisationPNG()));
-	connect(m_ui.action_localisation_JPEG,      SIGNAL(activated()), this, SLOT(OnFileExportLocalisationJPEG()));
-	connect(m_ui.actionExport_window,      SIGNAL(activated()), this, SLOT(OnFileExportWindowPNG()));
-	connect(m_ui.actionExit,            SIGNAL(activated()), this, SLOT(OnFileExit()));
+	connect(m_ui.actionQuick_Fit, SIGNAL(triggered()), this, SLOT(OnFileQF()));
+	connect(m_ui.actionOpen_FID,        SIGNAL(triggered()), this, SLOT(OnFileOpenFID()));
+	connect(m_ui.actionOpen_fit,        SIGNAL(triggered()), this, SLOT(OnFileOpenFit()));
+	connect(m_ui.actionSave_fit,        SIGNAL(triggered()), this, SLOT(OnFileSaveFit()));
+	connect(m_ui.actionAbout,           SIGNAL(triggered()), this, SLOT(OnFileAbout()));
+	connect(m_ui.actionPrint_Plot,      SIGNAL(triggered()), this, SLOT(OnFilePrint()));
+	connect(m_ui.actionPrint_Localisation,      SIGNAL(triggered()), this, SLOT(OnFilePrintLocalisation()));
+	connect(m_ui.actionPDF,      SIGNAL(triggered()), this, SLOT(OnFileExportPDF()));
+	connect(m_ui.actionPNG,      SIGNAL(triggered()), this, SLOT(OnFileExportPNG()));
+	connect(m_ui.actionJPEG,      SIGNAL(triggered()), this, SLOT(OnFileExportJPEG()));
+	connect(m_ui.action_localisation_PDF,      SIGNAL(triggered()), this, SLOT(OnFileExportLocalisationPDF()));
+	connect(m_ui.action_localisation_PNG,      SIGNAL(triggered()), this, SLOT(OnFileExportLocalisationPNG()));
+	connect(m_ui.action_localisation_JPEG,      SIGNAL(triggered()), this, SLOT(OnFileExportLocalisationJPEG()));
+	connect(m_ui.actionExport_window,      SIGNAL(triggered()), this, SLOT(OnFileExportWindowPNG()));
+	connect(m_ui.actionExit,            SIGNAL(triggered()), this, SLOT(OnFileExit()));
 
 	// connect up actions on the analysis menu
-	connect(m_ui.actionRun_TARQUIN,     SIGNAL(activated()), this, SLOT(OnAnalysisRunTARQUIN()));
-	connect(m_ui.actionPreprocess,     SIGNAL(activated()), this, SLOT(OnAnalysisPreprocess()));
+	connect(m_ui.actionRun_TARQUIN,     SIGNAL(triggered()), this, SLOT(OnAnalysisRunTARQUIN()));
+	connect(m_ui.actionPreprocess,     SIGNAL(triggered()), this, SLOT(OnAnalysisPreprocess()));
 
 	// connect up actions on the plot menu (formerly called 'view')
 	connect(m_ui.actionFID_seconds,			    SIGNAL(triggered()), this, SLOT(OnViewTimeDomainSec()));
