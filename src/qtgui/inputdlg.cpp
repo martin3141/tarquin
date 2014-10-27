@@ -60,11 +60,12 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     m_ui.cmbDynRefMode->addItem("31P PCr gamma-ATP",    QVariant(tarquin::PHOSPH_PCR_GAMMAATP));
 
     m_ui.cmbIntBasisSet->addItem("1H brain",                QVariant(tarquin::PROTON_BRAIN));
-    m_ui.cmbIntBasisSet->addItem("1H brain no PCr",                QVariant(tarquin::PROTON_BRAIN_NO_PCR));
+    m_ui.cmbIntBasisSet->addItem("1H brain + Glth",                QVariant(tarquin::PROTON_BRAIN_GLTH));
     m_ui.cmbIntBasisSet->addItem("1H brain + Gly, Glth",                QVariant(tarquin::PROTON_BRAIN_GLY_GLTH));
     m_ui.cmbIntBasisSet->addItem("1H brain + Gly, Cit, Glth",    QVariant(tarquin::PROTON_BRAIN_GLY_CIT_GLTH));
     m_ui.cmbIntBasisSet->addItem("1H brain full",                QVariant(tarquin::PROTON_BRAIN_FULL));
     m_ui.cmbIntBasisSet->addItem("1H brain, long echo",     QVariant(tarquin::PROTON_BRAIN_LE));
+    m_ui.cmbIntBasisSet->addItem("1H brain no PCr",                QVariant(tarquin::PROTON_BRAIN_NO_PCR));
     m_ui.cmbIntBasisSet->addItem("1H MEGA-PRESS GABA",      QVariant(tarquin::PROTON_MEGAPRESS_GABA));
     m_ui.cmbIntBasisSet->addItem("1H BRAINO phantom",      QVariant(tarquin::PROTON_BRAINO));
     m_ui.cmbIntBasisSet->addItem("31P brain, 1H decoupled", QVariant(tarquin::PHOSPH_BRAIN_DECOUP));

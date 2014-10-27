@@ -47,11 +47,12 @@ namespace tarquin
 	enum basis_set_e 
 	{ 
 		PROTON_BRAIN = 0,           // Std brain metabolites
-		PROTON_BRAIN_NO_PCR,           // Std brain metabolites w/o PCr
+		PROTON_BRAIN_GLTH,           // Std brain metabolites Glth
 		PROTON_BRAIN_GLY_GLTH,           // Std brain metabolites Gly + Glth
 		PROTON_BRAIN_GLY_CIT_GLTH,       // Std brain metabolites + Gly + Cit + Glth
 		PROTON_BRAIN_FULL,       // Std brain metabolites + Gly + Glth + PEth
 		PROTON_BRAIN_LE,       // Std brain metabolites + Gly + Cit
+		PROTON_BRAIN_NO_PCR,           // Std brain metabolites w/o PCr
 		PROTON_MEGAPRESS_GABA,
 		PROTON_BRAINO,
 		PHOSPH_BRAIN_DECOUP
@@ -159,7 +160,10 @@ namespace tarquin
 	    m_nStartTime = 0.01;
 	    m_ref_signals = PROTON_NAA_CR_CHO_LIP;
 	    m_dyn_ref_signals = PROTON_NAA_CR_CHO_LIP;
-        m_int_basis_set = PROTON_BRAIN_GLY_GLTH;
+        m_int_basis_set = PROTON_BRAIN_GLTH;
+
+	    m_ref_freq = std::numeric_limits<treal>::infinity();
+
         m_dyn_av = DEFAULT;
         m_dyn_av_w = DEFAULT;
         m_dyn_freq_corr = false;
@@ -244,6 +248,11 @@ namespace tarquin
 	void SetRangeStart(integer nStart)
 	{
 	    m_nStart = nStart;
+	}
+
+	double GetRefFreq()
+	{
+	    return m_ref_freq;
 	}
 
 	//! Set the starting time of the range over which the analysis is run.
@@ -1322,6 +1331,9 @@ namespace tarquin
 
 	//! Time at which analysis begins.
 	double m_nStartTime;
+    
+    //! Freq of PPM ref signal
+    double m_ref_freq;
 
 	//! Sample at which analysis ends.
 	integer m_nEnd;

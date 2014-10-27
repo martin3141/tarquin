@@ -1843,6 +1843,14 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
 
     if ( !dyn_mode )
     {
+        if ( options.GetRefFreq() != std::numeric_limits<treal>::infinity() )
+        {
+                points.push_back( RefPoint(options.GetRefFreq(), 1, 0, 0) ); // Some peak
+                if ( pre_ws_shift )
+                    points.push_back( RefPoint(4.65, 1, 0, 1) ); // H2O
+        }
+        else
+        {
         // if the ref file string is empty assume defualt values	
         if ( options.GetRefFile() == "" )
         {
@@ -1937,6 +1945,7 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
                 //std::cout << (*itP)[2] << std::endl;
                 points.push_back( RefPoint( (*itP)[0], (*itP)[1], (*itP)[2], (*itP)[3] ) );
             }
+        }
         }
     }
     else

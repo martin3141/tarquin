@@ -5,6 +5,7 @@
 Version 4.3.5
 - Bug fix for GE p-files Rdb reader rev : 14.3 and 16.0 where the offset to data was incorrect by one frame. This caused a crash at the reconstruction stage.
 - Internal basis set option for 'braino' phantoms has now been added.
+- Internal basis set option for 'brain + glth' has now been added - this is the new default basis set because Gly is not present in normal brain at large concentrations.
 - Added metabolite FWHM linewidth estimate to pdf output for QC purposes.
 - Dafult Gnuplot font sizes are now correct for more recent versions of the package.
 - Improvements for reading Philips DICOM MRS.
