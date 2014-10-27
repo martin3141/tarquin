@@ -41,7 +41,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--basis_csv         path to basis (CSV files)";
 	std::cout << "\n\t--basis_xml         path to basis (precompiled XML files)";
 	std::cout << "\n\t--basis_lcm         path to basis (LCModel .basis format)";
-	std::cout << "\n\t--int_basis         {1h_brain | 1h_brain_gly_glth | 1h_brain_gly_cit_glth | 1h_brain_full | 1h_brain_le | megapress_gaba | braino | 31p_brain}";
+	std::cout << "\n\t--int_basis         {1h_brain | | h1_brain_glth | 1h_brain_gly_glth | 1h_brain_gly_cit_glth | 1h_brain_full | 1h_brain_le | 1h_brain_no_pcr | megapress_gaba | braino | 31p_brain}";
 	std::cout << "\n\t--echo              echo time in seconds";
 	std::cout << "\n\t--te1               te1 time in seconds for PRESS sequence";
 	std::cout << "\n\t--tm                tm time in seconds for STEAM sequence";
@@ -425,6 +425,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		else if( strKey == "--int_basis" ) {
 			if( strVal == "1h_brain" ) 
 				options.SetIntBasisSet(PROTON_BRAIN);
+			else if( strVal == "1h_brain_glth" ) 
+				options.SetIntBasisSet(PROTON_BRAIN_GLTH);
 			else if( strVal == "1h_brain_gly_glth" ) 
 				options.SetIntBasisSet(PROTON_BRAIN_GLY_GLTH);
 			else if( strVal == "1h_brain_gly_cit_glth" ) 
@@ -433,6 +435,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.SetIntBasisSet(PROTON_BRAIN_FULL);
 			else if( strVal == "1h_brain_le" ) 
 				options.SetIntBasisSet(PROTON_BRAIN_LE);
+			else if( strVal == "1h_brain_no_pcr" ) 
+				options.SetIntBasisSet(PROTON_BRAIN_NO_PCR);
 			else if( strVal == "megapress_gaba" ) 
 				options.SetIntBasisSet(PROTON_MEGAPRESS_GABA);
 			else if( strVal == "braino" ) 
@@ -1133,6 +1137,21 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		else if( strKey == "--ref_file" )
 		{
 			options.m_strRefFile = strVal;
+		}
+
+		else if( strKey == "--ref_freq" ) 
+		{
+
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_ref_freq = temp;
 		}
 
 		// plot pausing 
