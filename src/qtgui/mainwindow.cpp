@@ -84,6 +84,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
 
 	// connect up the actions on the results menu
 	connect(m_ui.actViewAmplitudes, SIGNAL(triggered()), this, SLOT(OnViewAmplitudes()));
+	connect(m_ui.actExport_PDF,     SIGNAL(triggered()), this, SLOT(OnExportPDF()));
 	connect(m_ui.actExport_TXT,     SIGNAL(triggered()), this, SLOT(OnExportTXT()));
 	connect(m_ui.actExport_CSV,     SIGNAL(triggered()), this, SLOT(OnExportCSV()));
 	connect(m_ui.actExport_CSV_fit,     SIGNAL(triggered()), this, SLOT(OnExportCSVFit()));
@@ -210,6 +211,43 @@ void MainWindow::OnExportTXT()
 		ErrorDialog(this, tr("Error Exporting File"), tr("There was an error: ") + e.what());
 	}
 }
+
+void MainWindow::OnExportPDF()
+{
+    if( !m_session )
+    {
+    	QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+    }
+
+	if( !m_session->FitAvailable() )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+	}
+
+	QString file = QFileDialog::getSaveFileName(this, tr("Export PDF"), "", tr("PDF Files (*.pdf)"));
+
+	if( !file.size() )
+		return;
+
+    
+    // export the data
+	try
+	{
+	    int fit_no = m_session->m_fit_number;
+		ExportPdfResults(file.toStdString(), m_session->GetWorkspace(),fit_no);
+
+		InfoDialog(this, tr("Success"), tr("File was exported to: ") + file);
+	}
+	catch( const std::exception& e )
+	{
+		ErrorDialog(this, tr("Error Exporting File"), tr("There was an error: ") + e.what());
+	}
+}
+
 
 void MainWindow::OnExportDPTRaw()
 {

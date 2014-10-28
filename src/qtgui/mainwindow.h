@@ -165,6 +165,8 @@ private slots:
 
 	void OnViewAmplitudes();
 
+	void OnExportPDF();
+
 	void OnExportTXT();
 
 	void OnExportCSV();

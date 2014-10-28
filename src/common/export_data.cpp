@@ -1070,14 +1070,14 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
     fout << "End point         = " << options.GetRangeEnd() << "\\n";
 }
 
-void ExportPdfResults(const std::string& strFilename, const Workspace& workspace)
+void ExportPdfResults(const std::string& strFilename, const Workspace& workspace, int fit_num)
 {
     const Options& options = workspace.GetOptions();
     CFID yfid = workspace.GetFID();
 	coord_vec fit_list = options.GetFitList();
-    cvm::cvector y = yfid.GetVectorFID(fit_list[0]); //TODO
+    cvm::cvector y = yfid.GetVectorFID(fit_list[fit_num]);
     cvec_stdvec yhat_vec = workspace.GetSignalEstimate();
-    cvm::cvector yhat = yhat_vec[0]; // TODO
+    cvm::cvector yhat = yhat_vec[fit_num];
 	
     std::string title = options.GetTitle();
     
@@ -1133,12 +1133,12 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
     td_conv_ws( RESIDUAL, BASELINE, options.GetBL()*options.GetZF(), 10);	
 
 	const cmat_stdvec& s_vec = workspace.GetBasisMatrix(); // TODO should be a const reference?
-	cvm::cmatrix s = s_vec[0]; // TODO
+	cvm::cmatrix s = s_vec[fit_num];
     
     cvm::cmatrix s_proc(s.msize()*options.GetZF(), s.nsize());
 
 	rvec_stdvec ahat_vec = workspace.GetAmplitudes();
-	cvm::rvector ahat = ahat_vec[0]; // TODO
+	cvm::rvector ahat = ahat_vec[fit_num];
     for ( int n = 1; (n < ahat.size() + 1); n++) 
     {
         cvm::cvector s_temp = s(n);
@@ -1149,7 +1149,8 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
 
     cvm::cmatrix S = fft(s_proc);
     S = fftshift(S);
-	coord voxel(1, 1, 1); // TODO
+
+	coord voxel = fit_list[fit_num];
     cvm::rvector freq_scale = yfid.GetPPMScale(voxel, options.GetZF());
 
     cvm::cmatrix all(S.msize(),S.nsize()+7);

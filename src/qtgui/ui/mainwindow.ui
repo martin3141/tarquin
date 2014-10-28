@@ -460,8 +460,9 @@
      <string>Results</string>
     </property>
     <addaction name="actViewAmplitudes"/>
-    <addaction name="actExport_TXT"/>
+    <addaction name="actExport_PDF"/>
     <addaction name="actExport_CSV"/>
+    <addaction name="actExport_TXT"/>
     <addaction name="actExport_CSV_fit"/>
     <addaction name="actExport_CSV_spectra"/>
     <addaction name="actExport_CSV_spectra_mag"/>
@@ -827,6 +828,11 @@
   <action name="actionExport_window">
    <property name="text">
     <string>Export window</string>
+   </property>
+  </action>
+  <action name="actExport_PDF">
+   <property name="text">
+    <string>Export gnuplot PDF...</string>
    </property>
   </action>
  </widget>
