@@ -182,6 +182,8 @@ private slots:
     void OnExportDPTRaw();
     
     void OnExportDPTProc();
+    
+    void OnExportDPTWater();
 	
     void OnAutoX();
     

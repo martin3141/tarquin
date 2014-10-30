@@ -468,6 +468,7 @@
     <addaction name="actExport_CSV_spectra_mag"/>
     <addaction name="actExport_DPT_raw"/>
     <addaction name="actExport_DPT_proc"/>
+    <addaction name="actExport_DPT_water"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAnalysis"/>
@@ -783,12 +784,12 @@
   </action>
   <action name="actExport_DPT_raw">
    <property name="text">
-    <string>Export raw signal (dpt)...</string>
+    <string>Export raw WS signal (dpt)...</string>
    </property>
   </action>
   <action name="actExport_DPT_proc">
    <property name="text">
-    <string>Export processed signal (dpt)</string>
+    <string>Export processed WS signal (dpt)...</string>
    </property>
   </action>
   <action name="actExport_CSV_spectra">
@@ -833,6 +834,11 @@
   <action name="actExport_PDF">
    <property name="text">
     <string>Export gnuplot PDF...</string>
+   </property>
+  </action>
+  <action name="actExport_DPT_water">
+   <property name="text">
+    <string>Export W signal (dpt)...</string>
    </property>
   </action>
  </widget>

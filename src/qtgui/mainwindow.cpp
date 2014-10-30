@@ -92,6 +92,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
 	connect(m_ui.actExport_CSV_spectra_mag,     SIGNAL(triggered()), this, SLOT(OnExportCSVSpectraMag()));
 	connect(m_ui.actExport_DPT_raw,     SIGNAL(triggered()), this, SLOT(OnExportDPTRaw()));
 	connect(m_ui.actExport_DPT_proc,     SIGNAL(triggered()), this, SLOT(OnExportDPTProc()));
+	connect(m_ui.actExport_DPT_water,     SIGNAL(triggered()), this, SLOT(OnExportDPTWater()));
     
     connect(m_ui.actionAuto_scale_x_axis, SIGNAL(triggered()), this, SLOT(OnAutoX()));
     connect(m_ui.actionAuto_scale_y_axis, SIGNAL(triggered()), this, SLOT(OnAutoY()));
@@ -248,6 +249,32 @@ void MainWindow::OnExportPDF()
 	}
 }
 
+void MainWindow::OnExportDPTWater()
+{
+    if( !m_session )
+    {
+    	QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to load some data before you can export."));
+		return;
+    }
+    
+
+    if ( m_session->GetWorkspace().GetOptions().GetFilenameWater() == "" && !m_session->GetWorkspace().GetFIDRaw().GetCWF() )
+    {
+		QMessageBox::information(this, tr("Can't export"), 
+				tr("Water data is not avaiable for this voxel."));
+		return;
+    }
+
+    QString file = QFileDialog::getSaveFileName(this, tr("Export DPT"), "", tr("DPT Files (*.dpt)"));
+
+	if( !file.size() )
+		return;
+
+    tarquin::CFID fidwater = m_session->GetWorkspace().GetFIDWater();
+    int num = fidwater.vox2ind(m_session->m_voxel);
+    fidwater.SaveToFile(file.toStdString(),num);
+}
 
 void MainWindow::OnExportDPTRaw()
 {
