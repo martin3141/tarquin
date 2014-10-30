@@ -264,22 +264,22 @@ void MainWindow::OnExportDPT(bool processed)
     if( !m_session )
     {
     	QMessageBox::information(this, tr("No Data Ready"), 
-				tr("You need to generate some results before you can export."));
+				tr("You need to load some data before you can export."));
 		return;
     }
 
-    if ( !m_session->data_preprocessed )
+    if ( !m_session->data_preprocessed && processed )
 	{
 		QMessageBox::information(this, tr("No Data Ready"), 
-				tr("You need to preprocess spectra before you can export to dpt."));
+				tr("You need to pre-process spectra before you can export to dpt."));
 		return;
 	}
 
     // check this voxel is in the fit list
-    if ( !m_session->m_in_fit_list )
+    if ( !m_session->m_in_fit_list && processed )
 	{
 		QMessageBox::information(this, tr("Can't export"), 
-				tr("This voxel has not been processed."));
+				tr("This voxel has not been pre-processed."));
 		return;
 	}
 
@@ -302,14 +302,16 @@ void MainWindow::OnExportDPT(bool processed)
             // "hard" applied to fidproc
             fidproc.SetPhi0(m_session->m_voxel,0.0);
             fidproc.SetPhi1(m_session->m_voxel,0.0);
-            fidproc.SaveToFile(file.toStdString(),m_session->m_fit_number);
+            int num = fidproc.vox2ind(m_session->m_voxel);
+            fidproc.SaveToFile(file.toStdString(),num);
         }
         else
         {
             fid.SetPhi0(m_session->m_voxel,fidproc.GetPhi0(m_session->m_voxel));
             fid.SetPhi1(m_session->m_voxel,fidproc.GetPhi1(m_session->m_voxel));
             fid.SetPPMRef(m_session->m_voxel,fidproc.GetPPMRef(m_session->m_voxel));
-            fid.SaveToFile(file.toStdString(),m_session->m_fit_number);
+            int num = fid.vox2ind(m_session->m_voxel);
+            fid.SaveToFile(file.toStdString(),num);
         }
 
 		InfoDialog(this, tr("Success"), tr("File was exported to: ") + file);

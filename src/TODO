@@ -12,6 +12,7 @@ Version 4.3.5
 - Bug fix for where dynamic WS scans didn't match W scans.
 - Added c/l option to estimate CRLB noise level from the frequency domain (--crlb_td false).
 - Added gnuplot pdf export option to the GUI.
+- Bug fix for exporting single voxel (dpt) from MRSI set.
 
 Version 4.3.4
 - FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large MRSI datasets (--trunc_pts).
