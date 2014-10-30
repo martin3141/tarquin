@@ -87,6 +87,8 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
 	connect(m_ui.actExport_PDF,     SIGNAL(triggered()), this, SLOT(OnExportPDF()));
 	connect(m_ui.actExport_TXT,     SIGNAL(triggered()), this, SLOT(OnExportTXT()));
 	connect(m_ui.actExport_CSV,     SIGNAL(triggered()), this, SLOT(OnExportCSV()));
+	connect(m_ui.actExport_CSV_SV,     SIGNAL(triggered()), this, SLOT(OnExportCSV_SV()));
+	connect(m_ui.actExport_CSV_fit_SV,     SIGNAL(triggered()), this, SLOT(OnExportCSVFit_SV()));
 	connect(m_ui.actExport_CSV_fit,     SIGNAL(triggered()), this, SLOT(OnExportCSVFit()));
 	connect(m_ui.actExport_CSV_spectra,     SIGNAL(triggered()), this, SLOT(OnExportCSVSpectra()));
 	connect(m_ui.actExport_CSV_spectra_mag,     SIGNAL(triggered()), this, SLOT(OnExportCSVSpectraMag()));
@@ -229,6 +231,13 @@ void MainWindow::OnExportPDF()
 		return;
 	}
 
+    if ( !m_session->m_in_fit_list )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("This voxel has not been analysed."));
+		return;
+	}
+
 	QString file = QFileDialog::getSaveFileName(this, tr("Export PDF"), "", tr("PDF Files (*.pdf)"));
 
 	if( !file.size() )
@@ -349,6 +358,51 @@ void MainWindow::OnExportDPT(bool processed)
 	}
 }
 
+void MainWindow::OnExportCSV_SV()
+{
+    if( !m_session )
+    {
+    	QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+    }
+
+	if( !m_session->FitAvailable() )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+	}
+
+    if ( !m_session->m_in_fit_list )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("This voxel has not been analysed."));
+		return;
+	}
+
+    
+	QString file = QFileDialog::getSaveFileName(this, tr("Export CSV"), "", tr("CSV Files (*.csv)"));
+
+	if( !file.size() )
+		return;
+
+    // export the data
+	try
+	{
+
+	    int num = m_session->m_fit_number;
+		ExportCsvResults(file.toStdString(), m_session->GetWorkspace(), num);
+
+		InfoDialog(this, tr("Success"), tr("File was exported to: ") + file);
+	}
+	catch( const std::exception& e )
+	{
+		ErrorDialog(this, tr("Error Exporting File"), tr("There was an error: ") + e.what());
+	}
+
+}
+
 void MainWindow::OnExportCSV()
 {
     if( !m_session )
@@ -461,6 +515,62 @@ void MainWindow::OnExportCSVSpectra()
 	}
 
 }
+
+void MainWindow::OnExportCSVFit_SV()
+{
+    if( !m_session )
+    {
+    	QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+    }
+    
+    // have we done a fit yet? 
+    if( !m_session->data_fitted )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+	}
+
+    if ( !m_session->m_in_fit_list )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("This voxel has not been analysed."));
+		return;
+	}
+    
+    // check there is at least one voxel to plot
+    tarquin::Workspace& workspace = m_session->GetWorkspace();
+	tarquin::Options& options = workspace.GetOptions();
+	std::vector<tarquin::coord>& fit_list = options.GetFitList();
+    if ( fit_list.size() == 0 )
+    {
+        QMessageBox::information(this, tr("CSV export stopped"), 
+			tr("Fit list empty. Please choose some voxels to be fit first."));
+        return;
+    }
+
+	QString file = QFileDialog::getSaveFileName(this, tr("Export CSV"), "", tr("CSV Files (*.csv)"));
+
+	if( !file.size() )
+		return;
+    
+    // export the data
+	try
+	{
+	    int num = m_session->m_fit_number;
+        ExportCsvFit(file.toStdString(), m_session->GetWorkspace(), num);
+
+		InfoDialog(this, tr("Success"), tr("File was exported to: ") + file);
+	}
+	catch( const std::exception& e )
+	{
+		ErrorDialog(this, tr("Error Exporting File"), tr("There was an error: ") + e.what());
+	}
+
+}
+
 
 void MainWindow::OnExportCSVFit()
 {

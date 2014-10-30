@@ -170,8 +170,12 @@ private slots:
 	void OnExportTXT();
 
 	void OnExportCSV();
+	
+    void OnExportCSV_SV();
 
 	void OnExportCSVFit();
+	
+    void OnExportCSVFit_SV();
 	
     void OnExportCSVSpectra();
     

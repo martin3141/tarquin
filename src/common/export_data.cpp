@@ -152,7 +152,7 @@ void ExportCsvSpectrum(const std::string& strFilename, const Workspace& workspac
     }
 }
 
-void ExportCsvFit(const std::string& strFilename, const Workspace& workspace)
+void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, int num)
 {
 	// create a new options 
 	Options options = workspace.GetOptions();
@@ -165,6 +165,8 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace)
     
     for ( size_t p = 0; p < yhat_vec.size(); p++ )
     {
+        if ( num == -1 || num == p )
+        {
 
         fout << "Row : " << fit_list[p].row << ", Col : " << fit_list[p].col << ", Slice : " << fit_list[p].slice << std::endl;
 
@@ -251,9 +253,10 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace)
             fout << std::endl;
         }
     }
+    }
 }
 
-void ExportCsvResults(const std::string& strFilename, const Workspace& workspace)
+void ExportCsvResults(const std::string& strFilename, const Workspace& workspace, int num)
 {
     const CBasis& basis     = workspace.GetBasis();
 	const rvec_stdvec ahat  = workspace.GetAmplitudesNormalised();
@@ -299,6 +302,9 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     size_t fit = 0;
 	for( rvec_stdvec::const_iterator i = ahat.begin(); i != ahat.end(); ++i )	
 	{
+        if ( num == -1 || num == fit )
+        {
+
 		// write the voxel info
 		fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
 		double tempamp = 0;
@@ -344,6 +350,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
             }
             fout << tempamp << std::endl;
         }
+        }
 
 		// move to the next voxel
 		i_coord++;
@@ -377,6 +384,8 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     fit = 0;
 	for( rvec_stdvec::const_iterator i = crlb.begin(); i != crlb.end(); ++i )	
 	{
+        if ( num == -1 || num == fit )
+        {
 		// write the voxel info
 		fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
 		double tempamp = 0;
@@ -425,6 +434,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 
 
 		// move to the next voxel
+        }
 		i_coord++;
         fit++;
 	}
@@ -489,6 +499,8 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     fit = 0;
 	for( coord_vec::const_iterator i_coord = options.GetFitList().begin(); i_coord != options.GetFitList().end(); ++i_coord )	
 	{
+        if ( num == -1 || num == fit )
+        {
         std::string stop;
         // find out the reason for stopping
         if( 1 == info[fit][6] )
@@ -507,6 +519,8 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
 		// write the voxel info
 		fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
         fout << *i_Q << "," << *i_Q_rel << "," << *i_metab_rat << "," << *i_peak_metab_rat << "," << *i_metab_fwhm << "," << *i_metab_fwhm * (yfid.GetTransmitterFrequency() / 1.0e6) << "," << (*i_snr).first << "," << *i_Q*(*i_snr).first << "," <<  *i_metab_snr << "," << *i_spec_noise << "," << *i_td_noise << "," << yfid.GetPPMRef(*i_coord) << "," << options.GetInitBetaUsed(fit) << "," << workspace.GetParas(fit)(nIdxBeta) << "," << pow(-workspace.GetParas(fit)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "," << yfid.GetPhi0(*i_coord)*180/M_PI << "," << -yfid.GetPhi1(*i_coord) * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI  << "," << workspace.GetNormalisationValue()[fit] << "," << workspace.GetWaterWidth(fit) << "," << workspace.GetWaterWidth(fit)/(yfid.GetTransmitterFrequency()/1.0e6) << "," << workspace.GetWaterFreq(fit) << "," << *i_BLV << ","<< *i_max_bl << "," << *i_min_bl << "," << *i_BLS << "," << info[fit][0] << "," << info[fit][1] << "," << stop << std::endl;
+
+        }
 
         // advance to the next voxel
         ++i_Q;
@@ -533,6 +547,9 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
     fit = 0;
     for( coord_vec::const_iterator i_coord = options.GetFitList().begin(); i_coord != options.GetFitList().end(); ++i_coord )	
     {
+        if ( num == -1 || num == fit )
+        {
+
         int basis_cnt = 1;
         int group_cnt = 0;
         for( integer c = 1; c <= M; c++ ) 
@@ -549,6 +566,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
             }
             fout << (*i_coord).row << "," << (*i_coord).col << "," << (*i_coord).slice << ","; 
             fout << signal_names[i-1] << "," << group_cnt << "," << -workspace.GetParas(fit)(nIdxShift) / yfid.GetTransmitterFrequency() * 1e6 << "," << workspace.GetParas(fit)(nIdxAlpha)/M_PI << std::endl;
+        }
         }
         fit++;
     }

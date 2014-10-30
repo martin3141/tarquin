@@ -460,15 +460,19 @@
      <string>Results</string>
     </property>
     <addaction name="actViewAmplitudes"/>
-    <addaction name="actExport_PDF"/>
     <addaction name="actExport_CSV"/>
     <addaction name="actExport_TXT"/>
     <addaction name="actExport_CSV_fit"/>
     <addaction name="actExport_CSV_spectra"/>
     <addaction name="actExport_CSV_spectra_mag"/>
+    <addaction name="separator"/>
     <addaction name="actExport_DPT_raw"/>
     <addaction name="actExport_DPT_proc"/>
     <addaction name="actExport_DPT_water"/>
+    <addaction name="separator"/>
+    <addaction name="actExport_PDF"/>
+    <addaction name="actExport_CSV_SV"/>
+    <addaction name="actExport_CSV_fit_SV"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAnalysis"/>
@@ -590,7 +594,7 @@
   </action>
   <action name="actViewAmplitudes">
    <property name="text">
-    <string>Fitted amplitudes...</string>
+    <string>Display fitted amplitudes...</string>
    </property>
   </action>
   <action name="actExport_TXT">
@@ -833,12 +837,22 @@
   </action>
   <action name="actExport_PDF">
    <property name="text">
-    <string>Export gnuplot PDF...</string>
+    <string>Export gnuplot PDF (selected vox)...</string>
    </property>
   </action>
   <action name="actExport_DPT_water">
    <property name="text">
     <string>Export W signal (dpt)...</string>
+   </property>
+  </action>
+  <action name="actExport_CSV_SV">
+   <property name="text">
+    <string>Export CSV results (selected vox)...</string>
+   </property>
+  </action>
+  <action name="actExport_CSV_fit_SV">
+   <property name="text">
+    <string>Export CSV fit (selected vox)...</string>
    </property>
   </action>
  </widget>

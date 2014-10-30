@@ -13,7 +13,8 @@ Version 4.3.5
 - Added c/l option to estimate CRLB noise level from the frequency domain (--crlb_td false).
 - Added gnuplot pdf export option to the GUI.
 - Bug fix for exporting single voxel (dpt) from an MRSI set.
-- Exporting single voxel water data from an MRSI set in now possible in the GUI.
+- Exporting single voxel water data from an MRSI data set in now possible in the GUI.
+- Added GUI options to export single voxel CSV results and fit from an MRSI data set.
 
 Version 4.3.4
 - FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large MRSI datasets (--trunc_pts).
