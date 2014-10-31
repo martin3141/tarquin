@@ -116,6 +116,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
     connect(m_ui.load_mri, SIGNAL(pressed()), this, SLOT(OnLoadMRI()));
     connect(m_ui.ww_wl, SIGNAL(pressed()), this, SLOT(OnWWLL()));
     connect(m_ui.hide_grid, SIGNAL(clicked()), this, SLOT(OnHideGrid()));
+    connect(m_ui.hide_lines, SIGNAL(clicked()), this, SLOT(OnHideLines()));
     connect(m_ui.hide_mri, SIGNAL(clicked()), this, SLOT(OnHideMRI()));
     connect(m_ui.set_trans, SIGNAL(clicked()), this, SLOT(OnSetTrans()));
     
@@ -142,6 +143,8 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
     m_ui.slice_slider->setEnabled(false);
     m_ui.slice_spin->setEnabled(false);
     m_ui.hide_grid->setEnabled(false);
+    m_ui.hide_lines->setEnabled(true);
+    m_ui.hide_mri->setEnabled(false);
     m_ui.set_trans->setEnabled(false);
 
 
@@ -973,6 +976,8 @@ void MainWindow::OnFileOpenFID()
     m_ui.slice_slider->setEnabled(true);
     m_ui.slice_spin->setEnabled(true);
     m_ui.hide_grid->setEnabled(true);
+    m_ui.hide_lines->setEnabled(true);
+    m_ui.hide_mri->setEnabled(true);
     m_ui.set_trans->setEnabled(true);
 
 	// set the window title
@@ -984,7 +989,7 @@ void MainWindow::OnFileOpenFID()
     int cols = m_session->GetWorkspace().GetFID().GetCols();
     int slices = m_session->GetWorkspace().GetFID().GetSlices();
         
-    /*if ( ( rows == 1 ) && ( cols == 1 ) && ( slices == 1 ) )
+    if ( ( rows == 1 ) && ( cols == 1 ) && ( slices == 1 ) )
     {
         QList<int> ratio;
         ratio.append(1);
@@ -997,12 +1002,12 @@ void MainWindow::OnFileOpenFID()
         ratio.append(1);
         ratio.append(1);
         m_ui.splitter_main->setSizes(ratio);
-    }*/
+    }
 
-    QList<int> ratio;
+    /*QList<int> ratio;
     ratio.append(1);
     ratio.append(1);
-    m_ui.splitter_main->setSizes(ratio);
+    m_ui.splitter_main->setSizes(ratio);*/
     
     OnVoxelChange();
     //OnEditFin();
@@ -1924,6 +1929,26 @@ void MainWindow::OnHideGrid()
     OnVoxelChange(false);
 }
 
+void MainWindow::OnHideLines()
+{
+    if ( m_ui.hide_lines->isChecked() )
+    {
+        m_view->std_vox_pen = Qt::NoPen;
+        m_view->in_fit_list_pen = Qt::NoPen;
+    }
+    else
+    {
+        m_view->std_vox_pen = QPen(Qt::white,0.2);
+        m_view->std_vox_pen.setJoinStyle(Qt::MiterJoin);
+        m_view->std_vox_pen.setStyle(Qt::DotLine);
+        m_view->in_fit_list_pen = QPen(Qt::white,0.4);
+        m_view->in_fit_list_pen.setJoinStyle(Qt::MiterJoin);
+    }
+
+    UpdateGeom();
+    OnVoxelChange(false);
+}
+
 void MainWindow::OnHideMRI()
 {
     UpdateGeom();
@@ -2476,17 +2501,19 @@ MyGraphicsScene::MyGraphicsScene ( QWidget * parent )
 MyGraphicsView::MyGraphicsView ( QWidget * parent )
 : QGraphicsView(parent) 
 {
-    selected_pen = QPen(Qt::white,0.6);
+    selected_pen = QPen(Qt::red,0.6);
+    selected_pen.setStyle(Qt::DotLine);
     selected_pen.setJoinStyle(Qt::MiterJoin);
     selected_brush = QBrush(Qt::black);
 
     std_vox_pen = QPen(Qt::white,0.2);
+    //std_vox_pen = Qt::NoPen;
     std_vox_pen.setJoinStyle(Qt::MiterJoin);
     std_vox_pen.setStyle(Qt::DotLine);
-    //std_vox_pen = Qt::NoPen;
     std_vox_brush = QBrush(Qt::black);
 
-    in_fit_list_pen = QPen(Qt::black,0.4);
+    in_fit_list_pen = QPen(Qt::white,0.4);
+    //in_fit_list_pen = Qt::NoPen;
     in_fit_list_pen.setJoinStyle(Qt::MiterJoin);
     in_fit_list_brush = QBrush(Qt::yellow);
 }

@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1171</width>
+    <width>1252</width>
     <height>612</height>
    </rect>
   </property>
@@ -261,6 +261,16 @@
             </widget>
            </item>
            <item>
+            <widget class="QToolButton" name="hide_lines">
+             <property name="text">
+              <string>Hide lines</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QToolButton" name="hide_mri">
              <property name="text">
               <string>Hide MRI</string>
@@ -369,7 +379,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1171</width>
+     <width>1252</width>
      <height>25</height>
     </rect>
    </property>

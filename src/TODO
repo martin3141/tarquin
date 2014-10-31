@@ -16,6 +16,7 @@ Version 4.3.5
 - Exporting single voxel water data from an MRSI data set is now possible in the GUI.
 - Added GUI options to export single voxel CSV results and fit from an MRSI data set.
 - Added a command line option to freq referece to a single specified peak frequency (--ref_freq).
+- Improved GUI defaults for displaying MRSI maps and added option to remove grid lines.
 
 Version 4.3.4
 - FIDs can be truncated prior to pre-processing to remove unecessary noisy data points - saving memory and disk space for large MRSI datasets (--trunc_pts).

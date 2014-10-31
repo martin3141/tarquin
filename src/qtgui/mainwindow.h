@@ -211,6 +211,8 @@ private slots:
     
     void OnHideGrid();
     
+    void OnHideLines();
+    
     void OnHideMRI();
     
     void OnSetTrans();

@@ -28,7 +28,7 @@ Session::Session(MainWindow* parent) :
     data_preprocessed = false;
     data_fitted = false;
     mri_loaded = false;
-    grid_trans = 0;
+    grid_trans = 70;
 }
 
 
