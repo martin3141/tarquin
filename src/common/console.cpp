@@ -33,6 +33,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--auto_ref          {true | false}";
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
 	std::cout << "\n\t--max_phi1          the value of phi1_max/fs/2";
+	std::cout << "\n\t--ref_freq          frequency of a single peak to be used for auto referencing (ppm)";
 	std::cout << "\n\t--ref_file          CSV file containing reference peak list";
 	std::cout << "\n\t--ref_signals       {1h_naa_cr_cho_lip | 1h_naa_cho | 1h_naa_cr_cho | 1h_cr_cho | 1h_naa | 1h_cr | 1h_cho | 1h_h2o | 1h_lip | 31p_pcr | 31p_pcr_gammaapt}";
 	std::cout << "\n\t--dref_signals      reference signals for dynamic frequency correction, options as above";
