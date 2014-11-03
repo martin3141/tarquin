@@ -576,6 +576,12 @@ void tarquin::residual_objective_all(
     }
     //
 	//nnls.solve(params.m_Sp, params.m_yActive, params.m_ahat, true);
+    
+    /*for ( int n = 1; n < params.m_ahat.size() + 1; n++ ) 
+    {
+        if ( params.m_ahat[n] == 0 )
+            params.m_ahat[n] = 1e-7;
+    }*/
 	
     // estimate signal - yhat (shares memory with px provided by levmar)
 	cvm::rvector yhat( px, 2*nActive );
