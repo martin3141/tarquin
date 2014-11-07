@@ -893,6 +893,12 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 			options.m_strFileOutCSV = strVal;
 		}
+
+		// path for csv results 
+		else if( strKey == "--output_csv_geom" ) {
+
+			options.m_strFileOutCSVGeom = strVal;
+		}
         
         // path for csv results 
 		else if( strKey == "--output_fit" ) {
@@ -1252,6 +1258,13 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_bNofit = true;
 			else
 				options.m_bNofit = false;
+		}
+
+		else if( strKey == "--read_only" ) {
+			if( strVal == "true" )
+				options.m_bReadOnly = true;
+			else
+				options.m_bReadOnly = false;
 		}
 
 		// comma seperated list of signals to be plotted (no spaces allowed!)

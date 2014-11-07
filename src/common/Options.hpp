@@ -137,6 +137,7 @@ namespace tarquin
 	    m_basis_comp = true;
         m_bPrintParas = false;
         m_bNofit = false;
+        m_bReadOnly = false;
 
         m_ppm_start = 0.2; // ppm left
         m_ppm_end = 4.0; // ppm right
@@ -719,6 +720,11 @@ namespace tarquin
 	    return m_strFileOutCSV;
 	}
 
+	std::string GetFilenameCSVGeom() const
+	{
+	    return m_strFileOutCSVGeom;
+	}
+
     std::string GetFilenameCSVSpectraAligned() const
     {
 	    return m_strFileOutCSVSpectraAligned;
@@ -1124,6 +1130,11 @@ namespace tarquin
 	    return m_bNofit;
 	}
 
+    bool GetReadOnly() const
+	{
+	    return m_bReadOnly;
+	}
+
 	bool GetShowPreprocessed() const
 	{
 	    return m_bShowPreprocessed;
@@ -1494,6 +1505,9 @@ namespace tarquin
 	//! Don't do the fitting part
     bool m_bNofit;
     
+    //! Read data in only
+    bool m_bReadOnly;
+    
     //! Adaptive start point
 	bool m_bAdaptSp;
 	
@@ -1562,6 +1576,9 @@ namespace tarquin
 
 	//! The name of the csv output file
 	std::string m_strFileOutCSV;
+	
+	//! The name of the csv output file for geometery 
+    std::string m_strFileOutCSVGeom;
 	
 	//! The name of the csv fit output file
     std::string m_strFileOutCSVFit;

@@ -88,6 +88,10 @@ int main(int argc, char* argv[])
 		    fidraw.Load(options.GetFilename(), options, workspace, log);
         }
 
+        if ( options.GetFilenameCSVGeom() != "" )
+        {
+            ExportCsvGeom(options.GetFilenameCSVGeom(), workspace);
+        }
 
         // are we passing control to the export paras code?
         if( options.GetPrintParas() == true ) 
@@ -142,9 +146,10 @@ int main(int argc, char* argv[])
             }
             else
                 std::cout << "Unknown" << std::endl;
-
-            return 0;
         }
+        
+        if ( options.GetReadOnly() )
+            return 0;
         
         // looks like the main algorithm is being run so display the splash
         DisplaySplash();

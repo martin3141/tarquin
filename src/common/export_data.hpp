@@ -16,6 +16,8 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, in
 
 void ExportCsvResults(const std::string& strFilename, const Workspace& workspace, int num = -1);
 
+void ExportCsvGeom(const std::string& strFilename, const Workspace& workspace);
+
 void ExportTxtResults(const std::string& strFilename, const Workspace& workspace);
 
 void ExportPdfResults(const std::string& strFilename, const Workspace& workspace, int fit_num = 0);

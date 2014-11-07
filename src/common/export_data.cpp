@@ -256,6 +256,59 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, in
     }
 }
 
+void ExportCsvGeom(const std::string& strFilename, const Workspace& workspace)
+{
+    const CFID& yfid        = workspace.GetFID();
+
+	std::ofstream fout(strFilename.c_str(), std::ios::out);
+	fout << std::showpoint;
+	fout << std::scientific;
+
+    fout << "Geometry parameters" << std::endl;
+    fout << "Rows," << yfid.GetRows() << std::endl;
+    fout << "Cols," << yfid.GetCols() << std::endl;
+    fout << "Slices," << yfid.GetSlices() << std::endl;
+
+    if ( yfid.IsKnownVoxelDim() )
+    {
+        const std::vector<double>& voxel_dim = yfid.GetVoxelDim();
+        fout << "PixelSpacing," << voxel_dim[0] << "\\" << voxel_dim[1] << std::endl;
+        fout << "SliceThickness," << voxel_dim[2] << std::endl;
+    }
+    else
+    {
+        fout << "PixelSpacing,Unknown" << std::endl;
+        fout << "SliceThickness,Unknown" << std::endl;
+    }
+    
+    if ( yfid.IsKnownRowDirn() && yfid.IsKnownColDirn() )
+    {
+        fout << "ImageOrientationPatient,";
+        std::string row_ori_str;
+        rvec2str(yfid.GetRowDirn(),row_ori_str);
+        std::string col_ori_str;
+        rvec2str(yfid.GetColDirn(),col_ori_str);
+        fout << row_ori_str + "\\" + col_ori_str << std::endl;
+    }
+    else
+    {
+        fout << "ImageOrientationPatient,Unknown" << std::endl;
+    }
+
+
+    if ( yfid.IsKnownPos() )
+    {
+        fout << "ImagePositionPatient,";
+        std::string pos_str;
+        rvec2str(yfid.GetPos(), pos_str);
+        fout << pos_str << std::endl;
+    }
+    else
+    {
+        fout << "ImagePositionPatient,Unknown" << std::endl;
+    }
+}
+
 void ExportCsvResults(const std::string& strFilename, const Workspace& workspace, int num)
 {
     const CBasis& basis     = workspace.GetBasis();
