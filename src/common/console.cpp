@@ -25,6 +25,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--max_iters         maximum number of iterations to perform";
 	std::cout << "\n\t--water_width       width of hsvd in hz";
 	std::cout << "\n\t--hsvd_comp         number of components in the hsvd decomp";
+	std::cout << "\n\t--max_hsvd_pts      max number of pts used in the hsvd decomp";
 	std::cout << "\n\t--conv_width        width of convolution window in points";
 	std::cout << "\n\t--lipid_filter      {true | false} remove signals upfield of 1.8ppm in hsvd";
 	std::cout << "\n\t--lipid_filter_freq Set ppm of lipid filter";
@@ -970,6 +971,18 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			// convert string to number and check for errors
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_hsvd_comps;
+
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+		}
+
+		else if( strKey == "--max_hsvd_pts" ) {
+
+			// convert string to number and check for errors
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> options.m_max_hsvd_pts;
 
 			if( iss.fail() ) {
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;

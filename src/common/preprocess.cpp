@@ -111,8 +111,8 @@ void tarquin::Preprocessor::operator() ()
 			cvm::cvector ahat;
 
 			int pts; 
-			if ( fidraw.GetNumberOfPoints() > 1024 )
-				pts = 1024;
+			if ( fidraw.GetNumberOfPoints() > options.GetMaxHSVDPts() )
+				pts = options.GetMaxHSVDPts();
 			else
 				pts = fidraw.GetNumberOfPoints();
 
@@ -368,8 +368,8 @@ void tarquin::Preprocessor::operator() ()
 			cvm::cvector ahat;
 
 			int pts; 
-			if ( fidraw.GetNumberOfPoints() > 1024 )
-				pts = 1024;
+			if ( fidraw.GetNumberOfPoints() > options.GetMaxHSVDPts() )
+				pts = options.GetMaxHSVDPts();
 			else
 				pts = fidraw.GetNumberOfPoints();
 
@@ -420,8 +420,8 @@ void tarquin::Preprocessor::operator() ()
 			cvm::cvector ahat;
 
 			int pts; 
-			if ( fidraw.GetNumberOfPoints() > 1024 )
-				pts = 1024;
+			if ( fidraw.GetNumberOfPoints() > options.GetMaxHSVDPts() )
+				pts = options.GetMaxHSVDPts();
 			else
 				pts = fidraw.GetNumberOfPoints();
             

@@ -205,6 +205,7 @@ namespace tarquin
 
         m_ext_csv_fit = true;
         m_hsvd_comps = 50;
+        m_max_hsvd_pts = 1024;
         m_crlb_td = true;
         m_nnls = true;
         m_soft_cons = true;
@@ -410,6 +411,11 @@ namespace tarquin
     treal GetHSVDComps() const
 	{
 	    return m_hsvd_comps;
+	}
+
+    treal GetMaxHSVDPts() const
+	{
+	    return m_max_hsvd_pts;
 	}
 
     bool GetCRLB_TD() const
@@ -1608,7 +1614,8 @@ namespace tarquin
     bool m_replace_fp;
     bool m_ext_csv_fit;
     int m_truncate_pts;
-    treal m_hsvd_comps;
+    int m_hsvd_comps;
+    int m_max_hsvd_pts;
     bool m_crlb_td;
     bool m_nnls;
     bool m_soft_cons;
