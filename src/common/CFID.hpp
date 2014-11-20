@@ -813,13 +813,17 @@ class CFID
             //std::cout << m_rows << std::endl;
             // create a new fid list
             cvec_stdvec new_list;
-            for ( int col = 1; col < m_rows + 1; col++ )
+
+            for ( int slice = 1; slice < m_slices + 1; slice++ )
             {
-                for ( int row = 1; row < m_cols + 1; row++ )
+                for ( int col = 1; col < m_rows + 1; col++ )
                 {
-	                coord spec_num(col, row, 1); 
-                    //std::cout << vox2ind(spec_num) << std::endl;
-                    new_list.push_back(m_cvmFID[vox2ind(spec_num)]);
+                    for ( int row = 1; row < m_cols + 1; row++ )
+                    {
+                        coord spec_num(col, row, slice); 
+                        //std::cout << vox2ind(spec_num) << std::endl;
+                        new_list.push_back(m_cvmFID[vox2ind(spec_num)]);
+                    }
                 }
             }
             m_cvmFID = new_list;

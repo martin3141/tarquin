@@ -2,6 +2,18 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+3D MRSI stuff
+- Test k-space filling for 3D datasets.
+- Test trans_kspace function
+- Test Philips DICOM
+- Test Philips SPAR/SDAT
+- Test Siemens DICOM 
+- Test Siemens IMA
+- Test Siemens RDA
+- Bug checking
+- Check slice direction is correct way round
+
+
 Version 4.3.5
 - Bug fix for GE p-files Rdb reader rev : 14.3 and 16.0 where the offset to data was incorrect by one frame. This caused a crash at the reconstruction stage.
 - Internal basis set option for 'braino' phantoms has now been added.

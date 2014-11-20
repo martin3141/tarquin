@@ -2984,7 +2984,7 @@ void MainWindow::UpdateGeom()
                     Eigen::Vector3d offset;
                     offset << 0, 0, 0;
 
-                    offset =  col*mrs_row_dim*mrs_row_dir + row*mrs_col_dim*mrs_col_dir;
+                    offset =  col*mrs_row_dim*mrs_row_dir + row*mrs_col_dim*mrs_col_dir + slice*mrs_slice_dim*mrs_slice_dir;
 
                     std::vector<Point> vox_points;
 

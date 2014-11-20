@@ -85,60 +85,65 @@ void tarquin::CFID::ShiftGrid(double row_shift, double col_shift, double slice_s
 
 void tarquin::CFID::trans_kspace(Options& options, CBoswell& log)
 {
-
     log.LogMessage(LOG_INFO, "Transforming to k-space");
 
-    // convert FID array into k-space planes, one per time point,
-    // by performing the 2D fft
-    cmat_stdvec kspace;
-    for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
-    {
-        //std::cout << std::endl << m_rows << " " << m_cols << std::endl;
-        cvm::cmatrix temp_mat(m_rows, m_cols);
-        for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
-        {
-            for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
-            {
-
-	            coord voxel(row, col, 1); 
-                cvm::cvector& temp_fid = GetVectorFID(voxel);
-                temp_mat(row, col) = temp_fid(time_pt);
-            }
-        }
-
-        // 2D ifft on temp_mat
-        temp_mat = ifft(temp_mat);
-        temp_mat = fftshift(temp_mat);
-        // transpose
-        cvm::cmatrix temp_mat_trans = ~temp_mat;
-        cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
-        temp_mat_trans = temp_mat_conj;
-        temp_mat_trans = ifft(temp_mat_trans);
-        temp_mat_trans = fftshift(temp_mat_trans);
-        // transpose back
-        temp_mat = ~temp_mat_trans;
-        cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
-        temp_mat = temp_mat_conj2;
-
-        kspace.push_back(temp_mat);
-    }
-    
     // convert zfilled k-space back to fid list
     cvec_stdvec new_fid;
 
-    cvm::cmatrix temp_mat(m_rows, m_cols);
-    for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+    for ( size_t slice = 1; slice < ( m_slices + 1 ); slice++ )
     {
-        for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+
+        // convert FID array into k-space planes, one per time point,
+        // by performing the 2D fft
+        cmat_stdvec kspace;
+        for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
         {
-            cvm::cvector temp_fid(m_nPoints);
-            for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+            //std::cout << std::endl << m_rows << " " << m_cols << std::endl;
+            cvm::cmatrix temp_mat(m_rows, m_cols);
+            for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
             {
-                temp_fid(time_pt) = kspace[time_pt-1](row,col);
+                for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+                {
+
+                    coord voxel(row, col, slice); 
+                    cvm::cvector& temp_fid = GetVectorFID(voxel);
+                    temp_mat(row, col) = temp_fid(time_pt);
+                }
             }
-            new_fid.push_back(temp_fid);
+
+            // 2D ifft on temp_mat
+            temp_mat = ifft(temp_mat);
+            temp_mat = fftshift(temp_mat);
+            // transpose
+            cvm::cmatrix temp_mat_trans = ~temp_mat;
+            cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
+            temp_mat_trans = temp_mat_conj;
+            temp_mat_trans = ifft(temp_mat_trans);
+            temp_mat_trans = fftshift(temp_mat_trans);
+            // transpose back
+            temp_mat = ~temp_mat_trans;
+            cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
+            temp_mat = temp_mat_conj2;
+
+            kspace.push_back(temp_mat);
+        }
+
+
+        cvm::cmatrix temp_mat(m_rows, m_cols);
+        for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+        {
+            for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+            {
+                cvm::cvector temp_fid(m_nPoints);
+                for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+                {
+                    temp_fid(time_pt) = kspace[time_pt-1](row,col);
+                }
+                new_fid.push_back(temp_fid);
+            }
         }
     }
+
     m_cvmFID = new_fid;
 }
 
@@ -147,71 +152,97 @@ void tarquin::CFID::zfill_kspace(size_t factor, Options& options, CBoswell& log)
 
     log.LogMessage(LOG_INFO, "Z-filling k-space");
 
-    // convert FID array into k-space planes, one per time point,
-    // by performing the 2D fft
-    cmat_stdvec zfill_kspace;
-    for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
-    {
-        //std::cout << std::endl << m_rows << " " << m_cols << std::endl;
-        cvm::cmatrix temp_mat(m_rows, m_cols);
-        for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
-        {
-            for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
-            {
 
-	            coord voxel(row, col, 1); 
-                cvm::cvector& temp_fid = GetVectorFID(voxel);
-                temp_mat(row, col) = temp_fid(time_pt);
+    cvec_stdvec new_fid;
+    for ( size_t slice = 1; slice < ( m_slices + 1 ); slice++ )
+    {
+
+        // convert FID array into k-space planes, one per time point,
+        // by performing the 2D fft
+        cmat_stdvec zfill_kspace;
+        for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+        {
+            //std::cout << std::endl << m_rows << " " << m_cols << std::endl;
+            cvm::cmatrix temp_mat(m_rows, m_cols);
+            for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+            {
+                for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+                {
+
+                    coord voxel(row, col, slice); 
+                    cvm::cvector& temp_fid = GetVectorFID(voxel);
+                    temp_mat(row, col) = temp_fid(time_pt);
+                }
             }
+
+            // 2D ifft on temp_mat
+            temp_mat = ifft(temp_mat);
+            temp_mat = fftshift(temp_mat);
+            // transpose
+            cvm::cmatrix temp_mat_trans = ~temp_mat;
+            cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
+            temp_mat_trans = temp_mat_conj;
+            temp_mat_trans = ifft(temp_mat_trans);
+            temp_mat_trans = fftshift(temp_mat_trans);
+            // transpose back
+            temp_mat = ~temp_mat_trans;
+            cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
+            temp_mat = temp_mat_conj2;
+
+            /*cvm::cvector plot_vec1(m_rows);
+              plot_vec1 = temp_mat(10);
+              plot(plot_vec1);
+             */
+
+            // zero-fill
+            cvm::cmatrix temp_mat_zfill(m_rows*factor, m_cols*factor);
+            temp_mat_zfill.assign(m_rows*factor/2-m_rows/2+1,m_cols*factor/2-m_cols/2+1,temp_mat); // this probobally needs checking for factors != 2
+
+            //cvm::cvector plot_vec2(m_rows);
+            //plot_vec2 = temp_mat(8);
+            //plot(plot_vec2);
+
+            /*        cvm::cvector plot_vec(m_rows*factor);
+                      plot_vec = temp_mat_zfill(16);
+                      plot(plot_vec);
+             */
+
+            // 2D fft
+            temp_mat_zfill = fftshift(temp_mat_zfill);
+            temp_mat_zfill = fft(temp_mat_zfill);
+            // transpose
+            cvm::cmatrix temp_mat_zfill_trans = ~temp_mat_zfill;
+            cvm::cmatrix temp_mat_zfill_conj(temp_mat_zfill_trans.real(),-temp_mat_zfill_trans.imag());
+            temp_mat_zfill_trans = temp_mat_zfill_conj;
+            temp_mat_zfill_trans = fftshift(temp_mat_zfill_trans);
+            temp_mat_zfill_trans = fft(temp_mat_zfill_trans);
+            // transpose back
+            temp_mat_zfill = ~temp_mat_zfill_trans;
+            cvm::cmatrix temp_mat_zfill_conj2(temp_mat_zfill.real(),-temp_mat_zfill.imag());
+            temp_mat_zfill = temp_mat_zfill_conj2;
+            zfill_kspace.push_back(temp_mat_zfill);
         }
 
-        // 2D ifft on temp_mat
-        temp_mat = ifft(temp_mat);
-        temp_mat = fftshift(temp_mat);
-        // transpose
-        cvm::cmatrix temp_mat_trans = ~temp_mat;
-        cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
-        temp_mat_trans = temp_mat_conj;
-        temp_mat_trans = ifft(temp_mat_trans);
-        temp_mat_trans = fftshift(temp_mat_trans);
-        // transpose back
-        temp_mat = ~temp_mat_trans;
-        cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
-        temp_mat = temp_mat_conj2;
 
-        /*cvm::cvector plot_vec1(m_rows);
-        plot_vec1 = temp_mat(10);
-        plot(plot_vec1);
-        */
+        // convert zfilled k-space back to fid list
 
-        // zero-fill
-        cvm::cmatrix temp_mat_zfill(m_rows*factor, m_cols*factor);
-        temp_mat_zfill.assign(m_rows*factor/2-m_rows/2+1,m_cols*factor/2-m_cols/2+1,temp_mat); // this probobally needs checking for factors != 2
-        
-        //cvm::cvector plot_vec2(m_rows);
-        //plot_vec2 = temp_mat(8);
-        //plot(plot_vec2);
-
-/*        cvm::cvector plot_vec(m_rows*factor);
-        plot_vec = temp_mat_zfill(16);
-        plot(plot_vec);
-        */
-
-        // 2D fft
-        temp_mat_zfill = fftshift(temp_mat_zfill);
-        temp_mat_zfill = fft(temp_mat_zfill);
-        // transpose
-        cvm::cmatrix temp_mat_zfill_trans = ~temp_mat_zfill;
-        cvm::cmatrix temp_mat_zfill_conj(temp_mat_zfill_trans.real(),-temp_mat_zfill_trans.imag());
-        temp_mat_zfill_trans = temp_mat_zfill_conj;
-        temp_mat_zfill_trans = fftshift(temp_mat_zfill_trans);
-        temp_mat_zfill_trans = fft(temp_mat_zfill_trans);
-        // transpose back
-        temp_mat_zfill = ~temp_mat_zfill_trans;
-        cvm::cmatrix temp_mat_zfill_conj2(temp_mat_zfill.real(),-temp_mat_zfill.imag());
-        temp_mat_zfill = temp_mat_zfill_conj2;
-        zfill_kspace.push_back(temp_mat_zfill);
+        cvm::cmatrix temp_mat(m_rows*factor, m_cols*factor);
+        for ( size_t col = 1; col < ( m_cols*factor + 1 ); col++ )
+        {
+            for ( size_t row = 1; row < ( m_rows*factor + 1 ); row++ )
+            {
+                cvm::cvector temp_fid(m_nPoints);
+                for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+                {
+                    temp_fid(time_pt) = zfill_kspace[time_pt-1](row,col);
+                }
+                new_fid.push_back(temp_fid);
+            }
+        }
     }
+
+    m_cvmFID = new_fid;
+
 
     // update FID paras
     m_rows = m_rows * factor;
@@ -242,24 +273,7 @@ void tarquin::CFID::zfill_kspace(size_t factor, Options& options, CBoswell& log)
     m_pos.first[1] = cvm_pos_vec(2);
     m_pos.first[2] = cvm_pos_vec(3);
 
-    
-    // convert zfilled k-space back to fid list
-    cvec_stdvec new_fid;
 
-    cvm::cmatrix temp_mat(m_rows, m_cols);
-    for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
-    {
-        for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
-        {
-            cvm::cvector temp_fid(m_nPoints);
-            for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
-            {
-                temp_fid(time_pt) = zfill_kspace[time_pt-1](row,col);
-            }
-            new_fid.push_back(temp_fid);
-        }
-    }
-    m_cvmFID = new_fid;
 }
 
 cvm::rvector tarquin::CFID::GetFreqScale() const

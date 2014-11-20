@@ -387,7 +387,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
 
     if ( manu_str.compare("SIEMENS") == 0 || manu_str.compare("SIEMENS ") == 0 )
     {
-        m_fid.swap_row_col();
+        //m_fid.swap_row_col();
     }
     else if ( manu_str.compare("Philips Medical Systems") == 0 || manu_str.compare("Philips Medical Systems ") == 0 )
     {
