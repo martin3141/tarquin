@@ -23,12 +23,9 @@ voxel_select::voxel_select(QWidget *parent, Session* session) :
 	m_ui.txtColsAvail->setText(QString::number(fid.GetCols()));
 	m_ui.txtSlicesAvail->setText(QString::number(fid.GetSlices()));
 
-	//m_ui.txtRows->setText(QString::number(fid.GetRows()/2));
-	//m_ui.txtCols->setText(QString::number(fid.GetCols()/2));
 	m_ui.txtRows->setText(QString::number(options.GetFitRows()));
 	m_ui.txtCols->setText(QString::number(options.GetFitCols()));
-	m_ui.txtSlices->setText(QString::number(1));
-	//m_ui.txtSlices->setText(QString::number(fid.GetSlices()));
+	m_ui.txtSlices->setText(QString::number(options.GetFitSlices()));
 }
 
 void voxel_select::accept()
@@ -65,8 +62,8 @@ void voxel_select::accept()
     int row_end = floor(rows_avail/2.0 + rows/2.0);
     int col_start = floor(cols_avail/2.0 - cols/2.0 + 1.0);
     int col_end = floor(cols_avail/2.0 + cols/2.0);
-    int slice_start = 1; // TODO
-    int slice_end = 1; // TODO
+    int slice_start = floor(slices_avail/2.0 - slices/2.0 + 1.0);
+    int slice_end = floor(slices_avail/2.0 + slices/2.0);
 
     for ( int slice = slice_start; slice < slice_end + 1; slice++ )
     {

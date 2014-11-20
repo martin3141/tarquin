@@ -171,7 +171,7 @@ namespace tarquin
         m_pul_seq = PRESS;
         m_fit_rows = -1;
         m_fit_cols = -1;
-        m_fit_slices = 1;
+        m_fit_slices = -1;
         m_max_metab_shift = 0.03;
         m_max_broad_shift = 0.1;
         m_lipid_filt_freq = 1.65;

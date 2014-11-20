@@ -959,7 +959,6 @@ void MainWindow::OnFileOpenFID()
     m_ui.spinRows->setMaximum(m_session->GetWorkspace().GetFID().GetRows());
     m_ui.spinCols->setMaximum(m_session->GetWorkspace().GetFID().GetCols());
     m_ui.spinSlices->setMaximum(m_session->GetWorkspace().GetFID().GetSlices());
-
        
     // enable spinners
     m_ui.spinRows->setEnabled(true);
@@ -1008,7 +1007,7 @@ void MainWindow::OnFileOpenFID()
     ratio.append(1);
     ratio.append(1);
     m_ui.splitter_main->setSizes(ratio);*/
-    
+
     OnVoxelChange();
     //OnEditFin();
 
@@ -2112,6 +2111,10 @@ void MainWindow::OnEditFin()
 
 void MainWindow::OnVoxelChange(bool plot_update)
 {
+
+    // if voxel tracking is enabled
+    UpdateGeom();
+
     // return the old voxel back to default
 
     if ( m_ui.check_box_fit->isChecked() )
@@ -2155,6 +2158,7 @@ void MainWindow::OnVoxelChange(bool plot_update)
         m_session->Update();
 
     OnEditFin();
+    
 }
 
 void MainWindow::OnNextFit()
@@ -2659,20 +2663,34 @@ void MainWindow::mousePressEvent ( QMouseEvent * event )
                 max_col = current.col;
                 min_col = selected.col;
             }
+            int max_slice, min_slice;
+            if ( selected.slice > current.slice )
+            {
+                max_slice = selected.slice;
+                min_slice = current.slice;
+            }
+            else
+            {
+                max_slice = current.slice;
+                min_slice = selected.slice;
+            }
             
             tarquin::Workspace& workspace = m_session->GetWorkspace();
             tarquin::Options& options = workspace.GetOptions();
             std::vector<tarquin::coord>& fit_list = options.GetFitList();
 
-            for ( int col = min_col; col < max_col + 1; col++ )
+            for ( int slice = min_slice; slice < max_slice + 1; slice++ )
             {
-                for ( int row = min_row; row < max_row +1; row++ )
+                for ( int col = min_col; col < max_col + 1; col++ )
                 {
-                    coord temp(row, col, 1);
-                    std::vector<tarquin::coord>::iterator it;
-                    it = std::find(fit_list.begin(), fit_list.end(), temp);
-                    if ( it == fit_list.end() )
-                        fit_list.push_back(temp);
+                    for ( int row = min_row; row < max_row +1; row++ )
+                    {
+                        coord temp(row, col, slice);
+                        std::vector<tarquin::coord>::iterator it;
+                        it = std::find(fit_list.begin(), fit_list.end(), temp);
+                        if ( it == fit_list.end() )
+                            fit_list.push_back(temp);
+                    }
                 }
             }
             m_ui.check_box_fit->setChecked(true);
@@ -2771,6 +2789,7 @@ double MainWindow::blue( double gray ) {
 
 void MainWindow::UpdateGeom()
 {
+
     // Clear previous scene
     qDeleteAll(m_scene->items());
 
@@ -3222,14 +3241,20 @@ void MainWindow::UpdateGeom()
                 }
                 else
                 {
+
+                    if ( m_ui.spinSlices->value() == slice+1 ) // if we're on the correct slice
+                    {
                     QGraphicsPolygonItem *rect = new QGraphicsPolygonItem(QRectF(col*mrs_col_dim,row*mrs_row_dim, mrs_col_dim, mrs_row_dim));
 
                     int n = 1+row + mrs_rows*col + mrs_rows*mrs_cols*slice;
 
                     //rect->setBrush(QBrush(QColor(255*red(img_map(n)),255*green(img_map(n)),255*blue(img_map(n)),255)));
 
+                    //std::cout << slice <<std::endl;
+
                     if ( !m_session->data_fitted )
                     {
+                        //rect->setBrush(QBrush(GetColMap(img_map(n+mrs_rows*mrs_cols*slice))));
                         rect->setBrush(QBrush(GetColMap(img_map(n))));
                     }
 
@@ -3268,12 +3293,12 @@ void MainWindow::UpdateGeom()
 
                     if ( !m_ui.hide_grid->isChecked() )
                         m_scene->addItem(rect);
+                    }
                 }
             }
         }
     }
 
-        
     if ( m_session->mri_loaded )
     {
         QImage image_slice = m_session->image.get_slice(m_ui.slice_slider->value());

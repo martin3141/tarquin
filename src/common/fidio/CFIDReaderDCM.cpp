@@ -296,6 +296,8 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
         voi_dim[2] = slice_thick;
 
         m_fid.SetVoiDim(voi_dim);
+        
+        m_fid.SetSlices(frames);
     }
     
     // this is required, probally because the reader gets past the eof if one of the tags are missing
@@ -350,22 +352,23 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
 	}
     
     //std::cout << std::endl << "FID data is " << nBytesInFID << " bytes" << std::endl;
-    //std::cout << std::endl << "Data should be " << m_fid.GetRows()*m_fid.GetCols()*N*8  << " bytes" << std::endl;
+    //std::cout << std::endl << "Data should be " << m_fid.GetRows()*m_fid.GetCols()*m_fid.GetSlices()*N*8  << " bytes" << std::endl;
 
-    if ( ( nBytesInFID % (m_fid.GetRows()*m_fid.GetCols()*N*8)) != 0 )
+    if ( ( nBytesInFID % (m_fid.GetRows()*m_fid.GetCols()*m_fid.GetSlices()*N*8)) != 0 )
     {
         std::ostringstream error_stream;
         error_stream << "file does not contain a consistent number of data points" << std::endl;
         error_stream << "FID data is " << nBytesInFID << " bytes" << std::endl;
-        error_stream << "Data should be a multiple of " << m_fid.GetRows()*m_fid.GetCols()*N*8  << " bytes" << std::endl;
+        error_stream << "Data should be a multiple of " << m_fid.GetSlices()*m_fid.GetRows()*m_fid.GetCols()*N*8  << " bytes" << std::endl;
         error_stream << "N    = " << N << std::endl;
         error_stream << "Rows = " << m_fid.GetRows() << std::endl;
         error_stream << "Cols = " << m_fid.GetCols() << std::endl;
+        error_stream << "Cols = " << m_fid.GetSlices() << std::endl;
         error_stream << nBytesInFID/(8.0*N) << " voxels in file" << std::endl;
 		throw Exception(error_stream.str().c_str());
     }
 
-    long avgs = nBytesInFID/(m_fid.GetRows()*m_fid.GetCols()*N*8);
+    long avgs = nBytesInFID/(m_fid.GetRows()*m_fid.GetCols()*m_fid.GetSlices()*N*8);
     //std::cout << std::endl << "This file contains " << avgs << " averages" << std::endl;
 
     // if fid is double the expected and SVS then there is a
@@ -377,7 +380,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
         m_fid.SetCWF(true);
     }
 
-	ReadFIDData(file.GetFileStream(), m_fid.GetRows()*m_fid.GetCols()*N*8, 0, 1);
+	ReadFIDData(file.GetFileStream(), m_fid.GetSlices()*m_fid.GetRows()*m_fid.GetCols()*N*8, 0, 1);
 	
     // swap data organisation for Siemens data
     //std::cout << manu_str << std::endl;
@@ -715,16 +718,16 @@ void tarquin::CFIDReaderDCM::ReadFIDData(std::ifstream& file, std::size_t nLengt
 	float real_part_ieee;
 	float imag_part_ieee;
     
-	long nSamples = (nLength - byte_offset) / 8 / m_fid.GetRows() / m_fid.GetCols();
-    //std::cout << "samples : " << nSamples << std::endl;
+	long nSamples = (nLength - byte_offset) / 8 / m_fid.GetRows() / m_fid.GetCols() / m_fid.GetSlices();
+    std::cout << "samples : " << nSamples << std::endl;
     for ( int avs = 0; avs < averages; avs++ )
     {
-        for ( int fid = 0; fid < ( m_fid.GetRows() * m_fid.GetCols() ); fid++ ) 
+        for ( int fid = 0; fid < ( m_fid.GetRows() * m_fid.GetCols() * m_fid.GetSlices() ); fid++ ) 
         {
             //std::cout << fid << std::endl;
             int n = 0;
             cvm::cvector FID(nSamples);
-            for( std::size_t nBytesRead = 0; nBytesRead < (nLength - byte_offset) / m_fid.GetRows() / m_fid.GetCols(); nBytesRead+= 8 ) 
+            for( std::size_t nBytesRead = 0; nBytesRead < (nLength - byte_offset) / m_fid.GetRows() / m_fid.GetCols() / m_fid.GetSlices(); nBytesRead+= 8 ) 
             {
                 file.read((char*)&real_part_ieee, 4);
                 file.read((char*)&imag_part_ieee, 4);
@@ -754,6 +757,7 @@ void tarquin::CFIDReaderDCM::ReadFIDData(std::ifstream& file, std::size_t nLengt
             }
         }
     }
+    //std::cout << m_fid.GetVectorFID().size() << " fids saved" << std::endl;
 }
 
 template <class T>

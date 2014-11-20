@@ -623,13 +623,16 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
                     options.SetFitCols(m_cols);
             }
 
+            if ( options.GetFitSlices() == -1 )
+                options.SetFitSlices(m_slices);
+
             // CSI full
             const int row_start   = static_cast<int>(m_rows/2.0 - options.GetFitRows()/2.0 + 1.0);
             const int row_end     = static_cast<int>(m_rows/2.0 + options.GetFitRows()/2.0);
             const int col_start   = static_cast<int>(m_cols/2.0 - options.GetFitCols()/2.0 + 1.0);
             const int col_end     = static_cast<int>(m_cols/2.0 + options.GetFitCols()/2.0);
-            const int slice_start = 1; // TODO
-            const int slice_end   = 1; // TODO
+            const int slice_start = static_cast<int>(m_slices/2.0 - options.GetFitSlices()/2.0 + 1.0);
+            const int slice_end   = static_cast<int>(m_slices/2.0 + options.GetFitSlices()/2.0);
 
             for ( int slice = slice_start; slice < slice_end + 1; slice++ )
             {
