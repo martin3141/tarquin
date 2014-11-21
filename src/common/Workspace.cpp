@@ -34,7 +34,7 @@ std::ostream& operator<< (std::ostream& os, const tarquin::Workspace& rhs)
 		os << "\nWater reference file:       " << "none";
 
 
-	os << "\nInput file format:          ";
+	/*os << "\nInput file format:          ";
 	if( tarquin::SIEMENS == options.GetFormat() )
 		os << "siemens";
 	else if( tarquin::PHILIPS == options.GetFormat() )
@@ -44,14 +44,16 @@ std::ostream& operator<< (std::ostream& os, const tarquin::Workspace& rhs)
 	else if( tarquin::DANGER == options.GetFormat() )
 		os << "dangerplot";
 	else if( tarquin::VARIAN == options.GetFormat() )
-		os << "varian";
+		os << "varian";*/
 
+	//os << "\nInfinity Norm of WS vector: " << fid.GetNormValue();
+	//if( options.GetFilenameWater() != "" )
+	//	os << "\nInfinity Norm of W vector:  " << fidwater.GetNormValue();
 
-	os << "\nInfinity Norm of WS vector: " << fid.GetNormValue();
-
-	if( options.GetFilenameWater() != "" )
-		os << "\nInfinity Norm of W vector:  " << fidwater.GetNormValue();
-
+	os <<     "\nData points:                " << fid.GetNumberOfPoints();
+	os <<     "\nRows:                       " << fid.GetRows();
+	os <<     "\nColumns:                    " << fid.GetCols();
+	os <<     "\nSlices:                     " << fid.GetSlices();
 	if( fid.IsKnownEchoTime() )
 		os << "\nEcho time:                  " << fid.GetEchoTime() << " s";
 	else 
@@ -120,13 +122,13 @@ std::ostream& operator<< (std::ostream& os, const tarquin::Workspace& rhs)
 	else
 		os << "\nReference:                  " << "unknown (needed!)";
 
-	if( options.GetUsePrecompiled() )
+	/*if( options.GetUsePrecompiled() )
 		os << "\nPrecompiled basis file:     " << options.GetBasisPath();
 	else
 		os << "\nBasis directory:            " << options.GetBasisPath();
+        */
+	//os << "\nOutput file:                " << options.GetOutputXMLPath();
 
-
-	os << "\nOutput file:                " << options.GetOutputXMLPath();
 	os << "\n" << std::endl;
 
 	return os;
