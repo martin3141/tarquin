@@ -315,6 +315,12 @@ void tarquin::CFIDReaderPhilips::EatTokens()
         {
 			strmValue >> pe_fov;
         }
+		else if( 0 == strKey.compare("nr_of_slices_for_multislice") ) 
+        {
+            int slices;
+            strmValue >> slices;
+            m_fid.SetSlices(slices);
+        }
     }
     
     /*

@@ -3,7 +3,7 @@
 ****************************************************
 
 Version 4.3.5
-- Tentative support for DICOM format 3D MRSI.
+- Tentative support for DICOM and SPAR/SDAT format 3D MRSI.
 - Bug fix for GUI where program crashes following fitting.
 - Bug fix for GE p-files Rdb reader rev : 14.3 and 16.0 where the offset to data was incorrect by one frame. This caused a crash at the reconstruction stage.
 - Internal basis set option for 'braino' phantoms has now been added.
