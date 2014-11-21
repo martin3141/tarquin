@@ -876,7 +876,7 @@ void MainWindow::OnFileExportLocalisationJPEG()
  */
 Session* MainWindow::MakeNewSession()
 {
-	// if an existing session exists, ask the user if they are
+    // if an existing session exists, ask the user if they are
 	// sure they want to start again
 	if( m_session ) 
 	{
@@ -892,7 +892,6 @@ Session* MainWindow::MakeNewSession()
 		m_session = NULL;
         
         // clear these
-
         disconnect(m_ui.listWidget_numer, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(OnListChange()));
         disconnect(m_ui.listWidget_denom, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(OnListChange()));
         m_ui.listWidget_numer->clear();
@@ -900,8 +899,26 @@ Session* MainWindow::MakeNewSession()
 
 	    m_plot->clear();
         qDeleteAll(m_scene->items());
-	}
 
+        // disable spinners
+        m_ui.spinRows->setEnabled(false);
+        m_ui.spinCols->setEnabled(false);
+        m_ui.spinSlices->setEnabled(false);
+        m_ui.check_box_fit->setEnabled(false);
+        m_ui.sel_all->setEnabled(false);
+        m_ui.sel_none->setEnabled(false);
+
+        // disable MRI stuff
+        m_ui.ww_wl->setEnabled(false);
+        m_ui.load_mri->setEnabled(false);
+        m_ui.close_mri->setEnabled(false);
+        m_ui.slice_slider->setEnabled(false);
+        m_ui.slice_spin->setEnabled(false);
+        m_ui.hide_grid->setEnabled(false);
+        m_ui.hide_lines->setEnabled(false);
+        m_ui.hide_mri->setEnabled(false);
+        m_ui.set_trans->setEnabled(false);
+	}
 	m_session = new Session(this);
 
 	m_session->m_fit_number = 0;
@@ -916,6 +933,16 @@ Session* MainWindow::MakeNewSession()
     m_ui.cal_ppm->setVisible(false);
 
 	return m_session;
+}
+
+Session* MainWindow::KillSession()
+{
+    if( m_session ) 
+	{
+		// they are sure
+		delete m_session;
+		m_session = NULL;
+    }
 }
 
 void MainWindow::OnFileExit()
@@ -936,7 +963,10 @@ void MainWindow::OnFileOpenFID()
 	InputDlg dlg(this, m_session);
 
 	if( QDialog::Accepted != dlg.exec() )
+    {
+        KillSession();
 		return;
+    }
 
     // looks like the data loaded ok
     // set current voxel and spinners to be in the middle of the grid
@@ -1141,7 +1171,10 @@ void MainWindow::OnFileQF()
 	quickfitdlg dlg(this, m_session);
 	
 	if( QDialog::Accepted != dlg.exec() )
+    {
+        KillSession();
 		return;
+    }
     
     // looks like the data loaded ok
     // set current voxel and spinners to be in the middle of the grid

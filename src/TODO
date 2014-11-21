@@ -2,20 +2,9 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
-3D MRSI stuff
-- Fix LoadW function for 3D DICOM MRSI
-- Test k-space filling for 3D datasets.
-- Test trans_kspace function
-- Test Philips DICOM
-- Test Philips SPAR/SDAT
-- Test Siemens DICOM 
-- Test Siemens IMA
-- Test Siemens RDA
-- Bug checking
-- Check slice direction is correct way round
-
-
 Version 4.3.5
+- Tentative support for DICOM format 3D MRSI.
+- Bug fix for GUI where program crashes following fitting.
 - Bug fix for GE p-files Rdb reader rev : 14.3 and 16.0 where the offset to data was incorrect by one frame. This caused a crash at the reconstruction stage.
 - Internal basis set option for 'braino' phantoms has now been added.
 - Internal basis set option for 'brain + glth' has now been added - this is the new default basis set because Gly is not present in normal brain in significant levels.
@@ -41,11 +30,6 @@ Version 4.3.4
 - Improvements to SPAR/SDAT SVS and 2D MRSI display on MRI.
 - The number of components used in the HSVD water removal can now be specified (--hsvd_comps)
 
-
-
-- 3D MRSI for Siemens and Philips DICOM and SPAR/SDAT is now supported - TODO
-
-
 Version 4.3.3
 - Combined signals such as TNAA and TCho are now listed in the results.
 - Added support for the semi-LASER pulse sequence
@@ -56,11 +40,6 @@ Version 4.3.3
 - CRLB calculation has been improved
 - More flexible options for averaging dynamic water data
 - Dynamic SVS can now be read from dpt files
-
-
-
-- Improvements to GE shf reading - TODO
-- 3D MRSI for Siemens and Philips is now supported - TODO
 
 Version 4.3.1
 - 2D MRSI gui visualisation is much improved:

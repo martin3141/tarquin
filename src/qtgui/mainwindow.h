@@ -86,6 +86,8 @@ public:
 private:
 
 	Session* MakeNewSession();
+	
+    Session* KillSession();
 
 	void SetWindowTitle(QString filename);
 

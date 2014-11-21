@@ -387,11 +387,11 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
 
     long avgs = nBytesInFID/(m_fid.GetRows()*m_fid.GetCols()*m_fid.GetSlices()*N*8);
 
-    std::cout << "N      = " << N << std::endl;
+    /*std::cout << "N      = " << N << std::endl;
     std::cout << "Rows   = " << m_fid.GetRows() << std::endl;
     std::cout << "Cols   = " << m_fid.GetCols() << std::endl;
     std::cout << "Slices = " << m_fid.GetSlices() << std::endl;
-    std::cout << "Avgs   = " << avgs << std::endl;
+    std::cout << "Avgs   = " << avgs << std::endl;*/
 
     //std::cout << std::endl << "This file contains " << avgs << " averages" << std::endl;
 
@@ -769,7 +769,7 @@ void tarquin::CFIDReaderDCM::ReadFIDData(std::ifstream& file, std::size_t nLengt
 	float imag_part_ieee;
     
 	long nSamples = (nLength - byte_offset) / 8 / m_fid.GetRows() / m_fid.GetCols() / m_fid.GetSlices();
-    std::cout << "samples : " << nSamples << std::endl;
+    //std::cout << "samples : " << nSamples << std::endl;
     for ( int avs = 0; avs < averages; avs++ )
     {
         for ( int fid = 0; fid < ( m_fid.GetRows() * m_fid.GetCols() * m_fid.GetSlices() ); fid++ ) 
