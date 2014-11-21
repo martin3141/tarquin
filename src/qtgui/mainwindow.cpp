@@ -1978,7 +1978,7 @@ void MainWindow::OnHideLines()
         m_view->std_vox_pen = QPen(Qt::white,0.2);
         m_view->std_vox_pen.setJoinStyle(Qt::MiterJoin);
         m_view->std_vox_pen.setStyle(Qt::DotLine);
-        m_view->in_fit_list_pen = QPen(Qt::white,0.4);
+        m_view->in_fit_list_pen = QPen(Qt::white,0.3);
         m_view->in_fit_list_pen.setJoinStyle(Qt::MiterJoin);
     }
 
@@ -2549,7 +2549,7 @@ MyGraphicsScene::MyGraphicsScene ( QWidget * parent )
 MyGraphicsView::MyGraphicsView ( QWidget * parent )
 : QGraphicsView(parent) 
 {
-    selected_pen = QPen(Qt::red,0.6);
+    selected_pen = QPen(Qt::red,0.4);
     selected_pen.setStyle(Qt::DotLine);
     selected_pen.setJoinStyle(Qt::MiterJoin);
     selected_brush = QBrush(Qt::black);
@@ -2560,7 +2560,7 @@ MyGraphicsView::MyGraphicsView ( QWidget * parent )
     std_vox_pen.setStyle(Qt::DotLine);
     std_vox_brush = QBrush(Qt::black);
 
-    in_fit_list_pen = QPen(Qt::white,0.4);
+    in_fit_list_pen = QPen(Qt::white,0.3);
     //in_fit_list_pen = Qt::NoPen;
     in_fit_list_pen.setJoinStyle(Qt::MiterJoin);
     in_fit_list_brush = QBrush(Qt::yellow);
