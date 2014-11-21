@@ -299,8 +299,24 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
         
         m_fid.SetSlices(frames);
     }
-    
-    // this is required, probally because the reader gets past the eof if one of the tags are missing
+
+    else if ( manu_str.compare("Philips Medical Systems") == 0 || manu_str.compare("Philips Medical Systems ") == 0 )
+    {
+
+        long bytes_slices = file.MoveToTag("0018", "9159"); 
+        if( -1 != bytes_slices )
+        {
+            uint16_t slices = 0;
+            file.GetFileStream().read((char*)&slices, 2);
+            m_fid.SetSlices(slices);
+        }
+        else // not sure if this is really needed
+        {
+            m_fid.SetSlices(1);
+        }
+    }
+
+    // this is required becaus the previous tag may have been read without position reset ("0018", "9104", false)
 	file.Close();
 	file.Open(strFilename);
     
@@ -341,7 +357,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
         //m_fid.SetCols(frames);
     }
     
-    // this is required, probally because the reader gets past the eof if one of the tags are missing
+    // this is required because the last tag read didn't reset (file.MoveToTag("0020", "9128", false))
     file.Close();
 	file.Open(strFilename);
     
@@ -360,15 +376,23 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
         error_stream << "file does not contain a consistent number of data points" << std::endl;
         error_stream << "FID data is " << nBytesInFID << " bytes" << std::endl;
         error_stream << "Data should be a multiple of " << m_fid.GetSlices()*m_fid.GetRows()*m_fid.GetCols()*N*8  << " bytes" << std::endl;
-        error_stream << "N    = " << N << std::endl;
-        error_stream << "Rows = " << m_fid.GetRows() << std::endl;
-        error_stream << "Cols = " << m_fid.GetCols() << std::endl;
-        error_stream << "Cols = " << m_fid.GetSlices() << std::endl;
+        error_stream << "N      = " << N << std::endl;
+        error_stream << "Rows   = " << m_fid.GetRows() << std::endl;
+        error_stream << "Cols   = " << m_fid.GetCols() << std::endl;
+        error_stream << "Slices = " << m_fid.GetSlices() << std::endl;
         error_stream << nBytesInFID/(8.0*N) << " voxels in file" << std::endl;
 		throw Exception(error_stream.str().c_str());
     }
 
+
     long avgs = nBytesInFID/(m_fid.GetRows()*m_fid.GetCols()*m_fid.GetSlices()*N*8);
+
+    std::cout << "N      = " << N << std::endl;
+    std::cout << "Rows   = " << m_fid.GetRows() << std::endl;
+    std::cout << "Cols   = " << m_fid.GetCols() << std::endl;
+    std::cout << "Slices = " << m_fid.GetSlices() << std::endl;
+    std::cout << "Avgs   = " << avgs << std::endl;
+
     //std::cout << std::endl << "This file contains " << avgs << " averages" << std::endl;
 
     // if fid is double the expected and SVS then there is a
@@ -377,7 +401,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
     if ( avgs == 2 )
     {
         //std::cout << std::endl << "This file contains W data also" << std::endl;
-        m_fid.SetCWF(true);
+        m_fid.SetCWF(true); // n.b. Philips tag (0018,9199) WaterReferencedPhaseCorrection may also help here
     }
 
 	ReadFIDData(file.GetFileStream(), m_fid.GetSlices()*m_fid.GetRows()*m_fid.GetCols()*N*8, 0, 1);
@@ -387,7 +411,7 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
 
     if ( manu_str.compare("SIEMENS") == 0 || manu_str.compare("SIEMENS ") == 0 )
     {
-        //m_fid.swap_row_col();
+        m_fid.swap_row_col();
     }
     else if ( manu_str.compare("Philips Medical Systems") == 0 || manu_str.compare("Philips Medical Systems ") == 0 )
     {
@@ -673,12 +697,31 @@ void tarquin::CFIDReaderDCM::LoadW(std::string strFilename, const Options& opts)
             //std::cout << std::endl << dyn_num << " dynamic scans available." << std::endl;
         }
     }
+    
+    // this is required because the last tag read didn't reset (file.MoveToTag("0020", "9128", false))
+    file.Close();
+	file.Open(strFilename);
 
-    /*std::cout << std::endl << m_fid.GetCols() << std::endl;
-    std::cout << m_fid.GetRows() << std::endl;
-    std::cout << frames << std::endl;
-    std::cout << dyn_num << std::endl;
-    std::cout << dyn_study << std::endl;*/
+    // find the manufacturer
+    long manu_bytes = file.MoveToTag("0008","0070");
+    std::vector<char> manu(manu_bytes, 0);
+	file.GetFileStream().read(&manu[0], manu_bytes);
+	std::string manu_str(manu.begin(), manu.end());
+
+    if ( manu_str.compare("Philips Medical Systems") == 0 || manu_str.compare("Philips Medical Systems ") == 0 )
+    {
+        long bytes_slices = file.MoveToTag("0018", "9159"); 
+        if( -1 != bytes_slices )
+        {
+            uint16_t slices = 0;
+            file.GetFileStream().read((char*)&slices, 2);
+            m_fid.SetSlices(slices);
+        }
+        else // not sure if this is really needed
+        {
+            m_fid.SetSlices(1);
+        }
+    }
 
     if ( frames > 1 && m_fid.GetRows()*m_fid.GetCols() == 1 && dyn_study )
     {
@@ -688,6 +731,13 @@ void tarquin::CFIDReaderDCM::LoadW(std::string strFilename, const Options& opts)
         //std::cout << m_fid.GetCols() << std::endl;
         //std::cout << m_fid.GetRows() << std::endl;
     }
+
+    /*std::cout << std::endl << m_fid.GetCols() << std::endl;
+    std::cout << m_fid.GetRows() << std::endl;
+    std::cout << m_fid.GetSlices() << std::endl;
+    std::cout << frames << std::endl;
+    std::cout << dyn_num << std::endl;
+    std::cout << dyn_study << std::endl;*/
     
     // next two lines are a bodge, not sure why we need them, something to do with
     // reading past eof in above while loop...
@@ -701,7 +751,7 @@ void tarquin::CFIDReaderDCM::LoadW(std::string strFilename, const Options& opts)
 		throw Exception("file did not contain the magic tag (5600, 0020) in WUS data.");
 	}
 
-    ReadFIDData(file.GetFileStream(), m_fid.GetRows()*m_fid.GetCols()*N*16, m_fid.GetRows()*m_fid.GetCols()*N*8, 1);
+    ReadFIDData(file.GetFileStream(), m_fid.GetRows()*m_fid.GetCols()*m_fid.GetSlices()*N*16, m_fid.GetRows()*m_fid.GetCols()*m_fid.GetSlices()*N*8, 1);
 }
 
 

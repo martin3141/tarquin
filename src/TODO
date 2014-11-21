@@ -3,6 +3,7 @@
 ****************************************************
 
 3D MRSI stuff
+- Fix LoadW function for 3D DICOM MRSI
 - Test k-space filling for 3D datasets.
 - Test trans_kspace function
 - Test Philips DICOM

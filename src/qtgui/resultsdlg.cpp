@@ -66,6 +66,16 @@ void ResultsDlg::InitFromWorkspace(const tarquin::Workspace& workspace)
 	const tarquin::Options& options    = workspace.GetOptions();
 	int fit_no = m_session->m_fit_number;
 
+    if ( fit_no > ampl_norm.size() || fit_no < 0 )
+    {
+        std::cout << "Error, not sure why this happens - but the fit number is invalid." << std::endl;
+        std::cout << "Current fit number       : " << fit_no << std::endl;
+        std::cout << "Max allowable fit number : " << ampl_norm.size() << std::endl;
+        std::cout << "I have set fit number back to 0 to prevent a crash." << std::endl;
+        fit_no = 0;
+        m_session->m_fit_number = 0;
+    }
+
 	assert( ampl_norm[fit_no].size() == crlb_norm[fit_no].size() );
 
 	// these column have the same heading, regardless of scaling

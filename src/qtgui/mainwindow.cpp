@@ -897,9 +897,14 @@ Session* MainWindow::MakeNewSession()
         disconnect(m_ui.listWidget_denom, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(OnListChange()));
         m_ui.listWidget_numer->clear();
         m_ui.listWidget_denom->clear();
+
+	    m_plot->clear();
+        qDeleteAll(m_scene->items());
 	}
 
 	m_session = new Session(this);
+
+	m_session->m_fit_number = 0;
 	
 	// set the default domain to be frequency with units of PPM
 	m_session->m_show_flags.domain       = Session::FREQUENCY_DOMAIN;
@@ -2137,6 +2142,9 @@ void MainWindow::OnVoxelChange(bool plot_update)
     std::vector<tarquin::coord>::iterator it;
     it = std::find(fit_list.begin(), fit_list.end(), current);
 
+    //std::cout << "Fit list size : " << fit_list.size() << std::endl;
+    //std::cout << "1 m_fit_number : " << m_session->m_fit_number << std::endl;
+
     if ( it != fit_list.end() )
     {
 
@@ -2148,7 +2156,10 @@ void MainWindow::OnVoxelChange(bool plot_update)
     {
         m_session->m_in_fit_list = false;
         m_ui.check_box_fit->setChecked(false);
+	    m_session->m_fit_number = 0;
     }
+
+    //std::cout << "2 m_fit_number : " << m_session->m_fit_number << std::endl;
 
 	m_session->SetVoxel(current);
 
