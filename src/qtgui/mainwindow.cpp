@@ -143,7 +143,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
     m_ui.slice_slider->setEnabled(false);
     m_ui.slice_spin->setEnabled(false);
     m_ui.hide_grid->setEnabled(false);
-    m_ui.hide_lines->setEnabled(true);
+    m_ui.hide_lines->setEnabled(false);
     m_ui.hide_mri->setEnabled(false);
     m_ui.set_trans->setEnabled(false);
 
@@ -2549,7 +2549,7 @@ MyGraphicsScene::MyGraphicsScene ( QWidget * parent )
 MyGraphicsView::MyGraphicsView ( QWidget * parent )
 : QGraphicsView(parent) 
 {
-    selected_pen = QPen(Qt::red,0.4);
+    selected_pen = QPen(Qt::red,0.6);
     selected_pen.setStyle(Qt::DotLine);
     selected_pen.setJoinStyle(Qt::MiterJoin);
     selected_brush = QBrush(Qt::black);
