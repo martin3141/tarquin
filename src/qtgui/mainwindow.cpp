@@ -2609,7 +2609,7 @@ void MainWindow::mousePressEvent ( QMouseEvent * event )
             //std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
         }
         
-        if ( !m_ui.ww_wl->isChecked() )
+        if ( !m_ui.ww_wl->isChecked() && m_ui.grid_frame->underMouse() ) // also check it is within the MRSI window
         {
             QGraphicsPolygonItem *r = dynamic_cast<QGraphicsPolygonItem*>(m_view->itemAt(m_view->mapFrom(this,event->pos())));
             if (r != NULL)
