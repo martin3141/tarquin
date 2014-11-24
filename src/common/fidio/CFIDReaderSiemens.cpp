@@ -127,8 +127,7 @@ void tarquin::CFIDReaderSiemens::Load(std::string strFilename, const Options& op
                 size_t found = line.find("=");
                 int slices;
                 from_string<int>(slices, line.substr(found+2,line.size()), std::dec);
-                // TODO assume one slice for now
-                //m_fid.SetSlices(slices);
+                m_fid.SetSlices(slices);
             }
 
             else if ( line.substr(0,29) == "sSpecPara.sVoI.sPosition.dSag" )
