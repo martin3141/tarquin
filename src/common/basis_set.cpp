@@ -1679,7 +1679,7 @@ void tarquin::getGln(std::vector<std::vector<double> >& doubmat)
 	doubvec[0] = 3;
 	doubvec[1] = 1;
 	doubvec[2] = 0.5;
-	doubvec[3] = 2.109;
+	doubvec[3] = 2.109; //corrected in v 4.3.5
 	doubvec[4] = 6.5;
 	doubvec[5] = -14.504;
 	doubvec[6] = 0;
