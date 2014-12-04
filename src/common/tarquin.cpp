@@ -2340,7 +2340,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 if ( TLM20 )
                 {
                     double a1 = ahat(Lip20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos));
-                    double a2 = ahat(MM09_pos)/(ahat(Lip20_pos)+ahat(MM20_pos));
+                    double a2 = ahat(MM20_pos)/(ahat(Lip20_pos)+ahat(MM20_pos));
 
                     if ((ahat(Lip20_pos) + ahat(MM20_pos)) == 0)
                     {
