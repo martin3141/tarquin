@@ -2,6 +2,14 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+TODO
+- Method to specify voxels to be fit via csv file.
+- Remove voxels for metabolite map display.
+- Adjust metabolite map limits.
+- Add average voxel function to GUI.
+- Revamp serialisation method for saving fits.
+- 3D GE MRSI support.
+
 Version 4.3.5
 - Tentative support for DICOM, SPAR/SDAT, IMA and RDA formats for 3D MRSI.
 - Bug fix for GUI where program crashes following fitting.
