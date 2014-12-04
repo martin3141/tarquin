@@ -1948,7 +1948,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			//    std::cout << std::endl << "stdev of res = " << noise_min << std::endl;
 			//   std::cout << "stdev of fit res = " << stdev(RESIDUAL.real() - BASELINE.real(),left,right) << std::endl;
 
-			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) /spec_noise_min/pow(y.size(),0.5);
+			double Fit_Q = stdev(RESIDUAL.real() - BASELINE.real(),left,right) / ( spec_noise_min * pow(y.size(),0.5));
 			double SNR_res = Ymax/(2*stdev(RESIDUAL.real() - BASELINE.real(),left,right) );
             double max_res = (RESIDUAL_REAL - BASELINE_REAL).norminf();
 
@@ -1964,7 +1964,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			//log.LogMessage(LOG_INFO, "SNR true     = %f", SNR_true);
 			log.LogMessage(LOG_INFO, "SNR max      = %f", SNR_res*Fit_Q);
             
-            double SNR_max_metab = Ymax_metab / ( 2 * spec_noise_min / pow(y.size(),0.5) );
+            double SNR_max_metab = Ymax_metab / ( 2 * spec_noise_min * pow(y.size(),0.5) );
             std::vector<double>& MetabSNR_vec = work.GetMetabSNR();
 			MetabSNR_vec.push_back(SNR_max_metab);
 
