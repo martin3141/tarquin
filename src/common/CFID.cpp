@@ -898,7 +898,6 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
 void tarquin::CFID::AverageData(Options& options, int missmatch)
 {
     int pts = GetNumberOfPoints();
-    int fids = m_cvmFID.size();
     
 
     std::vector<int> av_list;
@@ -913,9 +912,12 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     }
     else
     {
-        for ( size_t n = 0; n < fids; n++ )
+        for ( size_t n = 0; n < m_cvmFID.size(); n++ )
             av_list.push_back(n);
     }
+    
+    int fids = av_list.size();
+    int data_fids = m_cvmFID.size();
 
 
     //std::cout << "Averaging data" << std::endl;
@@ -988,12 +990,12 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
 
     m_cvmFID.clear();
 
-    /*std::cout << m_cols << std::endl;
+    std::cout << m_cols << std::endl;
     std::cout << m_rows << std::endl;
-    std::cout << m_slices << std::endl;*/
+    std::cout << m_slices << std::endl;
     
     // do we need to duplicate the fid?
-    if ( (fids != m_cols * m_rows * m_slices) )
+    if ( (data_fids != m_cols * m_rows * m_slices) )
     {
         if ( m_wref ) // are we water data?
         {
