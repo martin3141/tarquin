@@ -976,6 +976,11 @@ namespace tarquin
 	    return m_strRefFile;
 	}
 
+	std::string GetAvListFile() const
+	{
+	    return m_strAvListFile;
+	}
+
 	treal GetWConc() const
 	{
 	    return m_w_conc;
@@ -1594,6 +1599,9 @@ namespace tarquin
 
 	//! The name of the aligned spectra output file
     std::string m_strFileOutCSVSpectraAlignedMag;
+    
+    //! List of voxels to be fitted
+    std::string m_strAvListFile;
 
 	//! Options specific to GE files.
 	GEOptions m_geOptions;

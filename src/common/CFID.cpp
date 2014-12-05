@@ -899,6 +899,24 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
 {
     int pts = GetNumberOfPoints();
     int fids = m_cvmFID.size();
+    
+
+    std::vector<int> av_list;
+    
+    // read in the av_file if specified
+    if ( options.GetAvListFile() != "" )
+    {
+        std::ifstream infile(options.GetAvListFile().c_str());  // need some eror checking here
+        int num;
+        while (infile >> num)
+            av_list.push_back(num-1);
+    }
+    else
+    {
+        for ( size_t n = 0; n < fids; n++ )
+            av_list.push_back(n);
+    }
+
 
     //std::cout << "Averaging data" << std::endl;
 
@@ -914,8 +932,9 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
 
     if ( !m_wref ) 
     {
-        for ( size_t n = 0; n < fids; n++ )
+        for ( size_t p = 0; p < av_list.size(); p++ )
         {
+            int n = av_list[p];
             if ( options.GetDynAv() == ALL )
                 new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAv() == ODD && ( (n + 1) % 2 != 0 ) ) // n odd?
@@ -935,8 +954,9 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     }
     else
     {
-        for ( size_t n = 0; n < fids; n++ )
+        for ( size_t p = 0; p < av_list.size(); p++ )
         {
+            int n = av_list[p];
             if ( options.GetDynAvW() == ALL )
                 new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAvW() == ODD && ( (n + 1) % 2 != 0 ) ) // n odd?

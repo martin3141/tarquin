@@ -30,6 +30,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--lipid_filter      {true | false} remove signals upfield of 1.8ppm in hsvd";
 	std::cout << "\n\t--lipid_filter_freq Set ppm of lipid filter";
 	std::cout << "\n\t--swap_row_col      {true | false} swap CSI rows and cols";
+	std::cout << "\n\t--av_list           CSV file containing voxels to be averaged prior to fitting";
 	std::cout << "\n\t--auto_phase        {true | false}";
 	std::cout << "\n\t--auto_ref          {true | false}";
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
@@ -1165,6 +1166,11 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		else if( strKey == "--ref_file" )
 		{
 			options.m_strRefFile = strVal;
+		}
+
+		else if( strKey == "--av_list" )
+		{
+			options.m_strAvListFile = strVal;
 		}
 
 		else if( strKey == "--ref_freq" ) 
