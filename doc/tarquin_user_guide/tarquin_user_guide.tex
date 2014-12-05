@@ -105,14 +105,14 @@ The command line version of TARQUIN requires the used to specify options to the 
 \texttt{tarquin ---option1 value1 ---option2 value2 ---option3 value3...}
 \\
 \\
-An example command follows which will fit the \texttt{WS.ima} data file using \texttt{W.ima} as a water reference file.  The data format is specified to be Siemens ima and a text file of results is outputted.  A path to the csv basis set is also supplied.
+An example command follows which will fit the \texttt{WS.ima} data file using \texttt{W.ima} as a water reference file.  The data format is specified to be Siemens ima and a text file of results is outputted.
 \\
 \\
 \noindent
 \texttt{tarquin ---input WS.ima ---input\_w W.ima ---format siemens}
 
 \noindent
-\texttt{---basis\_csv .\//path\_to\_basis ---output\_txt results.txt}
+\texttt{---output\_txt results.txt}
 \subsection{Common TARQUIN Parameters}
 
 \begin{tabular}{l l}
@@ -282,6 +282,35 @@ GABA is modelled as two separate peaks GABA\_A and GABA\_B, the amplitudes of th
 Depending on how the sequence was implemented, the ``Dynamic averaging'' scheme in the ``Data Parameters'' tab may need to be set to ``Subtract even from odd'' to get a correctly combined MEGA-PRESS spectrum.
 
 Edit on and off scans can be visualised/analysed separately by changing the ``Dynamic averaging'' scheme which can be useful for getting ratios to creatine or measuring glutmaine. Furthermore, individual dynamic scans can be processed by setting the averaging scheme to ``No averaging''. Flicking through the individual scans with an eye on peak positions can be useful for detecting motion or field drift.
+
+In some cases it may be required to separate out individual dynamics for analysis. A text file containing a list (one per line) of dynamic scans to include in the analysis can be specified with the \texttt{---av\_list} option. A file to average the first, third, fifth and seventh pairs of dynamic scans may look like the following:
+\begin{verbatim}
+1
+2
+5
+6
+9
+10
+13
+14
+\end{verbatim}
+
+Typical options for MEGA-PRESS analysis are listed as follows:
+
+\noindent\hrulefill
+\begin{verbatim}
+start_pnt 10
+ref_signals 1h_naa
+int_basis megapress_gaba
+pul_seq mega_press
+dyn_freq_corr true          # optional but may improve SNR
+dref_signals 1h_cr_cho      # as above
+dyn_av all                  # may need to be 'subtract', use 'odd' or 'even'
+                            # to select edit-on/edit-off scans
+av_list av_file.csv         # optional - used for selecting dynamics prior
+                            # to averaging
+\end{verbatim}
+\noindent\hrulefill
 
 \section{Data formats}
 \subsection{GE p-files}
