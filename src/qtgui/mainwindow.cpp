@@ -943,6 +943,8 @@ Session* MainWindow::KillSession()
 		delete m_session;
 		m_session = NULL;
     }
+
+	return NULL;
 }
 
 void MainWindow::OnFileExit()

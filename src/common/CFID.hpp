@@ -738,7 +738,7 @@ class CFID
             cvm::cvector &fid = m_cvmFID[n];
             int new_N = fid.size() + extra_pts;
             cvm::cvector fid_temp(new_N);
-            for ( size_t m = extra_pts; m < new_N; m++ )
+            for ( int m = extra_pts; m < new_N; m++ )
             {
                 fid_temp(m+1) = fid(m-extra_pts+1);
             }
@@ -776,7 +776,7 @@ class CFID
             {
                 cvm::cvector &fid = m_cvmFID[n];
                 cvm::cvector fid_temp(pts);
-                for ( size_t m = 0; m < pts; m++ )
+                for ( int m = 0; m < pts; m++ )
                     fid_temp(m+1) = fid(m+1);
                 fid.resize(pts);
                 fid = fid_temp;
@@ -794,7 +794,7 @@ class CFID
                 {
                     int new_N = GetNumberOfPoints() + extra_pts;
                     cvm::cvector fid_temp(new_N);
-                    for ( size_t m = extra_pts; m < new_N; m++ )
+                    for ( int m = extra_pts; m < new_N; m++ )
                     {
                         fid_temp(m+1) = fid(m-extra_pts+1);
                     }
