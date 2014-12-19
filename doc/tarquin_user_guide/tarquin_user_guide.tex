@@ -316,6 +316,11 @@ av_list av_file.csv         # optional - used for selecting dynamics prior
 \subsection{GE p-files}
 TARQUIN will read GE SVS p-files and combine data from multi-coil arrays where appropriate. A single phase and multiplicative factor (per coil) is applied to data from each coil before combination. Where water unsuppressed data is available this factor is taken from the phase and magnitude of the first data point in the first unsuppressed frame. Where only water suppressed data is available, this phase factor is taken from the first data point in the first suppressed frame.
 
+\section{MRSI}
+TARQUIN supports most 2D and some 3D MRSI data formats and may be used to generate metabolite maps for display on conventional MRI. Due to the relatively low resolution of MRSI, it is often useful to spatially interpolate data to allow examination of spectral data centred on pathology. This can be achieved in the gui by specifying a ``Zero fill k-space factor'' in the preprocessing tab or with the \texttt{---zfill\_kspace} command line option. In both cases the factor will be used to multiply the native resolution, so a 16x16 grid with a zero fill k-space factor of 4 will result in a 64x64 grid. Please note that this step does not improve the resolution of the technique but provides a natural method for data interpolation that will preserve the underlying point-spread function.
+
+Following interpolation, a single voxel from the grid may be selected for analysis (``Select none'' button followed by right mouse click on the relevant voxel) and a pdf fit output can be generated from the results menu. Alternatively a set of voxels may be selected to generate metabolite maps over a region.
+
 %\section{Fitting Details}
 %The main algorithmic details and validation is described in the following paper: \cite{tarquin_paper}.  Any expansions and changes to the original algorithm will be described in the following section.
 
