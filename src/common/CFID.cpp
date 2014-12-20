@@ -956,6 +956,32 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     }
     else
     {
+
+    if ( missmatch > 0 || data_fids != m_cols * m_rows * m_slices) // if we got here it's because of a missmatch between WS and W dyanmics
+    {
+        for ( size_t n = 0; n < data_fids; n++ )
+        {
+            if ( options.GetDynAvW() == ALL )
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == ODD && ( (n + 1) % 2 != 0 ) ) // n odd?
+                new_fid = new_fid + m_cvmFID[n] / (data_fids / 2);
+            else if ( options.GetDynAvW() == EVEN && ( (n + 1) % 2 == 0 ) ) // n even?
+                new_fid = new_fid + m_cvmFID[n] / (data_fids / 2);
+            else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 != 0 ) ) // n odd?
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 == 0 ) ) // n even?
+                new_fid = new_fid - m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == NONE ) // we shouldn't be here, error! 
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == DEFAULT )
+            {
+                std::cout << "ERROR, averaging should not be default here." << std::endl;
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            }
+        }
+    }
+    else
+    {
         for ( size_t p = 0; p < av_list.size(); p++ )
         {
             int n = av_list[p];
@@ -969,7 +995,7 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
                 new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 == 0 ) ) // n even?
                 new_fid = new_fid - m_cvmFID[n] / fids;
-            else if ( options.GetDynAvW() == NONE ) // if we got here it's because of a missmatch between WS and W dyanmics, so just add up fids regardless and duplicate later to match WS
+            else if ( options.GetDynAvW() == NONE ) // we shouldn't be here, error! 
                 new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAvW() == DEFAULT )
             {
@@ -977,6 +1003,7 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
                 new_fid = new_fid + m_cvmFID[n] / fids;
             }
         }
+    }
 
 
         /*
