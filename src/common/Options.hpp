@@ -152,7 +152,7 @@ namespace tarquin
         m_w_conc = 35880;
         m_au_norm = true;
 
-        m_max_dref = 0.15;
+        m_max_dref = 0.1;
         m_title = "";
         
         // TODO serialise
@@ -209,6 +209,7 @@ namespace tarquin
         m_crlb_td = true;
         m_nnls = true;
         m_soft_cons = true;
+	    m_bPreFit = true;
 	}
 
 	//Options(){}
@@ -1026,6 +1027,11 @@ namespace tarquin
 	    return m_bCombinePreproc;
 	}
 
+	bool GetPreFit() const
+	{
+	    return m_bPreFit;
+	}
+
 	bool GetLipidFilter() const
 	{
 	    return m_bLipidFilter;
@@ -1479,6 +1485,9 @@ namespace tarquin
 
 	//! Add up CSI spectra before auto-phasing?
     bool m_bCombinePreproc;
+    
+    //! Do a simple pre-fit fit
+    bool m_bPreFit;
 
 	//! Filter out lipids using HSVD?
     bool m_bLipidFilter;

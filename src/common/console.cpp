@@ -1036,6 +1036,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			else
 				options.m_bCombinePreproc = false;
 		}
+
+        else if( strKey == "--pre_fit" ) {
+
+			if( strVal == "true" )
+				options.m_bPreFit = true;
+			else
+				options.m_bPreFit = false;
+		}
         
         else if( strKey == "--lipid_filter" ) {
 

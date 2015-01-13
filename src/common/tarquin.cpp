@@ -1448,10 +1448,73 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			treal norm = yActive.norm1()/100;
 			yActive = yActive / norm;
 			ahat = ahat / norm;
+
+            if ( options.GetPreFit() ) // optimise for phi0 intially?
+            {
+                /*
+                cvm::rvector vLowerBoundsInit(P);
+                cvm::rvector vUpperBoundsInit(P);
+                for ( int n = 1; n <= P; n++ )
+                {
+                    vLowerBoundsInit(n) = vParams(n) - vParams(n)/1e20;
+                    vUpperBoundsInit(n) = vParams(n) + vParams(n)/1e20;
+
+                }
+
+                vLowerBoundsInit(2*M + 2) = options.GetLowerLimitPhi0(); 
+                vUpperBoundsInit(2*M + 2) = options.GetUpperLimitPhi0(); 
+
+			    dlevmar_bc_der(residual_objective_all, jacobian_func, 
+					vParams, yActive, P, 2*activeN, vLowerBoundsInit, vUpperBoundsInit, 
+					iterations, opts, info, NULL, NULL, (void*)&params);
+                */
+
+		        /*vLowerBoundsInit(nIdxBeta) = options.GetLowerLimitBeta(0); 
+		        vUpperBoundsInit(nIdxBeta) = options.GetUpperLimitBeta(0);
+
+			    dlevmar_bc_der(residual_objective_all, jacobian_func, 
+					vParams, yActive, P, 2*activeN, vLowerBoundsInit, vUpperBoundsInit, 
+					iterations, opts, info, NULL, NULL, (void*)&params);*/
+                
+			    cvm::rvector yActive_phase(yActive.size());
+                int steps = 50;
+			    treal bestResidual = std::numeric_limits<treal>::infinity();
+			    treal bestPhase    = 0;
+                for ( int s = 0; s < steps; s++ )
+                {
+                    double phase = -M_PI + (2*M_PI/steps) * s;
+                    for(integer n = 0; n < activeN; n++) 
+                    {
+                        yActive_phase(n+1)         = (exp(tcomplex(0,1)*phase)*tcomplex(yActive(n+1), yActive(n+1+activeN))).real();
+                        yActive_phase(n+1+activeN) = (exp(tcomplex(0,1)*phase)*tcomplex(yActive(n+1), yActive(n+1+activeN))).imag();
+                    }
+
+                    nnls.solve(params.m_Sp, yActive_phase, params.m_ahat, false);
+                    cvm::rvector yhatPhase = params.m_Sp * params.m_ahat;
+
+				    double residual = (yActive_phase - yhatPhase).norm2();
+
+				    //std::cout << "\nTrying phase = " << phase << " residual = " << residual << std::endl;
+
+                    if( residual < bestResidual )
+                    {
+                        bestResidual = residual;
+                        bestPhase = phase;
+                    }
+                }
+			    vParams(2*M + 2) = -bestPhase;
+                log.DebugMessage(DEBUG_LEVEL_1, "Initial phase fit completed");
+            }
+
 			// call the optimiser analytical Jacobian 
 			dlevmar_bc_der(residual_objective_all, jacobian_func, 
 					vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, 
 					iterations, opts, info, NULL, NULL, (void*)&params);
+			
+            /*dlevmar_bc_dif(residual_objective_all, 
+					vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, 
+					iterations, opts, info, NULL, NULL, (void*)&params);*/
+
 
             if ( false )
             {
