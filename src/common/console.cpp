@@ -34,6 +34,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--auto_phase        {true | false}";
 	std::cout << "\n\t--auto_ref          {true | false}";
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
+	std::cout << "\n\t--max_phi0          the value of phi0 in rads";
 	std::cout << "\n\t--max_phi1          the value of phi1_max/fs/2";
 	std::cout << "\n\t--ref_freq          frequency of a single peak to be used for auto referencing (ppm)";
 	std::cout << "\n\t--ref_file          CSV file containing reference peak list";
@@ -657,6 +658,19 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_phi1_upper = +temp;
 		}
 
+        else if( strKey == "--max_phi0" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_phi0_lower = -temp;
+			options.m_phi0_upper = +temp;
+		}
 
 		// sampling frequency parameter
 		else if( strKey == "--fs") {

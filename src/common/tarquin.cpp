@@ -1482,7 +1482,18 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			    treal bestPhase    = 0;
                 for ( int s = 0; s < steps; s++ )
                 {
-                    double phase = -M_PI + (2*M_PI/steps) * s;
+                    
+                    double phase;
+                    // check we aren't over searching the parameter space
+                    if ( options.GetUpperLimitPhi0() - options.GetLowerLimitPhi0() > 2*M_PI )
+                    {
+                        phase = -M_PI + (2*M_PI/steps) * s;
+                    }
+                    else // if not, respect the limits
+                    {
+                        phase = options.GetLowerLimitPhi0() + ((options.GetUpperLimitPhi0() - options.GetLowerLimitPhi0())/steps) * s;
+                    }
+
                     for(integer n = 0; n < activeN; n++) 
                     {
                         yActive_phase(n+1)         = (exp(tcomplex(0,1)*phase)*tcomplex(yActive(n+1), yActive(n+1+activeN))).real();
