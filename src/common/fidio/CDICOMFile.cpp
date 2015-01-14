@@ -186,6 +186,16 @@ long tarquin::CDICOMFile::MoveToTag(std::string strGroup, std::string strElement
         if( strCurrentGroup == "FFFE" && strCurrentElement == "E000" ) 
 			continue;
         
+        // Siemens stuff
+        if( strCurrentGroup == "0028" && strCurrentElement == "9110" ) // I know this is a sequence 
+			continue;
+
+        if( strCurrentGroup == "0008" && strCurrentElement == "1140" ) // I know this is a sequence 
+			continue;
+
+        if( strCurrentGroup == "5200" && strCurrentElement == "9229" ) // I know this is a sequence 
+			continue;
+
         // Philips stuff
         if( strCurrentGroup == "5200" && strCurrentElement == "9229" ) // I know this is a sequence 
 			continue;
