@@ -1449,33 +1449,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			yActive = yActive / norm;
 			ahat = ahat / norm;
 
-            if ( options.GetPreFit() ) // optimise for phi0 intially?
+            if ( options.GetPreFitPhase() ) // optimise for phi0 intially?
             {
-                /*
-                cvm::rvector vLowerBoundsInit(P);
-                cvm::rvector vUpperBoundsInit(P);
-                for ( int n = 1; n <= P; n++ )
-                {
-                    vLowerBoundsInit(n) = vParams(n) - vParams(n)/1e20;
-                    vUpperBoundsInit(n) = vParams(n) + vParams(n)/1e20;
-
-                }
-
-                vLowerBoundsInit(2*M + 2) = options.GetLowerLimitPhi0(); 
-                vUpperBoundsInit(2*M + 2) = options.GetUpperLimitPhi0(); 
-
-			    dlevmar_bc_der(residual_objective_all, jacobian_func, 
-					vParams, yActive, P, 2*activeN, vLowerBoundsInit, vUpperBoundsInit, 
-					iterations, opts, info, NULL, NULL, (void*)&params);
-                */
-
-		        /*vLowerBoundsInit(nIdxBeta) = options.GetLowerLimitBeta(0); 
-		        vUpperBoundsInit(nIdxBeta) = options.GetUpperLimitBeta(0);
-
-			    dlevmar_bc_der(residual_objective_all, jacobian_func, 
-					vParams, yActive, P, 2*activeN, vLowerBoundsInit, vUpperBoundsInit, 
-					iterations, opts, info, NULL, NULL, (void*)&params);*/
-                
 			    cvm::rvector yActive_phase(yActive.size());
                 int steps = 50;
 			    treal bestResidual = std::numeric_limits<treal>::infinity();
@@ -1514,7 +1489,57 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                     }
                 }
 			    vParams(2*M + 2) = -bestPhase;
+                
                 log.DebugMessage(DEBUG_LEVEL_1, "Initial phase fit completed");
+            }
+
+            if ( options.GetPreFitShift() )
+            {
+                /*
+                cvm::rvector yActive_shift(yActive.size());
+                int steps = 50;
+                double max_shift = 1;
+			    treal bestResidual = std::numeric_limits<treal>::infinity();
+			    treal bestShift    = 0;
+                for ( int s = 0; s < steps; s++ )
+                {
+                    
+                    double shift = -max_shift + (2*max_shift/steps) * s;
+
+                    for(integer n = 0; n < activeN; n++) 
+                    {
+                        yActive_shift(n+1)         = (exp(tcomplex(0,1)*-vParams(2*M + 2)+tcomplex(0,1)*t(n+1)*2.0*M_PI*shift)*tcomplex(yActive(n+1), yActive(n+1+activeN))).real();
+                        yActive_shift(n+1+activeN) = (exp(tcomplex(0,1)*-vParams(2*M + 2)+tcomplex(0,1)*t(n+1)*2.0*M_PI*shift)*tcomplex(yActive(n+1), yActive(n+1+activeN))).imag();
+                    }
+
+                    nnls.solve(params.m_Sp, yActive_shift, params.m_ahat, false);
+                    cvm::rvector yhatShift = params.m_Sp * params.m_ahat;
+
+				    double residual = (yActive_shift - yhatShift).norm2();
+
+				    //std::cout << "\nTrying shift = " << shift << " residual = " << residual << std::endl;
+
+                    if( residual < bestResidual )
+                    {
+                        bestResidual = residual;
+                        bestShift = shift;
+                    }
+                }
+                
+                log.DebugMessage(DEBUG_LEVEL_1, "Initial shift fit completed");
+                */
+
+            }
+
+            if ( options.GetPreFitBl() )
+            {
+                params.m_lambda = 2;
+
+			    dlevmar_bc_der(residual_objective_all, jacobian_func, 
+					vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, 
+					iterations, opts, info, NULL, NULL, (void*)&params);
+
+                params.m_lambda = options.GetLambda();
             }
 
 			// call the optimiser analytical Jacobian 

@@ -209,7 +209,9 @@ namespace tarquin
         m_crlb_td = true;
         m_nnls = true;
         m_soft_cons = true;
-	    m_bPreFit = true;
+	    m_bPreFitPhase = true;
+	    m_bPreFitShift = false;
+	    m_bPreFitBl = false;
 	}
 
 	//Options(){}
@@ -1027,9 +1029,19 @@ namespace tarquin
 	    return m_bCombinePreproc;
 	}
 
-	bool GetPreFit() const
+	bool GetPreFitPhase() const
 	{
-	    return m_bPreFit;
+	    return m_bPreFitPhase;
+	}
+
+	bool GetPreFitShift() const
+	{
+	    return m_bPreFitShift;
+	}
+
+	bool GetPreFitBl() const
+	{
+	    return m_bPreFitBl;
 	}
 
 	bool GetLipidFilter() const
@@ -1486,8 +1498,10 @@ namespace tarquin
 	//! Add up CSI spectra before auto-phasing?
     bool m_bCombinePreproc;
     
-    //! Do a simple pre-fit fit
-    bool m_bPreFit;
+    //! Do a pre-fit fit?
+    bool m_bPreFitPhase;
+    bool m_bPreFitShift;
+    bool m_bPreFitBl;
 
 	//! Filter out lipids using HSVD?
     bool m_bLipidFilter;

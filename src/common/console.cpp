@@ -1051,12 +1051,28 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_bCombinePreproc = false;
 		}
 
-        else if( strKey == "--pre_fit" ) {
+        else if( strKey == "--pre_fit_phase" ) {
 
 			if( strVal == "true" )
-				options.m_bPreFit = true;
+				options.m_bPreFitPhase = true;
 			else
-				options.m_bPreFit = false;
+				options.m_bPreFitPhase = false;
+		}
+
+        else if( strKey == "--pre_fit_shift" ) {
+
+			if( strVal == "true" )
+				options.m_bPreFitShift = true;
+			else
+				options.m_bPreFitShift = false;
+		}
+
+        else if( strKey == "--pre_fit_bl" ) {
+
+			if( strVal == "true" )
+				options.m_bPreFitBl = true;
+			else
+				options.m_bPreFitBl = false;
 		}
         
         else if( strKey == "--lipid_filter" ) {
