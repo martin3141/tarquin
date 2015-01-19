@@ -3,14 +3,13 @@
 ****************************************************
 
 Version 4.3.6
-- A pre-fit to optimise phi0 only is now performed before the full fit to improve rare cases where the optimiser gets stuck in a local minimum. Can be enabled/disabled with the --pre_fit option.
+- A pre-fit to optimise phi0 only is now performed before the full fit to improve rare cases where the optimiser gets stuck in a local minimum. Can be enabled/disabled with the --pre_fit_phase option.
 - Bug fix for selecting dynamic water scans with the --av_list option.
 - Default max initial shift is now 0.1 PPM, since sensible data is very rarely shifted further than this.
 - Siemens DICOM fix for explicit sequence lengths.
 - Phi0 max/min limits can be specified with the --max_phi0 option.
 
 TODO
-- Add Phi0 max/min limits.
 - Remove voxels for metabolite map display.
 - Adjust metabolite map limits.
 - Add average voxel function to GUI.
