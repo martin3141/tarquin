@@ -212,6 +212,7 @@ namespace tarquin
 	    m_bPreFitPhase = true;
 	    m_bPreFitShift = false;
 	    m_bPreFitBl = false;
+	    m_bAppendLCMBasis = true;
 	}
 
 	//Options(){}
@@ -1044,6 +1045,11 @@ namespace tarquin
 	    return m_bPreFitBl;
 	}
 
+	bool GetAppendLCMBasis() const
+	{
+	    return m_bAppendLCMBasis;
+	}
+
 	bool GetLipidFilter() const
 	{
 	    return m_bLipidFilter;
@@ -1502,6 +1508,8 @@ namespace tarquin
     bool m_bPreFitPhase;
     bool m_bPreFitShift;
     bool m_bPreFitBl;
+
+	bool m_bAppendLCMBasis;
 
 	//! Filter out lipids using HSVD?
     bool m_bLipidFilter;

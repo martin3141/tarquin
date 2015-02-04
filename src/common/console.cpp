@@ -1074,6 +1074,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			else
 				options.m_bPreFitBl = false;
 		}
+
+        else if( strKey == "--append_lcm_basis" ) {
+
+			if( strVal == "true" )
+				options.m_bAppendLCMBasis = true;
+			else
+				options.m_bAppendLCMBasis = false;
+		}
         
         else if( strKey == "--lipid_filter" ) {
 

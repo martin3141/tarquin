@@ -1671,6 +1671,14 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			SpOut.resize(N, Q);
 			yhat.resize(N);
 
+			cvm::cmatrix GpOut_no_beta;
+			cvm::cmatrix SpOut_no_beta;
+			cvm::cvector yhat_no_beta;
+
+			GpOut_no_beta.resize(N, M);
+			SpOut_no_beta.resize(N, Q);
+			yhat_no_beta.resize(N);
+
 
 			//std::cout << vParams(1) << std::endl;
 			//
@@ -1694,6 +1702,9 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 					// modify sample and put in right place in active matrix
 					GpOut(n, c) = z;
+
+					tcomplex z_no_beta = G(n, c) * exp(-t(n)*alpha + t(n)*jomega);
+					GpOut_no_beta(n, c) = z_no_beta;
 				}
 			}
 
@@ -1737,6 +1748,18 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			// synthesize estimate
 			yhat = SpOut * cvm::cvector(ahat);
+
+			SpOut_no_beta = GpOut_no_beta * basis.GetSummationMatrix();
+			yhat_no_beta = SpOut_no_beta * cvm::cvector(ahat);
+
+            /*std::ofstream no_beta; 
+            no_beta.open("yhat_no_beta.txt");
+            for ( int f = 1; f < yhat_no_beta.size()+1; f++ )
+            {
+                no_beta << yhat_no_beta(f).real() << std::endl;
+                no_beta << yhat_no_beta(f).imag() << std::endl;
+            }
+            no_beta.close();*/
 
             cvm::rvector ahat_singlet(ahat.size());
             
