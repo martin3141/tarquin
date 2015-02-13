@@ -772,7 +772,7 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
     }
 
     if ( options.GetDynAv() != NONE )
-        AverageData(options);
+        AverageData(options, log);
 
     // check if we need to average WUS data due to missmatch between WUS and WS scans
     if ( m_wref )
@@ -781,7 +781,7 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
         //std::cout << std::endl << WUS_fids << std::endl;
         //std::cout << m_cvmFID.size() << std::endl;
         if ( WUS_fids != m_cvmFID.size() )
-            AverageData(options, WUS_fids);
+            AverageData(options, log, WUS_fids);
     }
 
     if ( options.GetFullEcho() )
@@ -882,7 +882,7 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
 
     // shouldn't ever be default at this point because WUS data is always loaded after WS data
     if ( options.GetDynAvW() != NONE )
-        AverageData(options);
+        AverageData(options, log);
 
     //std::cout << "Parameter Water ref fids :" << m_cols * m_rows * m_slices << std::endl;
     //std::cout << "Actual water ref fids    :" << m_cvmFID.size() << std::endl;
@@ -891,14 +891,18 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
     if ( m_wref && (m_cols * m_rows * m_slices != m_cvmFID.size()) )
     {
         //std::cout << "I'm here" << std::endl;
-        AverageData(options);
+        AverageData(options, log);
     }
 }
 
-void tarquin::CFID::AverageData(Options& options, int missmatch)
+void tarquin::CFID::AverageData(Options& options, CBoswell& log, int missmatch)
 {
+    if ( !m_wref )
+        log.LogMessage(LOG_INFO, "Averaging metabolite FIDs");
+    else
+        log.LogMessage(LOG_INFO, "Averaging water ref FIDs");
+
     int pts = GetNumberOfPoints();
-    
 
     std::vector<int> av_list;
     
@@ -919,7 +923,6 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     int fids = av_list.size();
     int data_fids = m_cvmFID.size();
 
-
     //std::cout << "Averaging data" << std::endl;
 
     //std::cout << fids << std::endl;
@@ -934,6 +937,7 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
 
     if ( !m_wref ) 
     {
+        log.LogMessage(LOG_INFO, "Averaging across %i of %i FIDs", fids, data_fids);
         for ( size_t p = 0; p < av_list.size(); p++ )
         {
             int n = av_list[p];
@@ -959,6 +963,8 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
 
     if ( missmatch > 0 || data_fids != m_cols * m_rows * m_slices) // if we got here it's because of a missmatch between WS and W dyanmics
     {
+        log.LogMessage(LOG_INFO, "Number of W fids does not match WS fids.");
+        log.LogMessage(LOG_INFO, "Averaging accross %i water reference fids.",data_fids);
         for ( size_t n = 0; n < data_fids; n++ )
         {
             if ( options.GetDynAvW() == ALL )
@@ -982,6 +988,8 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     }
     else
     {
+        log.LogMessage(LOG_INFO, "Number of W fids and WS fids is the same.", fids, data_fids);
+        log.LogMessage(LOG_INFO, "Averaging across a subset (%i of %i) water reference FIDs.", fids, data_fids);
         for ( size_t p = 0; p < av_list.size(); p++ )
         {
             int n = av_list[p];
@@ -1024,6 +1032,8 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     // do we need to duplicate the fid?
     if ( (data_fids != m_cols * m_rows * m_slices) )
     {
+        //log.LogMessage(LOG_INFO,"Duplicating water reference FIDs to match number of metabolite FIDs (%i).",m_cols * m_rows * m_slices);
+        //log.LogMessage(LOG_INFO,"Duplicating water reference FIDs to match number of metabolite FIDs.",m_cols * m_rows * m_slices);
         if ( m_wref ) // are we water data?
         {
             for ( size_t n = 0; n < m_cols * m_rows * m_slices; n++ )
