@@ -8,6 +8,7 @@ Version 4.3.6
 - Default max initial shift is now 0.1 PPM, since sensible data is very rarely shifted further than this.
 - Siemens DICOM fix for explicit sequence lengths.
 - Phi0 max/min limits can be specified with the --max_phi0 option.
+- Internal basis set for braino phantom now has narrower peaks better suited to typical T2 values seen in solution.
 
 TODO
 - Remove voxels for metabolite map display.
