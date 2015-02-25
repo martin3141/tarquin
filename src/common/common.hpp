@@ -632,7 +632,8 @@ namespace tarquin
     gnuplot_outfile << "set timestamp top" << std::endl;
     gnuplot_outfile << "set format x '%1.1f'" << std::endl;
 
-	gnuplot_outfile << "set xrange [" << ppm_start << ":" << ppm_end << "] reverse" << std::endl;
+	//gnuplot_outfile << "set xrange [" << ppm_start << ":" << ppm_end << "] reverse" << std::endl;
+    gnuplot_outfile << "set xrange [" << ppm_end << ":" << ppm_start << "]" << std::endl;
 	gnuplot_outfile	<< "plot 'plot.txt' using 1:3 with lines lw 6 lc rgb 'red' title \"fit\", ";
 	gnuplot_outfile	<< "'plot.txt' using 1:2 with lines lw 2 lc rgb 'black' title \"data\", ";
 	gnuplot_outfile	<< "'plot.txt' using 1:4 with lines lw 2 lc rgb 'black' title \"residual\", ";
@@ -667,7 +668,8 @@ namespace tarquin
             gnuplot_outfile << "set timestamp top" << std::endl;
             gnuplot_outfile << "set format x '%1.1f'" << std::endl;
 
-            gnuplot_outfile << "set xrange [" << ppm_start << ":" << ppm_end << "] reverse" << std::endl;
+            //gnuplot_outfile << "set xrange [" << ppm_start << ":" << ppm_end << "] reverse" << std::endl;
+            gnuplot_outfile << "set xrange [" << ppm_end << ":" << ppm_start << "]" << std::endl;
 
             gnuplot_outfile	<< "plot 'plot.txt' using 1:2 with lines lw 2 lc rgb 'black' title \"data\", ";
             gnuplot_outfile	<< "'plot.txt' using 1:" << n+1 << " with lines lw 6 lc rgb 'red' title \"metab\", ";

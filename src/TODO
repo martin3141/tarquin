@@ -9,6 +9,7 @@ Version 4.3.6
 - Siemens DICOM fix for explicit sequence lengths.
 - Phi0 max/min limits can be specified with the --max_phi0 option.
 - Internal basis set for braino phantom now has narrower peaks better suited to typical T2 values seen in solution.
+- Bug fix for x axis direction when using Gnuplot 5.x.
 
 TODO
 - Remove voxels for metabolite map display.
