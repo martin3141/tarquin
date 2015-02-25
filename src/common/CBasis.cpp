@@ -405,6 +405,8 @@ bool tarquin::CBasis::Simulate(std::string strBasisPath, const CFID& fidMatch, c
 		return false;
 	}
 
+    std::sort(m_vecSignalFiles.begin(),m_vecSignalFiles.end());
+
 	// allocate space for the number of signals
 	m_signals.resize( m_vecSignalFiles.size() );
 
