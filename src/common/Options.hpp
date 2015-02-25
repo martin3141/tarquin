@@ -213,6 +213,7 @@ namespace tarquin
 	    m_bPreFitShift = false;
 	    m_bPreFitBl = false;
 	    m_bAppendLCMBasis = true;
+        m_lineshape_corr = false;
 	}
 
 	//Options(){}
@@ -435,6 +436,11 @@ namespace tarquin
     bool GetSoftCons() const
 	{
 	    return m_soft_cons;
+	}
+
+    bool GetLineshapeCorr() const
+	{
+	    return m_lineshape_corr;
 	}
 
 	void SetMetabShiftLimits(treal lower, treal upper, const CFID& fid, const CBasis& basis)
@@ -1658,6 +1664,7 @@ namespace tarquin
     bool m_crlb_td;
     bool m_nnls;
     bool m_soft_cons;
+    bool m_lineshape_corr;
 
     };
 

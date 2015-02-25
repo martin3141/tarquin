@@ -1679,7 +1679,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			SpOut_no_beta.resize(N, Q);
 			yhat_no_beta.resize(N);
 
-
 			//std::cout << vParams(1) << std::endl;
 			//
 			// for each column of the group matrix
@@ -1710,33 +1709,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			std::size_t nIdxPhi0  = 2*M+2; 
 			std::size_t nIdxPhi1  = 2*M+3;
-			// useful debugging output, what happens for multi-voxel?
-			/*
-			   std::ofstream fitted_paras;
-			   fitted_paras.open ("fitted_paras.csv");
-			   fitted_paras << "name," << "group," << "shift (Hz)," << "damping" << std::endl;
-			   int basis_cnt = 1;
-			   int group_cnt = 0;
-			   for( integer c = 1; c <= M; c++ ) 
-			   {
-			   group_cnt++;
-			   std::size_t nIdxShift = c;
-			   std::size_t nIdxAlpha = c+M;
-			// some output
-			integer i = params.m_basis.GetBasisFromGroup(c-1);
-			if ( i != basis_cnt )
-			{
-			basis_cnt = i;
-			group_cnt = 1;
-			}
-			fitted_paras << params.m_metab_names[i-1] << "," << group_cnt << "," << vParams(nIdxShift) << "," << vParams(nIdxAlpha) << std::endl;
-			}
-			//std::size_t nIdxBeta  = 2*M+1;
-			fitted_paras << "beta," << vParams(nIdxBeta) << std::endl;
-			fitted_paras << "phi0," << vParams(nIdxPhi0) << std::endl;
-			fitted_paras << "phi1," << vParams(nIdxPhi1) << std::endl;
-			fitted_paras.close();
-			*/
 
 			//
 			// Synthesise, fit over whole signal, note: amplitudes come from NNLS 
@@ -1751,6 +1723,50 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			SpOut_no_beta = GpOut_no_beta * basis.GetSummationMatrix();
 			yhat_no_beta = SpOut_no_beta * cvm::cvector(ahat);
+
+            if ( options.GetLineshapeCorr() ) // adjust basis-set to match lineshape
+            {
+                cvm::rvector BL;
+                work.GetBaseline(BL, y, yhat, 2, false);
+                cvm::cvector bl;
+                work.GetTimeDomain(BL, bl, false);
+                cvm::cvector fit_td = yhat_no_beta + bl;
+                int N = fit_td.size();
+                cvm::cvector dist_yhat(N);
+                for ( int n = 1; (n < (N+1)); n++ )
+                    dist_yhat(n) = y(n) / fit_td(n);
+
+                // set some end points to be zero
+                int percent = 70; // percent of good data
+                for ( int n = percent*N/100; (n < (N+1)); n++ )
+                    dist_yhat(n) = 0;
+
+                plot(dist_yhat);
+                cvm::rvector dist_yhat_im(N);
+                dist_yhat_im = dist_yhat.imag();
+                plot(dist_yhat_im);
+
+                cvm::cvector dist_yhat_smooth(N);
+                td_conv_ws( dist_yhat, dist_yhat_smooth, 800, 50);	
+                plot(dist_yhat_smooth);
+                cvm::rvector dist_yhat_smooth_im(N);
+                dist_yhat_smooth_im = dist_yhat_smooth.imag();
+                plot(dist_yhat_smooth_im);
+
+			    cvm::cmatrix SpOut_lsc;
+			    SpOut_lsc.resize(N, Q);
+
+                for ( int q = 1; q < Q+1; q++ )
+                {
+                    for ( int n = 1; n < N+1; n++ )
+                    {
+                        SpOut_lsc(n, q) = SpOut_no_beta(n, q) * dist_yhat_smooth(n);
+                    }
+                }
+
+                SpOut = SpOut_lsc;
+			    yhat = SpOut * cvm::cvector(ahat);
+            }
 
             /*std::ofstream no_beta; 
             no_beta.open("yhat_no_beta.txt");

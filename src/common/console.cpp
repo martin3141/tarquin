@@ -403,6 +403,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_soft_cons = false;
 		}
 
+        // lineshape correction
+        else if( strKey == "--ls_corr" ) {
+			if( strVal == "true" )
+				options.m_lineshape_corr = true;
+			else
+				options.m_lineshape_corr = false;
+		}
+
         else if( strKey == "--replace_fp" ) {
 			if( strVal == "true" )
 				options.m_replace_fp = true;
