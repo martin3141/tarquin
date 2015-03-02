@@ -1723,6 +1723,34 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			SpOut_no_beta = GpOut_no_beta * basis.GetSummationMatrix();
 			yhat_no_beta = SpOut_no_beta * cvm::cvector(ahat);
+            
+            //
+			// Apply phasing parameters to signal we fitted to for output.
+			//
+			//std::size_t nIdxPhi0  = 2*M+2; 
+			//std::size_t nIdxPhi1  = 2*M+3;
+
+			treal phi0 = vParams(nIdxPhi0); 
+			treal phi1 = vParams(nIdxPhi1);
+
+            // update phi0 and phi1 in CFID
+            treal phi0_old = fid.GetPhi0(*fit_it);
+            treal phi1_old = fid.GetPhi1(*fit_it);
+            fid.SetPhi0(*fit_it,-phi0+phi0_old);
+            fid.SetPhi1(*fit_it,-phi1+phi1_old);
+            
+
+			cvm::cvector Y(y.size());
+			fft(y, Y);
+
+			for( integer n = 0; n < Y.size(); n++ ) 
+			{
+				treal freq = shift_freq_range[n+1];
+				Y[n+1] = Y[n+1] * exp( tcomplex(0, -phi0 -phi1*2.0*M_PI*freq) );
+			}
+
+			ifft(Y, y);
+
 
             if ( options.GetLineshapeCorr() ) // adjust basis-set to match lineshape
             {
@@ -1731,27 +1759,52 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 cvm::cvector bl;
                 work.GetTimeDomain(BL, bl, false);
                 cvm::cvector fit_td = yhat_no_beta + bl;
+                //cvm::cvector fit_td = yhat + bl;
                 int N = fit_td.size();
                 cvm::cvector dist_yhat(N);
+                
+                tcomplex last_good = 0;
+                double th = td_noise_min*2;
                 for ( int n = 1; (n < (N+1)); n++ )
-                    dist_yhat(n) = y(n) / fit_td(n);
+                {
+                    if ( abs(fit_td(n)) < th )
+                    {
+                        dist_yhat(n) = last_good;
+                    }
+                    else
+                    {
+                        dist_yhat(n) = y(n) / fit_td(n);
+                        last_good = y(n) / fit_td(n);
+                    }
+                }
 
                 // set some end points to be zero
-                int percent = 70; // percent of good data
+                int percent = 90; // percent of good data
                 for ( int n = percent*N/100; (n < (N+1)); n++ )
                     dist_yhat(n) = 0;
 
-                plot(dist_yhat);
+                //plot(dist_yhat);
                 cvm::rvector dist_yhat_im(N);
                 dist_yhat_im = dist_yhat.imag();
-                plot(dist_yhat_im);
+                //plot(dist_yhat_im);
 
                 cvm::cvector dist_yhat_smooth(N);
+                
+                //td_conv_ws( dist_yhat, dist_yhat_smooth, N/10, N/50);	
+                
+                // hr-MAS
                 td_conv_ws( dist_yhat, dist_yhat_smooth, 800, 50);	
-                plot(dist_yhat_smooth);
+
+                //plot(dist_yhat_smooth);
                 cvm::rvector dist_yhat_smooth_im(N);
                 dist_yhat_smooth_im = dist_yhat_smooth.imag();
-                plot(dist_yhat_smooth_im);
+                //plot(dist_yhat_smooth_im);
+
+                cvm::rvector dist_yhat_smooth_arg(N);
+                for ( int n = 1; (n < (N+1)); n++ )
+                    dist_yhat_smooth_arg(n) = arg(dist_yhat_smooth(n));
+                
+                //plot(dist_yhat_smooth_arg);
 
 			    cvm::cmatrix SpOut_lsc;
 			    SpOut_lsc.resize(N, Q);
@@ -1761,6 +1814,8 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                     for ( int n = 1; n < N+1; n++ )
                     {
                         SpOut_lsc(n, q) = SpOut_no_beta(n, q) * dist_yhat_smooth(n);
+                        //SpOut_lsc(n, q) = SpOut(n, q) * exp(tcomplex(0,1)*dist_yhat_smooth_arg(n));
+                        //SpOut_lsc(n, q) = SpOut(n, q);
                     }
                 }
 
@@ -1843,33 +1898,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
             cvm::cvector yhat_metab = SpOut * cvm::cvector(ahat_metab);
             cvm::cvector yhat_broad = SpOut * cvm::cvector(ahat_broad);
             
-			//
-			// Apply phasing parameters to signal we fitted to for output.
-			//
-			//std::size_t nIdxPhi0  = 2*M+2; 
-			//std::size_t nIdxPhi1  = 2*M+3;
-
-			treal phi0 = vParams(nIdxPhi0); 
-			treal phi1 = vParams(nIdxPhi1);
-
-            // update phi0 and phi1 in CFID
-            treal phi0_old = fid.GetPhi0(*fit_it);
-            treal phi1_old = fid.GetPhi1(*fit_it);
-            fid.SetPhi0(*fit_it,-phi0+phi0_old);
-            fid.SetPhi1(*fit_it,-phi1+phi1_old);
-            
-
-			cvm::cvector Y(y.size());
-			fft(y, Y);
-
-			for( integer n = 0; n < Y.size(); n++ ) 
-			{
-				treal freq = shift_freq_range[n+1];
-				Y[n+1] = Y[n+1] * exp( tcomplex(0, -phi0 -phi1*2.0*M_PI*freq) );
-			}
-
-			ifft(Y, y);
-
+			
             // replace first part of FID with first part of y
             if ( options.GetReplaceFp() )
             {
