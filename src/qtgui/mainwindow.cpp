@@ -180,6 +180,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
     m_ui.slice_spin->setValue(0);
 
     m_phi0 = false;
+    m_phi1 = false;
     m_ww_wl = false;
 }
 
@@ -1699,6 +1700,7 @@ void MainWindow::OnPhi0()
 		return;
 
     m_phi0 = true;
+    m_phi1 = false;
     QPoint pos = QCursor::pos();
     m_start_pos_y = pos.y();
 
@@ -1711,6 +1713,7 @@ void MainWindow::OnPhi1()
 		return;
 
     m_phi0 = false;
+    m_phi1 = true;
     QPoint pos = QCursor::pos();
     m_start_pos_y = pos.y();
 
@@ -1806,6 +1809,8 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
     if (event->type() == QEvent::MouseButtonRelease && !m_ui.ww_wl->isChecked())
     {
+        m_phi0 = false;
+        m_phi1 = false;
         qApp->removeEventFilter(this);
     }
     else if (event->type() == QEvent::MouseButtonRelease && m_ui.ww_wl->isChecked()) 
@@ -1814,7 +1819,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         m_session->image.generate_slices();
         m_ww_wl = false;
     }
-    else if (event->type() == QEvent::MouseMove && m_phi0 && !m_ui.ww_wl->isChecked())
+    else if (event->type() == QEvent::MouseMove && m_phi0 && !m_phi1 && !m_ui.ww_wl->isChecked())
     {
         //statusBar()->showMessage(QString("Mouse move (%1,%2)").arg(mouseEvent->pos().x()).arg(mouseEvent->pos().y()));
 
@@ -1831,11 +1836,12 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         m_start_pos_y = pos.y();
 	    m_session->Update(false);
     }
-    else if (event->type() == QEvent::MouseMove && !m_phi0 && !m_ui.ww_wl->isChecked())
+    else if (event->type() == QEvent::MouseMove && !m_phi0 && m_phi1 && !m_ui.ww_wl->isChecked())
     {
         tarquin::Workspace& workspace = m_session->GetWorkspace();
 	    tarquin::Options& options = workspace.GetOptions();
         tarquin::CFID& fid = workspace.GetFIDProc();
+        //std::cout << m_session->m_voxel.row << "," << m_session->m_voxel.col << "," << m_session->m_voxel.slice << std::endl;
         cvm::cvector&  y   = fid.GetVectorFID(m_session->m_voxel);
         cvm::cvector Y = fft(y);
         Y = fftshift(Y);
