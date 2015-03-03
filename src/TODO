@@ -17,6 +17,7 @@ TODO
 - Add average voxel function to GUI.
 - Revamp serialisation method for saving fits.
 - 3D GE MRSI support.
+- More options for MM basis set.
 
 Version 4.3.5
 - Tentative support for DICOM, SPAR/SDAT, IMA and RDA formats for 3D MRSI.

@@ -1793,7 +1793,7 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 //td_conv_ws( dist_yhat, dist_yhat_smooth, N/10, N/50);	
                 
                 // hr-MAS
-                td_conv_ws( dist_yhat, dist_yhat_smooth, 800, 50);	
+                td_conv_ws( dist_yhat, dist_yhat_smooth, 0.1/dt, 0.005/dt);	
 
                 //plot(dist_yhat_smooth);
                 cvm::rvector dist_yhat_smooth_im(N);
@@ -1892,7 +1892,6 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 else
                     ahat_broad(n+1) = ahat(n+1);
             }
-
 
             // find yhat for metabs only
             cvm::cvector yhat_metab = SpOut * cvm::cvector(ahat_metab);
