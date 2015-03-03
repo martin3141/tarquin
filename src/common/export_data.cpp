@@ -1073,7 +1073,7 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace, int fit_num)
     fout << "QC INFORMATION\\n";
     
     bool qc_state = true;
-    fout << "Metab FWHM (PPM) = " << metab_fwhm_vec[fit_num] <<  " : ";
+    fout << "Metab FWHM (PPM) = " << std::setw(6) << std::left << metab_fwhm_vec[fit_num] <<  " : ";
     
     double metab_fwhm = metab_fwhm_vec[fit_num];
     if ( (metab_fwhm > 0.1) || (metab_fwhm == -1) )
@@ -1089,7 +1089,7 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace, int fit_num)
         fout << "PASS (good)\\n";
 
     double snr_qc = snr[fit_num].first;
-    fout << "SNR              = " << snr_qc << "   : " ;
+    fout << "SNR              = " << std::setw(6) << std::left << snr_qc << " : " ;
     if (snr_qc < 4)
     {
         fout << "FAIL\\n";
