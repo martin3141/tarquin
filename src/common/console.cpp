@@ -33,6 +33,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--av_list           CSV file containing voxels to be averaged prior to fitting";
 	std::cout << "\n\t--auto_phase        {true | false}";
 	std::cout << "\n\t--auto_ref          {true | false}";
+	std::cout << "\n\t--optim_crlbs       calculate more optimistic CRLBs in output {true | false}";
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
 	std::cout << "\n\t--max_phi0          the value of phi0 in rads";
 	std::cout << "\n\t--max_phi1          the value of phi1_max/fs/2";
@@ -385,6 +386,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_crlb_td = true;
 			else
 				options.m_crlb_td = false;
+		}
+        
+        // optimistic CRLBs
+        else if( strKey == "--crlb_optim" ) {
+			if( strVal == "true" )
+				options.m_crlb_optim = true;
+			else
+				options.m_crlb_optim = false;
 		}
 
         // allow negative amps

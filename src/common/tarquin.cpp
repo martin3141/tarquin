@@ -2263,10 +2263,14 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 				for( int j = 1; j<= Q; ++j )
 					D[i][j] = SpOut[i+nStart-1][j];
                     */
-            
 
-            // gives identical results to above
-			cvm::rmatrix D(JR.msize(), Q+JR.nsize());
+            bool optim_crlbs = options.GetOptimCRLBs(); 
+			cvm::rmatrix D;
+            if (optim_crlbs )
+			    D.resize(JR.msize(), Q);
+            else
+			    D.resize(JR.msize(), Q+JR.nsize());
+
 			for( int i = 1; i <= activeN; ++i )
             {
                 // amps
@@ -2277,12 +2281,15 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 }
             }
                 
-			for( int i = 1; i <= activeN*2; ++i )
+            if (!optim_crlbs)
             {
-                // other paras
-                for( int k = 1; k<= JR.nsize(); ++k )
+                for( int i = 1; i <= activeN*2; ++i )
                 {
-					D[i][k+Q] = JR[i][k];
+                    // other paras
+                    for( int k = 1; k<= JR.nsize(); ++k )
+                    {
+                        D[i][k+Q] = JR[i][k];
+                    }
                 }
             }
 
@@ -2354,8 +2361,15 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 cvm::rvector ahat_comb;
                 ahat_comb.resize(extra_cols);
 
+                cvm::rmatrix D_comb;
+                if ( optim_crlbs )
+                    D_comb.resize(JR.msize(), Q-overlapping_signals+extra_cols);
+                else
+                    D_comb.resize(JR.msize(), Q-overlapping_signals+extra_cols+JR.nsize());
+
                 // looks like some overlapping signals were found
-                cvm::rmatrix D_comb(JR.msize(), Q-overlapping_signals+extra_cols+JR.nsize());
+                //cvm::rmatrix D_comb(JR.msize(), Q-overlapping_signals+extra_cols+JR.nsize());
+                
                 // do the non-overlapping signals first
                 int k = 1;
                 for( int j = 1; j<= Q; ++j )
@@ -2540,13 +2554,16 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 }
 
 
-                for( int i = 1; i <= activeN*2; ++i )
+                if (!optim_crlbs)
                 {
-                    // other paras
-                    for( int k = 1; k<= JR.nsize(); ++k )
+                    for( int i = 1; i <= activeN*2; ++i )
                     {
-                        D_comb[i][k+Q-overlapping_signals+extra_cols] = JR[i][k];
-                        //std::cout << k+Q-overlapping_signals+extra_cols << std::endl;
+                        // other paras
+                        for( int k = 1; k<= JR.nsize(); ++k )
+                        {
+                            D_comb[i][k+Q-overlapping_signals+extra_cols] = JR[i][k];
+                            //std::cout << k+Q-overlapping_signals+extra_cols << std::endl;
+                        }
                     }
                 }
                 

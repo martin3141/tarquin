@@ -207,6 +207,7 @@ namespace tarquin
         m_hsvd_comps = 50;
         m_max_hsvd_pts = 1024;
         m_crlb_td = true;
+        m_crlb_optim = false;
         m_nnls = true;
         m_soft_cons = true;
 	    m_bPreFitPhase = true;
@@ -426,6 +427,11 @@ namespace tarquin
     bool GetCRLB_TD() const
 	{
 	    return m_crlb_td;
+	}
+
+    bool GetOptimCRLBs() const
+	{
+	    return m_crlb_optim;
 	}
 
     bool GetNNLS() const
@@ -1662,6 +1668,7 @@ namespace tarquin
     int m_hsvd_comps;
     int m_max_hsvd_pts;
     bool m_crlb_td;
+    bool m_crlb_optim;
     bool m_nnls;
     bool m_soft_cons;
     bool m_lineshape_corr;
