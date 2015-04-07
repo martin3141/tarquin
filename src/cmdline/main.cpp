@@ -174,30 +174,45 @@ int main(int argc, char* argv[])
 		if( options.GetOutRawFile() != "" ) 
 		{
 
-			log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFile() << "\".";
+			log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFile() << "\".\n";
 
 			if( !fidraw.SaveToFile(options.GetOutRawFile()) ) 
 			{
-				log.Out(LOG_ERROR) << "failed to write file.";
+				log.Out(LOG_ERROR) << "failed to write file.\n";
 				return -1;
 			}
 
-			log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFile() << "\"";
+			log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFile() << "\"\n";
 		}
+
+		if( options.GetOutRawFileV3() != "" ) 
+		{
+
+			log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileV3() << "\".\n";
+
+			if( !fidraw.SaveToFileV3(options.GetOutRawFileV3()) ) 
+			{
+				log.Out(LOG_ERROR) << "failed to write file.\n";
+				return -1;
+			}
+
+			log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileV3() << "\"\n";
+		}
+        
         
         // are we writing the original file out as lcm format?
 		if( options.GetOutRawFileLcm() != "" ) 
 		{
 
-			log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileLcm() << "\".";
+			log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileLcm() << "\".\n";
 
 			if( !fidraw.SaveToFileLCM(options.GetOutRawFileLcm()) ) 
 			{
-				log.Out(LOG_ERROR) << "failed to write file.";
+				log.Out(LOG_ERROR) << "failed to write file.\n";
 				return -1;
 			}
 
-			log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileLcm() << "\"";
+			log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileLcm() << "\"\n";
 		}
 
 
@@ -226,33 +241,49 @@ int main(int argc, char* argv[])
             if( options.GetOutRawFileW() != "" ) 
             {
 
-                log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileW() << "\".";
+                log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileW() << "\".\n";
 
                 if( !fidWater.SaveToFile(options.GetOutRawFileW()) ) 
                 {
-                    log.Out(LOG_ERROR) << "failed to write file.";
+                    log.Out(LOG_ERROR) << "failed to write file.\n";
                     return -1;
                 }
 
-                log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileW() << "\"";
+                log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileW() << "\"\n";
+            }
+
+            if( options.GetOutRawFileWV3() != "" ) 
+            {
+
+                log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileWV3() << "\".\n";
+
+                if( !fidWater.SaveToFileV3(options.GetOutRawFileWV3()) ) 
+                {
+                    log.Out(LOG_ERROR) << "failed to write file.\n";
+                    return -1;
+                }
+
+                log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileWV3() << "\"\n";
             }
             
             if( options.GetOutRawFileLcmW() != "" ) 
             {
 
-                log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileLcmW() << "\".";
+                log.Out(LOG_INFO) << "Writing raw FID to file \"" << options.GetOutRawFileLcmW() << "\".\n";
 
                 if( !fidWater.SaveToFileLCM(options.GetOutRawFileLcmW()) ) 
                 {
-                    log.Out(LOG_ERROR) << "failed to write file.";
+                    log.Out(LOG_ERROR) << "failed to write file.\n";
                     return -1;
                 }
 
-                log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileLcmW() << "\"";
+                log.Out(LOG_INFO) << "Wrote file: \"" << options.GetOutRawFileLcmW() << "\"\n";
             }
 
 		}
 
+        if ( options.GetReadWriteOnly() )
+            return 0;
 
 		//plot(fidWater)
 

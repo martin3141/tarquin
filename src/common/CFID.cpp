@@ -401,6 +401,78 @@ bool tarquin::CFID::SaveToFile(std::string strFilename, size_t num)
 }
 
 // assumes you want the first FID for multi-voxel fitting
+bool tarquin::CFID::SaveToFileV3(std::string strFilename)
+{
+	std::ofstream fout(strFilename.c_str(), std::ios::out);
+
+	// setup the stream so that things are formatted properly
+	fout.setf(std::ios::scientific | std::ios::left);
+	fout.precision(8);
+
+	if( fout.bad() ) {
+		std::cerr << std::endl << "Could not open " << strFilename << " for output.";
+		return false;
+	}
+
+	fout << "Dangerplot_version\t" << "3.0" << std::endl;
+	fout << "Number_of_points\t" << m_cvmFID[0].size() << std::endl;
+	fout << "Sampling_frequency\t" << GetSamplingFrequency() << std::endl;
+	fout << "Transmitter_frequency\t" << GetTransmitterFrequency() << std::endl;
+	fout << "Phi0\t" << m_phi0[0].first << std::endl;
+	fout << "Phi1\t" << m_phi1[0].first << std::endl;
+	fout << "PPM_reference\t" << m_ref[0].first << std::endl;
+	fout << "Echo_time\t" << GetEchoTime() << std::endl;
+	fout << "Rows\t" << m_rows << std::endl;
+	fout << "Cols\t" << m_cols << std::endl;
+	fout << "Slices\t" << m_slices << std::endl;
+    if ( IsKnownVoxelDim() )
+    {
+        const std::vector<double>& voxel_dim = GetVoxelDim();
+        fout << "PixelSpacing\t" << voxel_dim[0] << "\\" << voxel_dim[1] << std::endl;
+        fout << "SliceThickness\t" << voxel_dim[2] << std::endl;
+    }
+    else
+    {
+        fout << "PixelSpacing\tUnknown" << std::endl;
+        fout << "SliceThickness\tUnknown" << std::endl;
+    }
+    
+    if ( IsKnownRowDirn() && IsKnownColDirn() )
+    {
+        fout << "ImageOrientationPatient\t";
+        std::string row_ori_str;
+        rvec2str(GetRowDirn(),row_ori_str);
+        std::string col_ori_str;
+        rvec2str(GetColDirn(),col_ori_str);
+        fout << row_ori_str + "\\" + col_ori_str << std::endl;
+    }
+    else
+    {
+        fout << "ImageOrientationPatient\tUnknown" << std::endl;
+    }
+
+    if ( IsKnownPos() )
+    {
+        fout << "ImagePositionPatient\t";
+        std::string pos_str;
+        rvec2str(GetPos(), pos_str);
+        fout << pos_str << std::endl;
+    }
+    else
+    {
+        fout << "ImagePositionPatient\tUnknown" << std::endl;
+    }
+
+	fout << "Real_FID\t" << "Imag_FID\t" << std::endl;
+
+	for(int m = 0; m < m_cvmFID.size(); m++)
+        for(int n = 0; n < m_cvmFID[m].size(); n++)
+            fout << real(m_cvmFID[m][n+1]) << "\t" << imag(m_cvmFID[m][n+1]) << std::endl;
+
+	return true;
+}
+
+// assumes you want the first FID for multi-voxel fitting
 bool tarquin::CFID::SaveToFileLCM(std::string strFilename)
 {
 	std::ofstream fout(strFilename.c_str(), std::ios::out);

@@ -138,6 +138,7 @@ namespace tarquin
         m_bPrintParas = false;
         m_bNofit = false;
         m_bReadOnly = false;
+        m_bReadWriteOnly = false;
 
         m_ppm_start = 0.2; // ppm left
         m_ppm_end = 4.0; // ppm right
@@ -1182,6 +1183,11 @@ namespace tarquin
 	    return m_bReadOnly;
 	}
 
+    bool GetReadWriteOnly() const
+	{
+	    return m_bReadWriteOnly;
+	}
+
 	bool GetShowPreprocessed() const
 	{
 	    return m_bShowPreprocessed;
@@ -1271,10 +1277,20 @@ namespace tarquin
 	{
 	    return m_strOutRaw;
 	}
+	
+    std::string GetOutRawFileV3() const
+	{
+	    return m_strOutRawV3;
+	}
 
 	std::string GetOutRawFileW() const
 	{
 	    return m_strOutRawW;
+	}
+
+	std::string GetOutRawFileWV3() const
+	{
+	    return m_strOutRawWV3;
 	}
     
     std::string GetOutRawFileLcm() const
@@ -1562,6 +1578,8 @@ namespace tarquin
     //! Read data in only
     bool m_bReadOnly;
     
+    bool m_bReadWriteOnly;
+    
     //! Adaptive start point
 	bool m_bAdaptSp;
 	
@@ -1603,9 +1621,11 @@ namespace tarquin
 
 	//! The name of the dangerplot file for the raw FID.
 	std::string m_strOutRaw;
+	std::string m_strOutRawV3;
 	
 	//! The name of the dangerplot file for the raw water ref FID.
     std::string m_strOutRawW;
+    std::string m_strOutRawWV3;
 
 	//! The name of the LCM file for the raw FID.
 	std::string m_strOutRawLcm;

@@ -200,6 +200,8 @@ class CFID
 
 		//! Save as dangerplot format.
 		bool SaveToFile(std::string strFilename, size_t num = 0);
+		
+        bool SaveToFileV3(std::string strFilename);
 
 		//bool SaveToBinFile(std::string filename);
 

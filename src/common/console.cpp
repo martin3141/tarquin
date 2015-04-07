@@ -1349,6 +1349,13 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_bReadOnly = false;
 		}
 
+		else if( strKey == "--rw_only" ) {
+			if( strVal == "true" )
+				options.m_bReadWriteOnly = true;
+			else
+				options.m_bReadWriteOnly = false;
+		}
+
 		// comma seperated list of signals to be plotted (no spaces allowed!)
 		else if( strKey == "--plot_sigs" ) {
 			options.m_strPlotSigs = strVal;
@@ -1396,10 +1403,20 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		else if( strKey == "--write_raw" ) {
 			options.m_strOutRaw = strVal;
 		}
+
+		// write an intermediate dangerplot file of the raw FID
+		else if( strKey == "--write_raw_v3" ) {
+			options.m_strOutRawV3 = strVal;
+		}
         
         // write an intermediate dangerplot file of the raw water ref FID
 		else if( strKey == "--write_raw_w" ) {
 			options.m_strOutRawW = strVal;
+		}
+
+        // write an intermediate dangerplot file of the raw water ref FID
+		else if( strKey == "--write_raw_w_v3" ) {
+			options.m_strOutRawWV3 = strVal;
 		}
         
         // write an intermediate dangerplot file of the raw FID
