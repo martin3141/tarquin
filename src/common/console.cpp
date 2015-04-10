@@ -33,7 +33,9 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--av_list           CSV file containing voxels to be averaged prior to fitting";
 	std::cout << "\n\t--auto_phase        {true | false}";
 	std::cout << "\n\t--auto_ref          {true | false}";
+	std::cout << "\n\t--optim_crlbs       calculate more optimistic CRLBs in output {true | false}";
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
+	std::cout << "\n\t--max_phi0          the value of phi0 in rads";
 	std::cout << "\n\t--max_phi1          the value of phi1_max/fs/2";
 	std::cout << "\n\t--ref_freq          frequency of a single peak to be used for auto referencing (ppm)";
 	std::cout << "\n\t--ref_file          CSV file containing reference peak list";
@@ -385,6 +387,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			else
 				options.m_crlb_td = false;
 		}
+        
+        // optimistic CRLBs
+        else if( strKey == "--crlb_optim" ) {
+			if( strVal == "true" )
+				options.m_crlb_optim = true;
+			else
+				options.m_crlb_optim = false;
+		}
 
         // allow negative amps
         else if( strKey == "--nnls" ) {
@@ -400,6 +410,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_soft_cons = true;
 			else
 				options.m_soft_cons = false;
+		}
+
+        // lineshape correction
+        else if( strKey == "--ls_corr" ) {
+			if( strVal == "true" )
+				options.m_lineshape_corr = true;
+			else
+				options.m_lineshape_corr = false;
 		}
 
         else if( strKey == "--replace_fp" ) {
@@ -657,6 +675,19 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_phi1_upper = +temp;
 		}
 
+        else if( strKey == "--max_phi0" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_phi0_lower = -temp;
+			options.m_phi0_upper = +temp;
+		}
 
 		// sampling frequency parameter
 		else if( strKey == "--fs") {
@@ -1036,6 +1067,38 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			else
 				options.m_bCombinePreproc = false;
 		}
+
+        else if( strKey == "--pre_fit_phase" ) {
+
+			if( strVal == "true" )
+				options.m_bPreFitPhase = true;
+			else
+				options.m_bPreFitPhase = false;
+		}
+
+        else if( strKey == "--pre_fit_shift" ) {
+
+			if( strVal == "true" )
+				options.m_bPreFitShift = true;
+			else
+				options.m_bPreFitShift = false;
+		}
+
+        else if( strKey == "--pre_fit_bl" ) {
+
+			if( strVal == "true" )
+				options.m_bPreFitBl = true;
+			else
+				options.m_bPreFitBl = false;
+		}
+
+        else if( strKey == "--append_lcm_basis" ) {
+
+			if( strVal == "true" )
+				options.m_bAppendLCMBasis = true;
+			else
+				options.m_bAppendLCMBasis = false;
+		}
         
         else if( strKey == "--lipid_filter" ) {
 
@@ -1286,6 +1349,13 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.m_bReadOnly = false;
 		}
 
+		else if( strKey == "--rw_only" ) {
+			if( strVal == "true" )
+				options.m_bReadWriteOnly = true;
+			else
+				options.m_bReadWriteOnly = false;
+		}
+
 		// comma seperated list of signals to be plotted (no spaces allowed!)
 		else if( strKey == "--plot_sigs" ) {
 			options.m_strPlotSigs = strVal;
@@ -1333,10 +1403,20 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		else if( strKey == "--write_raw" ) {
 			options.m_strOutRaw = strVal;
 		}
+
+		// write an intermediate dangerplot file of the raw FID
+		else if( strKey == "--write_raw_v3" ) {
+			options.m_strOutRawV3 = strVal;
+		}
         
         // write an intermediate dangerplot file of the raw water ref FID
 		else if( strKey == "--write_raw_w" ) {
 			options.m_strOutRawW = strVal;
+		}
+
+        // write an intermediate dangerplot file of the raw water ref FID
+		else if( strKey == "--write_raw_w_v3" ) {
+			options.m_strOutRawWV3 = strVal;
 		}
         
         // write an intermediate dangerplot file of the raw FID

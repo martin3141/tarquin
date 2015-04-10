@@ -1448,10 +1448,109 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			treal norm = yActive.norm1()/100;
 			yActive = yActive / norm;
 			ahat = ahat / norm;
+
+            if ( options.GetPreFitPhase() ) // optimise for phi0 intially?
+            {
+			    cvm::rvector yActive_phase(yActive.size());
+                int steps = 50;
+			    treal bestResidual = std::numeric_limits<treal>::infinity();
+			    treal bestPhase    = 0;
+                for ( int s = 0; s < steps; s++ )
+                {
+                    
+                    double phase;
+                    // check we aren't over searching the parameter space
+                    if ( options.GetUpperLimitPhi0() - options.GetLowerLimitPhi0() > 2*M_PI )
+                    {
+                        phase = -M_PI + (2*M_PI/steps) * s;
+                    }
+                    else // if not, respect the limits
+                    {
+                        phase = options.GetLowerLimitPhi0() + ((options.GetUpperLimitPhi0() - options.GetLowerLimitPhi0())/steps) * s;
+                    }
+
+                    for(integer n = 0; n < activeN; n++) 
+                    {
+                        yActive_phase(n+1)         = (exp(tcomplex(0,1)*phase)*tcomplex(yActive(n+1), yActive(n+1+activeN))).real();
+                        yActive_phase(n+1+activeN) = (exp(tcomplex(0,1)*phase)*tcomplex(yActive(n+1), yActive(n+1+activeN))).imag();
+                    }
+
+                    nnls.solve(params.m_Sp, yActive_phase, params.m_ahat, false);
+                    cvm::rvector yhatPhase = params.m_Sp * params.m_ahat;
+
+				    double residual = (yActive_phase - yhatPhase).norm2();
+
+				    //std::cout << "\nTrying phase = " << phase << " residual = " << residual << std::endl;
+
+                    if( residual < bestResidual )
+                    {
+                        bestResidual = residual;
+                        bestPhase = phase;
+                    }
+                }
+			    vParams(2*M + 2) = -bestPhase;
+                
+                log.DebugMessage(DEBUG_LEVEL_1, "Initial phase fit completed");
+            }
+
+            if ( options.GetPreFitShift() )
+            {
+                /*
+                cvm::rvector yActive_shift(yActive.size());
+                int steps = 50;
+                double max_shift = 1;
+			    treal bestResidual = std::numeric_limits<treal>::infinity();
+			    treal bestShift    = 0;
+                for ( int s = 0; s < steps; s++ )
+                {
+                    
+                    double shift = -max_shift + (2*max_shift/steps) * s;
+
+                    for(integer n = 0; n < activeN; n++) 
+                    {
+                        yActive_shift(n+1)         = (exp(tcomplex(0,1)*-vParams(2*M + 2)+tcomplex(0,1)*t(n+1)*2.0*M_PI*shift)*tcomplex(yActive(n+1), yActive(n+1+activeN))).real();
+                        yActive_shift(n+1+activeN) = (exp(tcomplex(0,1)*-vParams(2*M + 2)+tcomplex(0,1)*t(n+1)*2.0*M_PI*shift)*tcomplex(yActive(n+1), yActive(n+1+activeN))).imag();
+                    }
+
+                    nnls.solve(params.m_Sp, yActive_shift, params.m_ahat, false);
+                    cvm::rvector yhatShift = params.m_Sp * params.m_ahat;
+
+				    double residual = (yActive_shift - yhatShift).norm2();
+
+				    //std::cout << "\nTrying shift = " << shift << " residual = " << residual << std::endl;
+
+                    if( residual < bestResidual )
+                    {
+                        bestResidual = residual;
+                        bestShift = shift;
+                    }
+                }
+                
+                log.DebugMessage(DEBUG_LEVEL_1, "Initial shift fit completed");
+                */
+
+            }
+
+            if ( options.GetPreFitBl() )
+            {
+                params.m_lambda = 2;
+
+			    dlevmar_bc_der(residual_objective_all, jacobian_func, 
+					vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, 
+					iterations, opts, info, NULL, NULL, (void*)&params);
+
+                params.m_lambda = options.GetLambda();
+            }
+
 			// call the optimiser analytical Jacobian 
 			dlevmar_bc_der(residual_objective_all, jacobian_func, 
 					vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, 
 					iterations, opts, info, NULL, NULL, (void*)&params);
+			
+            /*dlevmar_bc_dif(residual_objective_all, 
+					vParams, yActive, P, 2*activeN, vLowerBounds, vUpperBounds, 
+					iterations, opts, info, NULL, NULL, (void*)&params);*/
+
 
             if ( false )
             {
@@ -1572,6 +1671,13 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			SpOut.resize(N, Q);
 			yhat.resize(N);
 
+			cvm::cmatrix GpOut_no_beta;
+			cvm::cmatrix SpOut_no_beta;
+			cvm::cvector yhat_no_beta;
+
+			GpOut_no_beta.resize(N, M);
+			SpOut_no_beta.resize(N, Q);
+			yhat_no_beta.resize(N);
 
 			//std::cout << vParams(1) << std::endl;
 			//
@@ -1595,38 +1701,14 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 					// modify sample and put in right place in active matrix
 					GpOut(n, c) = z;
+
+					tcomplex z_no_beta = G(n, c) * exp(-t(n)*alpha + t(n)*jomega);
+					GpOut_no_beta(n, c) = z_no_beta;
 				}
 			}
 
 			std::size_t nIdxPhi0  = 2*M+2; 
 			std::size_t nIdxPhi1  = 2*M+3;
-			// useful debugging output, what happens for multi-voxel?
-			/*
-			   std::ofstream fitted_paras;
-			   fitted_paras.open ("fitted_paras.csv");
-			   fitted_paras << "name," << "group," << "shift (Hz)," << "damping" << std::endl;
-			   int basis_cnt = 1;
-			   int group_cnt = 0;
-			   for( integer c = 1; c <= M; c++ ) 
-			   {
-			   group_cnt++;
-			   std::size_t nIdxShift = c;
-			   std::size_t nIdxAlpha = c+M;
-			// some output
-			integer i = params.m_basis.GetBasisFromGroup(c-1);
-			if ( i != basis_cnt )
-			{
-			basis_cnt = i;
-			group_cnt = 1;
-			}
-			fitted_paras << params.m_metab_names[i-1] << "," << group_cnt << "," << vParams(nIdxShift) << "," << vParams(nIdxAlpha) << std::endl;
-			}
-			//std::size_t nIdxBeta  = 2*M+1;
-			fitted_paras << "beta," << vParams(nIdxBeta) << std::endl;
-			fitted_paras << "phi0," << vParams(nIdxPhi0) << std::endl;
-			fitted_paras << "phi1," << vParams(nIdxPhi1) << std::endl;
-			fitted_paras.close();
-			*/
 
 			//
 			// Synthesise, fit over whole signal, note: amplitudes come from NNLS 
@@ -1638,6 +1720,117 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 
 			// synthesize estimate
 			yhat = SpOut * cvm::cvector(ahat);
+
+			SpOut_no_beta = GpOut_no_beta * basis.GetSummationMatrix();
+			yhat_no_beta = SpOut_no_beta * cvm::cvector(ahat);
+            
+            //
+			// Apply phasing parameters to signal we fitted to for output.
+			//
+			//std::size_t nIdxPhi0  = 2*M+2; 
+			//std::size_t nIdxPhi1  = 2*M+3;
+
+			treal phi0 = vParams(nIdxPhi0); 
+			treal phi1 = vParams(nIdxPhi1);
+
+            // update phi0 and phi1 in CFID
+            treal phi0_old = fid.GetPhi0(*fit_it);
+            treal phi1_old = fid.GetPhi1(*fit_it);
+            fid.SetPhi0(*fit_it,-phi0+phi0_old);
+            fid.SetPhi1(*fit_it,-phi1+phi1_old);
+            
+
+			cvm::cvector Y(y.size());
+			fft(y, Y);
+
+			for( integer n = 0; n < Y.size(); n++ ) 
+			{
+				treal freq = shift_freq_range[n+1];
+				Y[n+1] = Y[n+1] * exp( tcomplex(0, -phi0 -phi1*2.0*M_PI*freq) );
+			}
+
+			ifft(Y, y);
+
+
+            if ( options.GetLineshapeCorr() ) // adjust basis-set to match lineshape
+            {
+                cvm::rvector BL;
+                work.GetBaseline(BL, y, yhat, 2, false);
+                cvm::cvector bl;
+                work.GetTimeDomain(BL, bl, false);
+                cvm::cvector fit_td = yhat_no_beta + bl;
+                //cvm::cvector fit_td = yhat + bl;
+                int N = fit_td.size();
+                cvm::cvector dist_yhat(N);
+                
+                tcomplex last_good = 0;
+                double th = td_noise_min*2;
+                for ( int n = 1; (n < (N+1)); n++ )
+                {
+                    if ( abs(fit_td(n)) < th )
+                    {
+                        dist_yhat(n) = last_good;
+                    }
+                    else
+                    {
+                        dist_yhat(n) = y(n) / fit_td(n);
+                        last_good = y(n) / fit_td(n);
+                    }
+                }
+
+                // set some end points to be zero
+                int percent = 90; // percent of good data
+                for ( int n = percent*N/100; (n < (N+1)); n++ )
+                    dist_yhat(n) = 0;
+
+                //plot(dist_yhat);
+                cvm::rvector dist_yhat_im(N);
+                dist_yhat_im = dist_yhat.imag();
+                //plot(dist_yhat_im);
+
+                cvm::cvector dist_yhat_smooth(N);
+                
+                //td_conv_ws( dist_yhat, dist_yhat_smooth, N/10, N/50);	
+                
+                // hr-MAS
+                td_conv_ws( dist_yhat, dist_yhat_smooth, 0.1/dt, 0.005/dt);	
+
+                //plot(dist_yhat_smooth);
+                cvm::rvector dist_yhat_smooth_im(N);
+                dist_yhat_smooth_im = dist_yhat_smooth.imag();
+                //plot(dist_yhat_smooth_im);
+
+                cvm::rvector dist_yhat_smooth_arg(N);
+                for ( int n = 1; (n < (N+1)); n++ )
+                    dist_yhat_smooth_arg(n) = arg(dist_yhat_smooth(n));
+                
+                //plot(dist_yhat_smooth_arg);
+
+			    cvm::cmatrix SpOut_lsc;
+			    SpOut_lsc.resize(N, Q);
+
+                for ( int q = 1; q < Q+1; q++ )
+                {
+                    for ( int n = 1; n < N+1; n++ )
+                    {
+                        SpOut_lsc(n, q) = SpOut_no_beta(n, q) * dist_yhat_smooth(n);
+                        //SpOut_lsc(n, q) = SpOut(n, q) * exp(tcomplex(0,1)*dist_yhat_smooth_arg(n));
+                        //SpOut_lsc(n, q) = SpOut(n, q);
+                    }
+                }
+
+                SpOut = SpOut_lsc;
+			    yhat = SpOut * cvm::cvector(ahat);
+            }
+
+            /*std::ofstream no_beta; 
+            no_beta.open("yhat_no_beta.txt");
+            for ( int f = 1; f < yhat_no_beta.size()+1; f++ )
+            {
+                no_beta << yhat_no_beta(f).real() << std::endl;
+                no_beta << yhat_no_beta(f).imag() << std::endl;
+            }
+            no_beta.close();*/
 
             cvm::rvector ahat_singlet(ahat.size());
             
@@ -1700,38 +1893,11 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                     ahat_broad(n+1) = ahat(n+1);
             }
 
-
             // find yhat for metabs only
             cvm::cvector yhat_metab = SpOut * cvm::cvector(ahat_metab);
             cvm::cvector yhat_broad = SpOut * cvm::cvector(ahat_broad);
             
-			//
-			// Apply phasing parameters to signal we fitted to for output.
-			//
-			//std::size_t nIdxPhi0  = 2*M+2; 
-			//std::size_t nIdxPhi1  = 2*M+3;
-
-			treal phi0 = vParams(nIdxPhi0); 
-			treal phi1 = vParams(nIdxPhi1);
-
-            // update phi0 and phi1 in CFID
-            treal phi0_old = fid.GetPhi0(*fit_it);
-            treal phi1_old = fid.GetPhi1(*fit_it);
-            fid.SetPhi0(*fit_it,-phi0+phi0_old);
-            fid.SetPhi1(*fit_it,-phi1+phi1_old);
-            
-
-			cvm::cvector Y(y.size());
-			fft(y, Y);
-
-			for( integer n = 0; n < Y.size(); n++ ) 
-			{
-				treal freq = shift_freq_range[n+1];
-				Y[n+1] = Y[n+1] * exp( tcomplex(0, -phi0 -phi1*2.0*M_PI*freq) );
-			}
-
-			ifft(Y, y);
-
+			
             // replace first part of FID with first part of y
             if ( options.GetReplaceFp() )
             {
@@ -2097,10 +2263,14 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 				for( int j = 1; j<= Q; ++j )
 					D[i][j] = SpOut[i+nStart-1][j];
                     */
-            
 
-            // gives identical results to above
-			cvm::rmatrix D(JR.msize(), Q+JR.nsize());
+            bool optim_crlbs = options.GetOptimCRLBs(); 
+			cvm::rmatrix D;
+            if (optim_crlbs )
+			    D.resize(JR.msize(), Q);
+            else
+			    D.resize(JR.msize(), Q+JR.nsize());
+
 			for( int i = 1; i <= activeN; ++i )
             {
                 // amps
@@ -2111,12 +2281,15 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 }
             }
                 
-			for( int i = 1; i <= activeN*2; ++i )
+            if (!optim_crlbs)
             {
-                // other paras
-                for( int k = 1; k<= JR.nsize(); ++k )
+                for( int i = 1; i <= activeN*2; ++i )
                 {
-					D[i][k+Q] = JR[i][k];
+                    // other paras
+                    for( int k = 1; k<= JR.nsize(); ++k )
+                    {
+                        D[i][k+Q] = JR[i][k];
+                    }
                 }
             }
 
@@ -2188,8 +2361,15 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 cvm::rvector ahat_comb;
                 ahat_comb.resize(extra_cols);
 
+                cvm::rmatrix D_comb;
+                if ( optim_crlbs )
+                    D_comb.resize(JR.msize(), Q-overlapping_signals+extra_cols);
+                else
+                    D_comb.resize(JR.msize(), Q-overlapping_signals+extra_cols+JR.nsize());
+
                 // looks like some overlapping signals were found
-                cvm::rmatrix D_comb(JR.msize(), Q-overlapping_signals+extra_cols+JR.nsize());
+                //cvm::rmatrix D_comb(JR.msize(), Q-overlapping_signals+extra_cols+JR.nsize());
+                
                 // do the non-overlapping signals first
                 int k = 1;
                 for( int j = 1; j<= Q; ++j )
@@ -2374,13 +2554,16 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
                 }
 
 
-                for( int i = 1; i <= activeN*2; ++i )
+                if (!optim_crlbs)
                 {
-                    // other paras
-                    for( int k = 1; k<= JR.nsize(); ++k )
+                    for( int i = 1; i <= activeN*2; ++i )
                     {
-                        D_comb[i][k+Q-overlapping_signals+extra_cols] = JR[i][k];
-                        //std::cout << k+Q-overlapping_signals+extra_cols << std::endl;
+                        // other paras
+                        for( int k = 1; k<= JR.nsize(); ++k )
+                        {
+                            D_comb[i][k+Q-overlapping_signals+extra_cols] = JR[i][k];
+                            //std::cout << k+Q-overlapping_signals+extra_cols << std::endl;
+                        }
                     }
                 }
                 

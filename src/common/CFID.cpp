@@ -401,6 +401,78 @@ bool tarquin::CFID::SaveToFile(std::string strFilename, size_t num)
 }
 
 // assumes you want the first FID for multi-voxel fitting
+bool tarquin::CFID::SaveToFileV3(std::string strFilename)
+{
+	std::ofstream fout(strFilename.c_str(), std::ios::out);
+
+	// setup the stream so that things are formatted properly
+	fout.setf(std::ios::scientific | std::ios::left);
+	fout.precision(8);
+
+	if( fout.bad() ) {
+		std::cerr << std::endl << "Could not open " << strFilename << " for output.";
+		return false;
+	}
+
+	fout << "Dangerplot_version\t" << "3.0" << std::endl;
+	fout << "Number_of_points\t" << m_cvmFID[0].size() << std::endl;
+	fout << "Sampling_frequency\t" << GetSamplingFrequency() << std::endl;
+	fout << "Transmitter_frequency\t" << GetTransmitterFrequency() << std::endl;
+	fout << "Phi0\t" << m_phi0[0].first << std::endl;
+	fout << "Phi1\t" << m_phi1[0].first << std::endl;
+	fout << "PPM_reference\t" << m_ref[0].first << std::endl;
+	fout << "Echo_time\t" << GetEchoTime() << std::endl;
+	fout << "Rows\t" << m_rows << std::endl;
+	fout << "Cols\t" << m_cols << std::endl;
+	fout << "Slices\t" << m_slices << std::endl;
+    if ( IsKnownVoxelDim() )
+    {
+        const std::vector<double>& voxel_dim = GetVoxelDim();
+        fout << "PixelSpacing\t" << voxel_dim[0] << "\\" << voxel_dim[1] << std::endl;
+        fout << "SliceThickness\t" << voxel_dim[2] << std::endl;
+    }
+    else
+    {
+        fout << "PixelSpacing\tUnknown" << std::endl;
+        fout << "SliceThickness\tUnknown" << std::endl;
+    }
+    
+    if ( IsKnownRowDirn() && IsKnownColDirn() )
+    {
+        fout << "ImageOrientationPatient\t";
+        std::string row_ori_str;
+        rvec2str(GetRowDirn(),row_ori_str);
+        std::string col_ori_str;
+        rvec2str(GetColDirn(),col_ori_str);
+        fout << row_ori_str + "\\" + col_ori_str << std::endl;
+    }
+    else
+    {
+        fout << "ImageOrientationPatient\tUnknown" << std::endl;
+    }
+
+    if ( IsKnownPos() )
+    {
+        fout << "ImagePositionPatient\t";
+        std::string pos_str;
+        rvec2str(GetPos(), pos_str);
+        fout << pos_str << std::endl;
+    }
+    else
+    {
+        fout << "ImagePositionPatient\tUnknown" << std::endl;
+    }
+
+	fout << "Real_FID\t" << "Imag_FID\t" << std::endl;
+
+	for(int m = 0; m < m_cvmFID.size(); m++)
+        for(int n = 0; n < m_cvmFID[m].size(); n++)
+            fout << real(m_cvmFID[m][n+1]) << "\t" << imag(m_cvmFID[m][n+1]) << std::endl;
+
+	return true;
+}
+
+// assumes you want the first FID for multi-voxel fitting
 bool tarquin::CFID::SaveToFileLCM(std::string strFilename)
 {
 	std::ofstream fout(strFilename.c_str(), std::ios::out);
@@ -772,7 +844,7 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
     }
 
     if ( options.GetDynAv() != NONE )
-        AverageData(options);
+        AverageData(options, log);
 
     // check if we need to average WUS data due to missmatch between WUS and WS scans
     if ( m_wref )
@@ -781,7 +853,7 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
         //std::cout << std::endl << WUS_fids << std::endl;
         //std::cout << m_cvmFID.size() << std::endl;
         if ( WUS_fids != m_cvmFID.size() )
-            AverageData(options, WUS_fids);
+            AverageData(options, log, WUS_fids);
     }
 
     if ( options.GetFullEcho() )
@@ -882,7 +954,7 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
 
     // shouldn't ever be default at this point because WUS data is always loaded after WS data
     if ( options.GetDynAvW() != NONE )
-        AverageData(options);
+        AverageData(options, log);
 
     //std::cout << "Parameter Water ref fids :" << m_cols * m_rows * m_slices << std::endl;
     //std::cout << "Actual water ref fids    :" << m_cvmFID.size() << std::endl;
@@ -891,14 +963,18 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
     if ( m_wref && (m_cols * m_rows * m_slices != m_cvmFID.size()) )
     {
         //std::cout << "I'm here" << std::endl;
-        AverageData(options);
+        AverageData(options, log);
     }
 }
 
-void tarquin::CFID::AverageData(Options& options, int missmatch)
+void tarquin::CFID::AverageData(Options& options, CBoswell& log, int missmatch)
 {
+    if ( !m_wref )
+        log.LogMessage(LOG_INFO, "Averaging metabolite FIDs");
+    else
+        log.LogMessage(LOG_INFO, "Averaging water ref FIDs");
+
     int pts = GetNumberOfPoints();
-    
 
     std::vector<int> av_list;
     
@@ -919,7 +995,6 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     int fids = av_list.size();
     int data_fids = m_cvmFID.size();
 
-
     //std::cout << "Averaging data" << std::endl;
 
     //std::cout << fids << std::endl;
@@ -934,6 +1009,7 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
 
     if ( !m_wref ) 
     {
+        log.LogMessage(LOG_INFO, "Averaging across %i of %i FIDs", fids, data_fids);
         for ( size_t p = 0; p < av_list.size(); p++ )
         {
             int n = av_list[p];
@@ -956,6 +1032,36 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     }
     else
     {
+
+    if ( missmatch > 0 || data_fids != m_cols * m_rows * m_slices) // if we got here it's because of a missmatch between WS and W dyanmics
+    {
+        log.LogMessage(LOG_INFO, "Number of W fids does not match WS fids.");
+        log.LogMessage(LOG_INFO, "Averaging accross %i water reference fids.",data_fids);
+        for ( size_t n = 0; n < data_fids; n++ )
+        {
+            if ( options.GetDynAvW() == ALL )
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == ODD && ( (n + 1) % 2 != 0 ) ) // n odd?
+                new_fid = new_fid + m_cvmFID[n] / (data_fids / 2);
+            else if ( options.GetDynAvW() == EVEN && ( (n + 1) % 2 == 0 ) ) // n even?
+                new_fid = new_fid + m_cvmFID[n] / (data_fids / 2);
+            else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 != 0 ) ) // n odd?
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 == 0 ) ) // n even?
+                new_fid = new_fid - m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == NONE ) // we shouldn't be here, error! 
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            else if ( options.GetDynAvW() == DEFAULT )
+            {
+                std::cout << "ERROR, averaging should not be default here." << std::endl;
+                new_fid = new_fid + m_cvmFID[n] / data_fids;
+            }
+        }
+    }
+    else
+    {
+        log.LogMessage(LOG_INFO, "Number of W fids and WS fids is the same.", fids, data_fids);
+        log.LogMessage(LOG_INFO, "Averaging across a subset (%i of %i) water reference FIDs.", fids, data_fids);
         for ( size_t p = 0; p < av_list.size(); p++ )
         {
             int n = av_list[p];
@@ -969,7 +1075,7 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
                 new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAvW() == SUBTRACT && ( (n + 1) % 2 == 0 ) ) // n even?
                 new_fid = new_fid - m_cvmFID[n] / fids;
-            else if ( options.GetDynAvW() == NONE ) // if we got here it's because of a missmatch between WS and W dyanmics, so just add up fids regardless and duplicate later to match WS
+            else if ( options.GetDynAvW() == NONE ) // we shouldn't be here, error! 
                 new_fid = new_fid + m_cvmFID[n] / fids;
             else if ( options.GetDynAvW() == DEFAULT )
             {
@@ -977,6 +1083,7 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
                 new_fid = new_fid + m_cvmFID[n] / fids;
             }
         }
+    }
 
 
         /*
@@ -997,6 +1104,8 @@ void tarquin::CFID::AverageData(Options& options, int missmatch)
     // do we need to duplicate the fid?
     if ( (data_fids != m_cols * m_rows * m_slices) )
     {
+        //log.LogMessage(LOG_INFO,"Duplicating water reference FIDs to match number of metabolite FIDs (%i).",m_cols * m_rows * m_slices);
+        //log.LogMessage(LOG_INFO,"Duplicating water reference FIDs to match number of metabolite FIDs.",m_cols * m_rows * m_slices);
         if ( m_wref ) // are we water data?
         {
             for ( size_t n = 0; n < m_cols * m_rows * m_slices; n++ )

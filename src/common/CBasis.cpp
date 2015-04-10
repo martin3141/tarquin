@@ -405,6 +405,8 @@ bool tarquin::CBasis::Simulate(std::string strBasisPath, const CFID& fidMatch, c
 		return false;
 	}
 
+    std::sort(m_vecSignalFiles.begin(),m_vecSignalFiles.end());
+
 	// allocate space for the number of signals
 	m_signals.resize( m_vecSignalFiles.size() );
 
@@ -649,7 +651,7 @@ void tarquin::CBasis::SaveLCM(string file_name, CFID fid)
     for ( int n = 0; n < m_matBasis.nsize(); n++ )
     {
         //if ( !has_broad_signal_name(sig_names[n]) && sig_names[n] != "-CrCH2" )
-        if ( sig_names[n] != "-CrCH2" )
+        //if ( sig_names[n] != "-CrCH2" )
         {
             basisfile << " $NMUSED" << std::endl;
             basisfile << " FILERAW = \'" << sig_names[n] << "_simulated" << "\'," << std::endl;
@@ -1176,42 +1178,45 @@ bool tarquin::CBasis::ReadLCMBasis(std::string strBasisPath, const CFID& fidMatc
 
     // set scaling factor TODO
     // check ref values? TODO
-
-    // append lipid and MM signals
-	std::vector< basis_vector_e > metabolites;
-    metabolites.push_back( BV_LIP09 );
-    metabolites.push_back( BV_LIP13A );
-    metabolites.push_back( BV_LIP13B );
-    metabolites.push_back( BV_LIP20 );
-    metabolites.push_back( BV_MM09 );
-    metabolites.push_back( BV_MM12 );
-    metabolites.push_back( BV_MM14 );
-    metabolites.push_back( BV_MM17 );
-    metabolites.push_back( BV_MM20 );
-    metabolites.push_back( BV_CRCH2 );
     
-    // simulate each metabolite
-	for( size_t i = 0; i < metabolites.size(); ++i )
-	{
-		// get the description/name
-		std::string fname;
-	  	getMetaboliteDescription(metabolites[i], fname);
+    if ( options.GetAppendLCMBasis() )
+    {
+        // append lipid and MM signals
+        std::vector< basis_vector_e > metabolites;
+        metabolites.push_back( BV_LIP09 );
+        metabolites.push_back( BV_LIP13A );
+        metabolites.push_back( BV_LIP13B );
+        metabolites.push_back( BV_LIP20 );
+        metabolites.push_back( BV_MM09 );
+        metabolites.push_back( BV_MM12 );
+        metabolites.push_back( BV_MM14 );
+        metabolites.push_back( BV_MM17 );
+        metabolites.push_back( BV_MM20 );
+        metabolites.push_back( BV_CRCH2 );
+    
+        // simulate each metabolite
+        for( size_t i = 0; i < metabolites.size(); ++i )
+        {
+            // get the description/name
+            std::string fname;
+            getMetaboliteDescription(metabolites[i], fname);
 
-		std::vector< std::vector<double> > metab;
-		// get the hardcoded parameters
-		getMetaboliteMatrix(metabolites[i], metab, fidMatch.GetTransmitterFrequency());
+            std::vector< std::vector<double> > metab;
+            // get the hardcoded parameters
+            getMetaboliteMatrix(metabolites[i], metab, fidMatch.GetTransmitterFrequency());
 
-		// store the filename 
-		m_vecSignalFiles.push_back(fs::path(fname));
+            // store the filename 
+            m_vecSignalFiles.push_back(fs::path(fname));
 
-		// is it broad?
-		m_broad_sig.push_back(has_broad_signal_name(fname));
+            // is it broad?
+            m_broad_sig.push_back(has_broad_signal_name(fname));
 
-        CSignal signal;
+            CSignal signal;
 
-        // simulate
-		signal_simulate_full(metab, signal, fidMatch, options, fname);
-        m_signals.push_back(signal);
+            // simulate
+            signal_simulate_full(metab, signal, fidMatch, options, fname);
+            m_signals.push_back(signal);
+        }
     }
 
 	makeBasisMatrix();

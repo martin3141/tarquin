@@ -965,7 +965,7 @@ void ExportTxtResults(const std::string& strFilename, const Workspace& workspace
     fout << "TARQUIN version " << version::version_string() << std::endl;
 }
 
-void GetTable(std::ostringstream& fout, const Workspace& workspace)
+void GetTable(std::ostringstream& fout, const Workspace& workspace, int fit_num)
 {
     const CBasis& basis      = workspace.GetBasis();
 	const Options& options  = workspace.GetOptions();
@@ -975,7 +975,7 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
 
 	size_t max_string_sz = 0;
 	std::string temp_str;
-	for( integer n = 1; n < ahat[0].size(); n++ ) { // TODO
+	for( integer n = 1; n < ahat[fit_num].size(); n++ ) {
 		temp_str = basis.GetSignalName(n);
 		if ( temp_str.size() > max_string_sz )
 			max_string_sz = temp_str.size();
@@ -1015,30 +1015,36 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
 	// sorted version
 	double tempamp = 0;
 	double tempcrlb = 0;
-	for(integer n = 1; n < ahat[0].size()+1; n++) { // TODO
+	for(integer n = 1; n < ahat[fit_num].size()+1; n++) {
 		// find index of ahat now the list is sorted
-		for(integer m = 1; m < ahat[0].size()+1; m++) { // TODO
+		for(integer m = 1; m < ahat[fit_num].size()+1; m++) {
 			if ( signal_names_sorted[n-1] == signal_names[m-1] ){
-				tempamp = ahat[0](m); // TODO
-                tempcrlb = crlbnorm[0](m); // TODO
+				tempamp = ahat[fit_num](m);
+                tempcrlb = crlbnorm[fit_num](m);
 				break;
 			}
 		}
 		temp_str = signal_names_sorted[n-1];
         fout << std::setw(10) << std::left << temp_str;
         fout << std::setw(10) << std::right << tempamp;
-        fout << std::setw(10) << std::right << tempcrlb/tempamp*100;
+        if ( tempcrlb/tempamp*100 > 999 )
+            fout << std::setw(10) << std::right << ">999";
+        else
+            fout << std::setw(10) << std::right << tempcrlb/tempamp*100;
         fout << std::setw(10) << std::right << tempcrlb << "\\n";
 	}
         
     // combined metabolites
     if ( workspace.GetAmplitudesNormalisedComb().size() > 0 )
     {
-        for(integer n = 1; n < workspace.GetAmplitudesNormalisedComb()[0].size()+1; n++) { // TODO
+        for(integer n = 1; n < workspace.GetAmplitudesNormalisedComb()[fit_num].size()+1; n++) {
             fout << std::setw(10) << std::left << workspace.GetMetabNamesComb()[n-1];
-            fout << std::setw(10) << std::right << workspace.GetAmplitudesNormalisedComb()[0][n]; // TODO
-            fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[0][n]/workspace.GetAmplitudesNormalisedComb()[0][n]*100; //TODO
-            fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[0][n] << "\\n"; // TODO
+            fout << std::setw(10) << std::right << workspace.GetAmplitudesNormalisedComb()[fit_num][n];
+            if ( workspace.GetCRLBsNormalisedComb()[fit_num][n]/workspace.GetAmplitudesNormalisedComb()[fit_num][n]*100 > 999 )
+                fout << std::setw(10) << std::right << ">999";
+            else
+                fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[fit_num][n]/workspace.GetAmplitudesNormalisedComb()[fit_num][n]*100;
+            fout << std::setw(10) << std::right << workspace.GetCRLBsNormalisedComb()[fit_num][n] << "\\n";
         }
     }
 
@@ -1067,9 +1073,9 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
     fout << "QC INFORMATION\\n";
     
     bool qc_state = true;
-    fout << "Metab FWHM (PPM) = " << metab_fwhm_vec[0] <<  " : ";
+    fout << "Metab FWHM (PPM) = " << std::setw(6) << std::left << metab_fwhm_vec[fit_num] <<  " : ";
     
-    double metab_fwhm = metab_fwhm_vec[0];
+    double metab_fwhm = metab_fwhm_vec[fit_num];
     if ( (metab_fwhm > 0.1) || (metab_fwhm == -1) )
     {
         fout << "FAIL\\n";
@@ -1082,8 +1088,8 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
     else if ( ( metab_fwhm <= 0.05 ) )
         fout << "PASS (good)\\n";
 
-    double snr_qc = snr[0].first;
-    fout << "SNR              = " << snr_qc << "   : " ;
+    double snr_qc = snr[fit_num].first;
+    fout << "SNR              = " << std::setw(6) << std::left << snr_qc << " : " ;
     if (snr_qc < 4)
     {
         fout << "FAIL\\n";
@@ -1107,15 +1113,15 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
 
     fout << "DIAGNOSTICS\\n";
     //fout << "Metab FWHM (Hz)   = " << metab_fwhm_vec[0]*(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
-    fout << "SNR max           = " << snr[0].first * Q_vec[0] << "\\n";
+    fout << "SNR max           = " << snr[fit_num].first * Q_vec[fit_num] << "\\n";
     //fout << "SNR residul       = " << snr[0].first << "\\n";
-    fout << "Q                 = " << Q_vec[0] << "\\n";
+    fout << "Q                 = " << Q_vec[fit_num] << "\\n";
     
     fout << "Water FWHM (PPM)  = ";
     if ( options.GetFilenameWater() == "" )
         fout << "NA\\n";
     else
-        fout << workspace.GetWaterWidth(0)/(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
+        fout << workspace.GetWaterWidth(fit_num)/(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
 
     /*fout << "Water FWHM (Hz)   = ";
     if ( options.GetFilenameWater() == "" )
@@ -1131,11 +1137,11 @@ void GetTable(std::ostringstream& fout, const Workspace& workspace)
         fout << workspace.GetWaterFreq(0) << "\\n";
         */
 
-    fout << "Init beta         = " << options.GetInitBetaUsed(0) << "\\n";
-    fout << "Final beta        = " << workspace.GetParas(0)(nIdxBeta) << "\\n";
-    fout << "Final beta (PPM)  = " << pow(-workspace.GetParas(0)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
-    //fout << "Phi0 (deg)        = " << yfid.GetPhi0()[0].first * 180/M_PI << "\\n";
-    //fout << "Phi1 (deg/PPM)    = " << -yfid.GetPhi1()[0].first * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI << "\\n";
+    fout << "Init beta         = " << options.GetInitBetaUsed(fit_num) << "\\n";
+    fout << "Final beta        = " << workspace.GetParas(fit_num)(nIdxBeta) << "\\n";
+    fout << "Final beta (PPM)  = " << pow(-workspace.GetParas(fit_num)(nIdxBeta)*log(0.5),0.5)*2.0/M_PI/(yfid.GetTransmitterFrequency()/1.0e6) << "\\n";
+    //fout << "Phi0 (deg)        = " << yfid.GetPhi0()[fit_num].first * 180/M_PI << "\\n";
+    //fout << "Phi1 (deg/PPM)    = " << -yfid.GetPhi1()[fit_num].first * 180/M_PI * (yfid.GetTransmitterFrequency() / 1.0e6) * 2.0 * M_PI << "\\n";
     //fout << "Baseline var      = " << BLV_vec[0] << "\\n";
     fout << "Start point       = " << options.GetRangeStart() << "\\n";
     fout << "End point         = " << options.GetRangeEnd() << "\\n";
@@ -1291,7 +1297,7 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
    
     // generate a table
     std::ostringstream table;
-    GetTable(table, workspace);
+    GetTable(table, workspace, fit_num);
 
 	std::vector < std::string > signal_names = workspace.GetBasis().GetSignalNames();	
 

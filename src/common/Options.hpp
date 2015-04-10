@@ -138,6 +138,7 @@ namespace tarquin
         m_bPrintParas = false;
         m_bNofit = false;
         m_bReadOnly = false;
+        m_bReadWriteOnly = false;
 
         m_ppm_start = 0.2; // ppm left
         m_ppm_end = 4.0; // ppm right
@@ -152,7 +153,7 @@ namespace tarquin
         m_w_conc = 35880;
         m_au_norm = true;
 
-        m_max_dref = 0.15;
+        m_max_dref = 0.1;
         m_title = "";
         
         // TODO serialise
@@ -207,8 +208,14 @@ namespace tarquin
         m_hsvd_comps = 50;
         m_max_hsvd_pts = 1024;
         m_crlb_td = true;
+        m_crlb_optim = false;
         m_nnls = true;
         m_soft_cons = true;
+	    m_bPreFitPhase = true;
+	    m_bPreFitShift = false;
+	    m_bPreFitBl = false;
+	    m_bAppendLCMBasis = true;
+        m_lineshape_corr = false;
 	}
 
 	//Options(){}
@@ -423,6 +430,11 @@ namespace tarquin
 	    return m_crlb_td;
 	}
 
+    bool GetOptimCRLBs() const
+	{
+	    return m_crlb_optim;
+	}
+
     bool GetNNLS() const
 	{
 	    return m_nnls;
@@ -431,6 +443,11 @@ namespace tarquin
     bool GetSoftCons() const
 	{
 	    return m_soft_cons;
+	}
+
+    bool GetLineshapeCorr() const
+	{
+	    return m_lineshape_corr;
 	}
 
 	void SetMetabShiftLimits(treal lower, treal upper, const CFID& fid, const CBasis& basis)
@@ -1026,6 +1043,26 @@ namespace tarquin
 	    return m_bCombinePreproc;
 	}
 
+	bool GetPreFitPhase() const
+	{
+	    return m_bPreFitPhase;
+	}
+
+	bool GetPreFitShift() const
+	{
+	    return m_bPreFitShift;
+	}
+
+	bool GetPreFitBl() const
+	{
+	    return m_bPreFitBl;
+	}
+
+	bool GetAppendLCMBasis() const
+	{
+	    return m_bAppendLCMBasis;
+	}
+
 	bool GetLipidFilter() const
 	{
 	    return m_bLipidFilter;
@@ -1146,6 +1183,11 @@ namespace tarquin
 	    return m_bReadOnly;
 	}
 
+    bool GetReadWriteOnly() const
+	{
+	    return m_bReadWriteOnly;
+	}
+
 	bool GetShowPreprocessed() const
 	{
 	    return m_bShowPreprocessed;
@@ -1235,10 +1277,20 @@ namespace tarquin
 	{
 	    return m_strOutRaw;
 	}
+	
+    std::string GetOutRawFileV3() const
+	{
+	    return m_strOutRawV3;
+	}
 
 	std::string GetOutRawFileW() const
 	{
 	    return m_strOutRawW;
+	}
+
+	std::string GetOutRawFileWV3() const
+	{
+	    return m_strOutRawWV3;
 	}
     
     std::string GetOutRawFileLcm() const
@@ -1479,6 +1531,13 @@ namespace tarquin
 
 	//! Add up CSI spectra before auto-phasing?
     bool m_bCombinePreproc;
+    
+    //! Do a pre-fit fit?
+    bool m_bPreFitPhase;
+    bool m_bPreFitShift;
+    bool m_bPreFitBl;
+
+	bool m_bAppendLCMBasis;
 
 	//! Filter out lipids using HSVD?
     bool m_bLipidFilter;
@@ -1518,6 +1577,8 @@ namespace tarquin
     
     //! Read data in only
     bool m_bReadOnly;
+    
+    bool m_bReadWriteOnly;
     
     //! Adaptive start point
 	bool m_bAdaptSp;
@@ -1560,9 +1621,11 @@ namespace tarquin
 
 	//! The name of the dangerplot file for the raw FID.
 	std::string m_strOutRaw;
+	std::string m_strOutRawV3;
 	
 	//! The name of the dangerplot file for the raw water ref FID.
     std::string m_strOutRawW;
+    std::string m_strOutRawWV3;
 
 	//! The name of the LCM file for the raw FID.
 	std::string m_strOutRawLcm;
@@ -1625,8 +1688,10 @@ namespace tarquin
     int m_hsvd_comps;
     int m_max_hsvd_pts;
     bool m_crlb_td;
+    bool m_crlb_optim;
     bool m_nnls;
     bool m_soft_cons;
+    bool m_lineshape_corr;
 
     };
 

@@ -200,6 +200,8 @@ class CFID
 
 		//! Save as dangerplot format.
 		bool SaveToFile(std::string strFilename, size_t num = 0);
+		
+        bool SaveToFileV3(std::string strFilename);
 
 		//bool SaveToBinFile(std::string filename);
 
@@ -214,7 +216,7 @@ class CFID
         
         void trans_kspace(Options& options, CBoswell& log);
 
-        void AverageData(Options& options, int missmatch = 0);
+        void AverageData(Options& options, CBoswell& log, int missmatch = 0);
         
         void FreqCorrData(const Options& options);
 

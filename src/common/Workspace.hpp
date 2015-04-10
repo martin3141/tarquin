@@ -4,6 +4,7 @@
 #include "CFID.hpp"
 #include "CBasis.hpp"
 #include "Options.hpp"
+#include "td_conv_ws.hpp"
 #include <complex>
 
 namespace tarquin 
@@ -579,6 +580,74 @@ namespace tarquin
 			{
 				return m_norm_val;
 			}
+
+			void GetFreqDomain(const cvm::cvector& y, cvm::cvector& Y, int zf, bool move_pts)
+            {
+                cvm::cvector yz = y; 
+			    yz.resize(y.size()*zf);
+
+                // copy last pts points of real fid to end of zfilled fid
+                if (( move_pts ) && ( zf > 1 ))
+                {
+                    int pts = 5;
+                    for ( int n = 1 ; n < pts + 1; n++)
+                    {
+                        yz(yz.size()-pts+n) = yz(yz.size()/zf-pts+n);
+                        yz(yz.size()/zf-pts+n) = 0;
+                    }
+                }
+			    Y.resize(yz.size());
+                fft(yz, Y);
+			    Y = fftshift(Y);
+            }
+
+			void GetBaseline(cvm::rvector& BL, const cvm::cvector& y, const cvm::cvector& yhat, int zf, bool move_pts)
+            { // TODO implement move_pts functionality
+			    cvm::cvector res = y-yhat;
+                cvm::cvector RES;
+                GetFreqDomain(res, RES, zf, move_pts);
+                cvm::cvector BASELINE(RES.size());
+                td_conv_ws( RES, BASELINE, m_options.GetBL()*zf, 10);	
+			    BL.resize(BASELINE.size());
+                BL = BASELINE.real();
+            }
+
+			void GetTimeDomain(const cvm::rvector& Y, cvm::cvector& y, bool move_pts)
+            {
+                Hilb(Y,y);
+                y = y.conj();
+                y = fftshift(y);
+                y = ifft(y);
+                y.resize(Y.size()/2);
+            }
+			
+            void Hilb(const cvm::rvector& in, cvm::cvector& out)
+            {
+                int N = in.size();
+                // make input vector complex
+                cvm::cvector in_comp(N);
+                in_comp.real() = in;
+                cvm::cvector x(N);
+                fft(in_comp, x);
+
+                // construct h
+                cvm::cvector h(N);
+                h(1) = 1;
+                h(floor(N/2)+1) = 1;
+                
+                for ( int n = 2; (n < (round(N/2+0.5))); n++ )
+                    h(n) = 2;
+                
+                for ( int n = floor(N/2+2); (n < (N+1)); n++ )
+                    h(n) = 0;
+                
+                cvm::cvector y(N);
+                for ( int n = 1; (n < (N+1)); n++ )
+                    y(n) = h(n)*x(n);
+
+                out.resize(N);
+                ifft(y, out);
+            }
 
 		protected:
 

@@ -335,6 +335,7 @@ private:
 
     //! Phi0 or Phi1
     bool m_phi0;
+    bool m_phi1;
     
     //! Change WW/WL?
     bool m_ww_wl;

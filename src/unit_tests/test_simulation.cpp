@@ -40,10 +40,17 @@ BOOST_AUTO_TEST_CASE( simulation_test )
 
 	tarquin::CBasis& basis = workspace.GetBasis();
 	BOOST_REQUIRE_EQUAL(basis.Simulate("data", fidraw, options, log), true);
-
-    // bit of a hack as the first simulated file is a dpt file
-	cvm::cvector s = basis.GetBasisMatrix()(2);
     
+    std::vector<std::string> basis_names = basis.GetSignalNames();
+
+    int naa_ind = 0;
+    for ( int n = 0; n < basis_names.size(); n++ )
+    {
+        if ( basis_names[n] == "NAA" )
+            naa_ind = n+1;
+    }
+
+	cvm::cvector s = basis.GetBasisMatrix()(naa_ind);
     
     // might want to plot the results for testing purposes
 	//tarquin::coord raw_spec = {1, 1, 1};

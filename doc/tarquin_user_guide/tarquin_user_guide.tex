@@ -4,7 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[sc]{mathpazo}
 \linespread{1.05}
-\newcommand{\ver}{4.3.5}
+\newcommand{\ver}{4.3.6}
 \usepackage{setspace}
 \usepackage{graphicx}
 \begin{document}
@@ -196,6 +196,7 @@ This script recursively searches for all files within in the \texttt{dir} variab
 
 \section{Output parameters}
 Below is a table to define some useful parameters available from the TARQUIN results output.
+\vspace{\baselineskip}
 
 \begin{tabular}{l l}
 Parameter & Description \\
@@ -211,6 +212,46 @@ Parameter & Description \\
 \texttt{water width (Hz)} & FWHM width of water peak in units of Hz where available. \\
 \texttt{water width (PPM)} & As above in units of PPM. \\
 \texttt{water freq (Hz)} & Difference between water frequency and the centre of the spectral \\& width in Hz. \\
+\end{tabular}
+
+\section{PDF output and quality control}
+A PDF plot of the fit and fitting parameters can be exported in the GUI and command line versions of TARQUIN. Gnuplot is required for this type of output and should be on the system path (otherwise \texttt{gnuplot} option should be set). The following options relate to the PDF output:
+
+\vspace{\baselineskip}
+\begin{tabular}{l l}
+Parameter & Description \\
+\hline
+\texttt{output\_pdf} & file name of PDF output. \\
+\texttt{gnuplot} & set the path of Gnuplot (required if Gnuplot is not on the system path). \\
+\texttt{ext\_pdf} & (true/false) produce a page of output for each metabolite. \\
+\texttt{lb} & line broadening in Hz (cosmetic change only). \\
+\texttt{ppm\_left} & change the left side of the plot axis limit. \\
+\texttt{ppm\_right} & change the right side of the plot axis limit. \\
+\texttt{title} & add a title to the plot (enclose between quotes). \\
+\texttt{gnuplot\_cex} & text size scaling parameter. \\
+\end{tabular}
+
+\vspace{\baselineskip}
+At the bottom right of the PDF output there is a section named \texttt{QC INFORMATION}. This section can act as a useful data quality guide for most MRS data. However, precise QC requirements are problem specific, so this should only be used as a guide. The criteria are set as follows:
+
+\vspace{\baselineskip}
+\begin{tabular}{l l}
+Lineshape criteria & QC \\
+\hline
+metabolite FWHM > 0.1PPM & fail \\
+0.1PPM > metabolite FWHM > 0.75PPM & pass (borderline) \\
+0.075PPM > metabolite FWHM > 0.05PPM & pass (average) \\
+0.05PPM > metabolite FWHM & pass (good) \\
+\end{tabular}
+
+\vspace{\baselineskip}
+\begin{tabular}{l l}
+SNR criteria & QC \\
+\hline
+4 > SNR & fail \\
+10 > SNR > 4 & pass (borderline) \\
+20 > SNR > 10 & pass (average) \\
+SNR > 20 & pass (good) \\
 \end{tabular}
 
 \section{Data types}
@@ -281,7 +322,7 @@ GABA is modelled as two separate peaks GABA\_A and GABA\_B, the amplitudes of th
 
 Depending on how the sequence was implemented, the ``Dynamic averaging'' scheme in the ``Data Parameters'' tab may need to be set to ``Subtract even from odd'' to get a correctly combined MEGA-PRESS spectrum.
 
-Edit on and off scans can be visualised/analysed separately by changing the ``Dynamic averaging'' scheme which can be useful for getting ratios to creatine or measuring glutmaine. Furthermore, individual dynamic scans can be processed by setting the averaging scheme to ``No averaging''. Flicking through the individual scans with an eye on peak positions can be useful for detecting motion or field drift.
+Edit on and off scans can be visualised/analysed separately by changing the ``Dynamic averaging'' scheme which can be useful for getting ratios to creatine or measuring glutamate. Furthermore, individual dynamic scans can be processed by setting the averaging scheme to ``No averaging''. Flicking through the individual scans with an eye on peak positions can be useful for detecting motion or field drift.
 
 In some cases it may be required to separate out individual dynamics for analysis. A text file containing a list (one per line) of dynamic scans to include in the analysis can be specified with the \texttt{---av\_list} option. A file to average the first, third, fifth and seventh pairs of dynamic scans may look like the following:
 \begin{verbatim}
@@ -315,6 +356,11 @@ av_list av_file.csv         # optional - used for selecting dynamics prior
 \section{Data formats}
 \subsection{GE p-files}
 TARQUIN will read GE SVS p-files and combine data from multi-coil arrays where appropriate. A single phase and multiplicative factor (per coil) is applied to data from each coil before combination. Where water unsuppressed data is available this factor is taken from the phase and magnitude of the first data point in the first unsuppressed frame. Where only water suppressed data is available, this phase factor is taken from the first data point in the first suppressed frame.
+
+\section{MRSI}
+TARQUIN supports most 2D and some 3D MRSI data formats and may be used to generate metabolite maps for display on conventional MRI. Due to the relatively low resolution of MRSI, it is often useful to spatially interpolate data to allow examination of spectral data centred on pathology. This can be achieved in the gui by specifying a ``Zero fill k-space factor'' in the preprocessing tab or with the \texttt{---zfill\_kspace} command line option. In both cases the factor will be used to multiply the native resolution, so a 16x16 grid with a zero fill k-space factor of 4 will result in a 64x64 grid. Please note that this step does not improve the resolution of the technique but provides a natural method for data interpolation that will preserve the underlying point-spread function.
+
+Following interpolation, a single voxel from the grid may be selected for analysis (``Select none'' button followed by right mouse click on the relevant voxel) and a pdf fit output can be generated from the results menu. Alternatively a set of voxels may be selected to generate metabolite maps over a region.
 
 %\section{Fitting Details}
 %The main algorithmic details and validation is described in the following paper: \cite{tarquin_paper}.  Any expansions and changes to the original algorithm will be described in the following section.
