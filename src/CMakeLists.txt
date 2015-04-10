@@ -107,7 +107,7 @@ if( WIN32 )
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-DEIGEN_SSE2_ON_MSVC_2008_OR_LATER)
 
-	set( BOOST_ROOT                "c:/opt/boost")
+	set( BOOST_ROOT                "c:/opt/boost-tarquin")
 
 	set( TARQUIN_DEPS_DIR          "d:/libs")
 
