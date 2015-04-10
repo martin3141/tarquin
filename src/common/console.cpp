@@ -90,6 +90,50 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\n";
 }
 
+namespace
+{
+	tarquin::fid_format_e parse_format_type(std::string strVal)
+	{
+		if( strVal == "siemens" ) 
+			return tarquin::SIEMENS;
+
+		else if( strVal == "philips" ) 
+			return tarquin::PHILIPS;
+
+		else if( strVal == "ge" ) 
+			return tarquin::GE;
+
+		else if( strVal == "dpt" ) 
+			return tarquin::DANGER;
+
+		else if( strVal == "rda" )
+			return tarquin::RDA;
+
+		else if( strVal == "lcm" )
+			return tarquin::LCM;
+
+		else if( strVal == "shf" )
+			return tarquin::SHF;
+
+		else if( strVal == "varian" )
+			return tarquin::VARIAN;
+
+		else if( strVal == "bruker" )
+			return tarquin::BRUKER;
+
+		else if( strVal == "philips_dcm" )
+			return tarquin::PHILIPS_DCM;
+
+		else if( strVal == "dcm" )
+			return tarquin::DCM;
+
+		else if( strVal == "jmrui_txt" )
+			return tarquin::JMRUI_TXT;
+
+		return tarquin::NOTSET;
+	}
+}
+
 bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& fid)
 {
 
@@ -101,8 +145,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 	}
 
 	// search for a para_file before processing options
-	for(size_t n = 1; n < args.size(); n+=2 ) {
-
+	for(size_t n = 1; n < args.size(); n+=2 ) 
+	{
 		std::string strKey = std::string(args[n]);
 
 		if( strKey == "--help" ) {
@@ -154,8 +198,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 	}
 
 	// for each command line argument
-	for(size_t n = 1; n < args.size(); n+=2 ) {
-
+	for(size_t n = 1; n < args.size(); n+=2 ) 
+	{
 		std::string strKey = std::string(args[n]);
 
 		if( n == args.size()-1 ) {
@@ -179,51 +223,21 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_strFileWater = strVal;
 
 		// format of FID object
-		else if( strKey == "--format" ) {
+		else if( strKey == "--format" ) 
+		{
+			options.m_format = parse_format_type(strVal);
 
-			if( strVal == "siemens" ) 
-				options.m_format = tarquin::SIEMENS;
-
-			else if( strVal == "philips" ) 
-				options.m_format = tarquin::PHILIPS;
-
-			else if( strVal == "ge" ) 
-				options.m_format = tarquin::GE;
-
-			else if( strVal == "dpt" ) 
-				options.m_format = tarquin::DANGER;
-
-			else if( strVal == "rda" )
-				options.m_format = tarquin::RDA;
-
-			else if( strVal == "lcm" )
-				options.m_format = tarquin::LCM;
-
-			else if( strVal == "shf" )
-				options.m_format = tarquin::SHF;
-
-			else if( strVal == "varian" )
-				options.m_format = tarquin::VARIAN;
-
-			else if( strVal == "bruker" )
-				options.m_format = tarquin::BRUKER;
-            
-            else if( strVal == "philips_dcm" )
-				options.m_format = tarquin::PHILIPS_DCM;
-
-            else if( strVal == "dcm" )
-				options.m_format = tarquin::DCM;
-
-            else if( strVal == "jmrui_txt" )
-				options.m_format = tarquin::JMRUI_TXT;
-			else {
+			if( options.m_format == NOTSET )
+			{
 				std::cerr << "\nerror: unrecognised format '" << strVal << "'" << std::endl;
 				return false;
 			}
+
 		}
 
 		// format of FID object
-		else if( strKey == "--ref_signals" ) {
+		else if( strKey == "--ref_signals" ) 
+		{
 			if( strVal == "1h_naa_cr_cho_lip" ) 
 				options.m_ref_signals = tarquin::PROTON_NAA_CR_CHO_LIP;
 
@@ -257,13 +271,15 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
             else if( strVal == "31p_pcr_gammaatp" ) 
 				options.m_ref_signals = tarquin::PHOSPH_PCR_GAMMAATP;
 
-			else {
+			else 
+			{
 				std::cerr << "\nerror: unrecognised ref mode '" << strVal << "'" << std::endl;
 				return false;
 			}
         }
 
-		else if( strKey == "--dref_signals" ) {
+		else if( strKey == "--dref_signals" ) 
+		{
 			if( strVal == "1h_naa_cr_cho_lip" ) 
 				options.m_dyn_ref_signals = tarquin::PROTON_NAA_CR_CHO_LIP;
 
@@ -305,7 +321,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 		// pulse seq name
 		// default to press	
-		else if( strKey == "--pul_seq" ) {
+		else if( strKey == "--pul_seq" ) 
+		{
 			if( strVal == "press" ) 
 				options.SetPulSeq(PRESS);
 			else if( strVal == "steam" ) 
@@ -334,7 +351,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 		// dynamic averaging
 		// default to none
-		else if( strKey == "--dyn_av" ) {
+		else if( strKey == "--dyn_av" ) 
+		{
 			if( strVal == "default" ) 
 				options.SetDynAv(DEFAULT);
 			else if ( strVal == "none" ) 
@@ -353,7 +371,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			}
 		}
 
-		else if( strKey == "--dyn_av_w" ) {
+		else if( strKey == "--dyn_av_w" ) 
+		{
 			if( strVal == "default" ) 
 				options.SetDynAvW(DEFAULT);
 			else if ( strVal == "none" ) 
@@ -373,7 +392,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
         
         // pre dyn av freq correction
-        else if( strKey == "--dyn_freq_corr" ) {
+        else if( strKey == "--dyn_freq_corr" ) 
+		{
 			if( strVal == "true" )
 				options.m_dyn_freq_corr = true;
 			else
@@ -381,7 +401,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
         // td or fd for noise estimate
-        else if( strKey == "--crlb_td" ) {
+        else if( strKey == "--crlb_td" ) 
+		{
 			if( strVal == "true" )
 				options.m_crlb_td = true;
 			else
@@ -451,7 +472,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         
         // interal basis
 		// default to none
-		else if( strKey == "--int_basis" ) {
+		else if( strKey == "--int_basis" ) 
+		{
 			if( strVal == "1h_brain" ) 
 				options.SetIntBasisSet(PROTON_BRAIN);
 			else if( strVal == "1h_brain_glth" ) 
@@ -1458,20 +1480,20 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			iss >> options.m_geOptions.nWaterFrames;
 		}
 
-		else if( strKey == "--ge_coils" ) {
+		/*else if( strKey == "--ge_coils" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nCoils;
-		}
+		}*/
 
 		else if( strKey == "--ge_samples" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nFieldSize;
 		}
-		else if( strKey == "--para_file" ) {
+		/*else if( strKey == "--para_file" ) {
             // skip over this one
-        }
+        }*/
 
 		else if( strKey == "--" ) {
             // skip over this one

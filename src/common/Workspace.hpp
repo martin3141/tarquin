@@ -633,12 +633,12 @@ namespace tarquin
                 // construct h
                 cvm::cvector h(N);
                 h(1) = 1;
-                h(floor(N/2)+1) = 1;
+                h(N/2+1) = 1;
                 
                 for ( int n = 2; (n < (round(N/2+0.5))); n++ )
                     h(n) = 2;
                 
-                for ( int n = floor(N/2+2); (n < (N+1)); n++ )
+                for ( int n = N/2+2; (n < (N+1)); n++ )
                     h(n) = 0;
                 
                 cvm::cvector y(N);
