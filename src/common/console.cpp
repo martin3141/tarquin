@@ -1462,23 +1462,23 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// this is a dirty hack to for GE to work
-		else if( strKey == "--ge_offset" ) {
+		/*else if( strKey == "--ge_offset" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nOffset;
-		}
+		}*/
 
-		else if( strKey == "--ge_wsframes" ) {
+		/*else if( strKey == "--ge_wsframes" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nWSFrames;
-		}
+		}*/
 
-		else if( strKey == "--ge_wframes" ) {
+		/*else if( strKey == "--ge_wframes" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nWaterFrames;
-		}
+		}*/
 
 		/*else if( strKey == "--ge_coils" ) {
 
@@ -1486,14 +1486,15 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			iss >> options.m_geOptions.nCoils;
 		}*/
 
-		else if( strKey == "--ge_samples" ) {
+		/*else if( strKey == "--ge_samples" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nFieldSize;
-		}
-		/*else if( strKey == "--para_file" ) {
+		}*/
+
+		else if( strKey == "--para_file" ) {
             // skip over this one
-        }*/
+        }
 
 		else if( strKey == "--" ) {
             // skip over this one
