@@ -844,7 +844,13 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
     }
 
     if ( options.GetDynAv() != NONE )
-        AverageData(options, log);
+    {
+        int WUS_fids = workspace.GetFIDRaw().GetVoxelCount();
+        if ( WUS_fids != m_cvmFID.size() )
+            AverageData(options, log, WUS_fids);
+        else
+            AverageData(options, log);
+    }
 
     // check if we need to average WUS data due to missmatch between WUS and WS scans
     if ( m_wref )
