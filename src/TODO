@@ -2,6 +2,19 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+Version 4.3.7
+- Regresssion fix where --para_file was not accepted as a valid command line options.
+- Bug fix for where dynamic WS scans didn't match W scans.
+
+TODO
+- Refactor code for command line options
+- Remove voxels for metabolite map display.
+- Adjust metabolite map limits.
+- Add average voxel function to GUI.
+- Revamp serialisation method for saving fits.
+- 3D GE MRSI support.
+- More options for MM basis set.
+
 Version 4.3.6
 - GUI bug fix where MRI slice changes caused a crash in some cases.
 - GUI bug fix for exporting gnuplot pdf fit of MRSI data - numbers now match the spectrum displayed.
@@ -14,14 +27,6 @@ Version 4.3.6
 - Phi0 max/min limits can be specified with the --max_phi0 option.
 - Internal basis set for braino phantom now has narrower peaks better suited to typical T2 values seen in solution.
 - Bug fix for unit tests.
-
-TODO
-- Remove voxels for metabolite map display.
-- Adjust metabolite map limits.
-- Add average voxel function to GUI.
-- Revamp serialisation method for saving fits.
-- 3D GE MRSI support.
-- More options for MM basis set.
 
 Version 4.3.5
 - Tentative support for DICOM, SPAR/SDAT, IMA and RDA formats for 3D MRSI.
