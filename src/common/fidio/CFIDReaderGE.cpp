@@ -171,6 +171,9 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     if ( swap_end )
         num_ref_frames = FloatSwap(num_ref_frames);
 
+    // if this was set at the command line then overwrite
+    if ( m_options.nWaterFrames > 0 )
+        num_ref_frames = m_options.nWaterFrames;
     
 	if( num_ref_frames > 32768 || num_ref_frames < 0 )
         throw Exception("Unrealistic number of reference frames, check data type.");

@@ -5,9 +5,10 @@
 Version 4.3.7
 - Regresssion fix where --para_file was not accepted as a valid command line options.
 - Bug fix for where dynamic WS scans didn't match W scans.
+- Improved command line parsing code to reduce the number of nested scopes to get round a limitation of the MSVS compiler.
+- Added a command line option to manually override the number of GE water reference data frames (--ge_wframes).
 
 TODO
-- Refactor code for command line options
 - Remove voxels for metabolite map display.
 - Adjust metabolite map limits.
 - Add average voxel function to GUI.

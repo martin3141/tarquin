@@ -9,7 +9,7 @@ namespace tarquin {
 	GEOptions()
 	{
 	    nOffset      = 162292;
-	    nWaterFrames = 2;
+	    nWaterFrames = -1;
 	    nWSFrames    = 32;
 	    nFieldSize   = 2048;
 	    nCoils       = 8;

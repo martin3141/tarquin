@@ -15,11 +15,11 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--input             fidfile (water suppressed)";
 	std::cout << "\n\t--input_w           fidfile (water reference)";
 	std::cout << "\n\t--format            {siemens | philips | ge | dpt | rda | lcm | shf | varian | bruker | jmrui_txt}";
-	std::cout << "\n\t--ge_offset         offset_to_data";
-	std::cout << "\n\t--ge_wsframes       number of ws averages";
+	//std::cout << "\n\t--ge_offset         offset_to_data";
+	//std::cout << "\n\t--ge_wsframes       number of ws averages";
 	std::cout << "\n\t--ge_wframes        number of w averages";
-	std::cout << "\n\t--ge_coils          number of coils";
-	std::cout << "\n\t--ge_samples        number of samples";
+	//std::cout << "\n\t--ge_coils          number of coils";
+	//std::cout << "\n\t--ge_samples        number of samples";
 	std::cout << "\n\t--start_pnt         starting sample (1-based)";
 	std::cout << "\n\t--end_pnt           ending sample (1-based)";
 	std::cout << "\n\t--max_iters         maximum number of iterations to perform";
@@ -132,6 +132,14 @@ namespace
 
 		return tarquin::NOTSET;
 	}
+
+	bool parse_binary(std::string strVal)
+    {
+        if( strVal == "true" )
+            return true;
+        else
+            return false;
+    }
 }
 
 bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& fid)
@@ -392,61 +400,31 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
         
         // pre dyn av freq correction
-        else if( strKey == "--dyn_freq_corr" ) 
-		{
-			if( strVal == "true" )
-				options.m_dyn_freq_corr = true;
-			else
-				options.m_dyn_freq_corr = false;
-		}
+        else if( strKey == "--dyn_freq_corr" )
+            options.m_dyn_freq_corr = parse_binary(strVal);
 
         // td or fd for noise estimate
-        else if( strKey == "--crlb_td" ) 
-		{
-			if( strVal == "true" )
-				options.m_crlb_td = true;
-			else
-				options.m_crlb_td = false;
-		}
+        else if( strKey == "--crlb_td" )
+            options.m_crlb_td = parse_binary(strVal);
         
         // optimistic CRLBs
-        else if( strKey == "--crlb_optim" ) {
-			if( strVal == "true" )
-				options.m_crlb_optim = true;
-			else
-				options.m_crlb_optim = false;
-		}
+        else if( strKey == "--crlb_optim" )
+            options.m_crlb_optim = parse_binary(strVal);
 
         // allow negative amps
-        else if( strKey == "--nnls" ) {
-			if( strVal == "true" )
-				options.m_nnls = true;
-			else
-				options.m_nnls = false;
-		}
+        else if( strKey == "--nnls" )
+            options.m_nnls = parse_binary(strVal);
 
         // soft cons
-        else if( strKey == "--soft_cons" ) {
-			if( strVal == "true" )
-				options.m_soft_cons = true;
-			else
-				options.m_soft_cons = false;
-		}
+        else if( strKey == "--soft_cons" )
+            options.m_soft_cons = parse_binary(strVal);
 
         // lineshape correction
-        else if( strKey == "--ls_corr" ) {
-			if( strVal == "true" )
-				options.m_lineshape_corr = true;
-			else
-				options.m_lineshape_corr = false;
-		}
+        else if( strKey == "--ls_corr" )
+			options.m_lineshape_corr = parse_binary(strVal);
 
-        else if( strKey == "--replace_fp" ) {
-			if( strVal == "true" )
-				options.m_replace_fp = true;
-            else
-				options.m_replace_fp = false;
-        }
+        else if( strKey == "--replace_fp" )
+            options.m_replace_fp = parse_binary(strVal);
 
         else if( strKey == "--prepend_pts" ) {
             int pts;
@@ -803,37 +781,21 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// adaptive starting point of fid
-		else if( strKey == "--adapt_sp" ) {
-			if( strVal == "true" )
-				options.m_bAdaptSp = true;
-			else
-				options.m_bAdaptSp = false;
-		}
+		else if( strKey == "--adapt_sp" )
+			options.m_bAdaptSp = parse_binary(strVal);
 
 		// pre-hsvd
-		else if( strKey == "--pre_hsvd" ) {
-			if( strVal == "true" )
-				options.m_pre_hsvd = true;
-			else
-				options.m_pre_hsvd = false;
-		}
+		else if( strKey == "--pre_hsvd" )
+			options.m_pre_hsvd = parse_binary(strVal);
 
 		// old phi1 limits
-		else if( strKey == "--old_phase" ) {
-			if( strVal == "true" )
-				options.m_old_phase = true;
-			else
-				options.m_old_phase = false;
-		}
+		else if( strKey == "--old_phase" )
+			options.m_old_phase = parse_binary(strVal);
 
 		// adaptive ending point of fid
-		else if( strKey == "--adapt_ep" ) {
-			if( strVal == "true" )
-				options.m_bAdaptEp = true;
-			else
-				options.m_bAdaptEp = false;
-		}
-        
+		else if( strKey == "--adapt_ep" )
+            options.m_bAdaptEp = parse_binary(strVal);
+
         // CSI rows to be fit
 		else if( strKey == "--rows" ) {
 			// convert string to number and check for errors
@@ -999,12 +961,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         
         // Do the au scaling for SVS data?
 		else if( strKey == "--au_norm" ) 
-        {
-			if( strVal == "true" )
-				options.m_au_norm = true;
-			else
-				options.m_au_norm = false;
-		}
+            options.m_au_norm  = parse_binary(strVal);
 
 		// water removal window width
 		else if( strKey == "--water_width" ) {
@@ -1074,61 +1031,26 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// auto-phasing
-		else if( strKey == "--auto_phase" ) {
+		else if( strKey == "--auto_phase" )
+            options.m_bAutoPhase  = parse_binary(strVal);
 
-			if( strVal == "true" )
-				options.m_bAutoPhase = true;
-			else
-				options.m_bAutoPhase = false;
-		}
+		else if( strKey == "--combine_preproc" )
+            options.m_bCombinePreproc  = parse_binary(strVal);
 
-		else if( strKey == "--combine_preproc" ) {
+        else if( strKey == "--pre_fit_phase" )
+            options.m_bPreFitPhase  = parse_binary(strVal);
 
-			if( strVal == "true" )
-				options.m_bCombinePreproc = true;
-			else
-				options.m_bCombinePreproc = false;
-		}
+        else if( strKey == "--pre_fit_shift" )
+            options.m_bPreFitShift = parse_binary(strVal);
 
-        else if( strKey == "--pre_fit_phase" ) {
+        else if( strKey == "--pre_fit_bl" )
+            options.m_bPreFitBl = parse_binary(strVal);
 
-			if( strVal == "true" )
-				options.m_bPreFitPhase = true;
-			else
-				options.m_bPreFitPhase = false;
-		}
-
-        else if( strKey == "--pre_fit_shift" ) {
-
-			if( strVal == "true" )
-				options.m_bPreFitShift = true;
-			else
-				options.m_bPreFitShift = false;
-		}
-
-        else if( strKey == "--pre_fit_bl" ) {
-
-			if( strVal == "true" )
-				options.m_bPreFitBl = true;
-			else
-				options.m_bPreFitBl = false;
-		}
-
-        else if( strKey == "--append_lcm_basis" ) {
-
-			if( strVal == "true" )
-				options.m_bAppendLCMBasis = true;
-			else
-				options.m_bAppendLCMBasis = false;
-		}
+        else if( strKey == "--append_lcm_basis" )
+            options.m_bAppendLCMBasis = parse_binary(strVal);
         
-        else if( strKey == "--lipid_filter" ) {
-
-			if( strVal == "true" )
-				options.m_bLipidFilter = true;
-			else
-				options.m_bLipidFilter = false;
-		}
+        else if( strKey == "--lipid_filter" )
+            options.m_bLipidFilter = parse_binary(strVal);
         
         else if( strKey == "--lipid_filter_freq" ) 
 		{
@@ -1145,30 +1067,15 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_lipid_filt_freq = temp;
 		}
 
-        else if( strKey == "--swap_row_col" ) {
+        else if( strKey == "--swap_row_col" )
+            options.m_bSwapRowCol = parse_binary(strVal);
 
-			if( strVal == "true" )
-				options.m_bSwapRowCol = true;
-			else
-				options.m_bSwapRowCol = false;
-		}
-
-        else if( strKey == "--full_echo" ) {
-
-			if( strVal == "true" )
-				options.m_bFullEcho = true;
-			else
-				options.m_bFullEcho = false;
-		}
+        else if( strKey == "--full_echo" )
+            options.m_bFullEcho = parse_binary(strVal);
 
 		// auto-referencing
-		else if( strKey == "--auto_ref" ) {
-
-			if( strVal == "true" )
-				options.m_bAutoRef = true;
-			else
-				options.m_bAutoRef = false;
-		}
+		else if( strKey == "--auto_ref" )
+            options.m_bAutoRef = parse_binary(strVal);
 
 		// max shift allowed
 		else if( strKey == "--max_dref" ) 
@@ -1274,75 +1181,35 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// plot pausing 
-		else if( strKey == "--pause" ) {
-
-			if( strVal == "true" )
-				options.m_pause = true;
-			else
-				options.m_pause = false;
-		}
+		else if( strKey == "--pause" )
+            options.m_pause = parse_binary(strVal);
 
 		// water-reference eddy current correction
-		else if( strKey == "--water_eddy" ) {
-
-			if( strVal == "true" )
-				options.m_bWaterEddy = true;
-			else
-				options.m_bWaterEddy = false;
-		}
+		else if( strKey == "--water_eddy" )
+            options.m_bWaterEddy = parse_binary(strVal);
 
 		// LCModel mode option
-		else if( strKey == "--basis_comp" ) {
-
-			if( strVal == "true" )
-				options.m_basis_comp = true;
-			else
-				options.m_basis_comp = false;
-		}
+		else if( strKey == "--basis_comp" )
+            options.m_basis_comp = parse_binary(strVal);
 
 		// LCModel mode option
-		else if( strKey == "--ext_pdf" ) {
+		else if( strKey == "--ext_pdf" )
+            options.m_bPdfExt = parse_binary(strVal);
 
-			if( strVal == "true" )
-				options.m_bPdfExt = true;
-			else
-				options.m_bPdfExt = false;
-		}
-		
-        else if( strKey == "--ext_csv_fit" ) {
-
-			if( strVal == "true" )
-				options.m_ext_csv_fit = true;
-			else
-				options.m_ext_csv_fit = false;
-		}
+        else if( strKey == "--ext_csv_fit" )
+            options.m_ext_csv_fit = parse_binary(strVal);
 
 		// fast fit?
-		else if( strKey == "--ff" ) {
-
-			if( strVal == "true" )
-				options.m_ff = true;
-			else
-				options.m_ff = false;
-		}
+		else if( strKey == "--ff" )
+            options.m_ff = parse_binary(strVal);
 
 		// show preprocessed result
-		else if( strKey == "--show_pre" ) {
-
-			if( strVal == "true" )
-				options.m_bShowPreprocessed = true;
-			else
-				options.m_bShowPreprocessed = false;
-		}
+		else if( strKey == "--show_pre" )
+            options.m_bShowPreprocessed = parse_binary(strVal);
 
 		// only fit SVS data?
-		else if( strKey == "--svs_only" ) {
-
-			if( strVal == "true" )
-				options.m_svs_only = true;
-			else
-				options.m_svs_only = false;
-		}
+		else if( strKey == "--svs_only" )
+            options.m_svs_only = parse_binary(strVal);
 
 		// display an old results file
 		else if( strKey == "--view_fit" ) {
@@ -1350,33 +1217,17 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// display FID paras
-		else if( strKey == "--print_paras" ) {
-			if( strVal == "true" )
-				options.m_bPrintParas = true;
-			else
-				options.m_bPrintParas = false;
-		}
+		else if( strKey == "--print_paras" )
+            options.m_bPrintParas = parse_binary(strVal);
 
-		else if( strKey == "--no_fit" ) {
-			if( strVal == "true" )
-				options.m_bNofit = true;
-			else
-				options.m_bNofit = false;
-		}
+		else if( strKey == "--no_fit" )
+            options.m_bNofit = parse_binary(strVal);
 
-		else if( strKey == "--read_only" ) {
-			if( strVal == "true" )
-				options.m_bReadOnly = true;
-			else
-				options.m_bReadOnly = false;
-		}
+		else if( strKey == "--read_only" )
+            options.m_bReadOnly = parse_binary(strVal);
 
-		else if( strKey == "--rw_only" ) {
-			if( strVal == "true" )
-				options.m_bReadWriteOnly = true;
-			else
-				options.m_bReadWriteOnly = false;
-		}
+		else if( strKey == "--rw_only" )
+            options.m_bReadWriteOnly = parse_binary(strVal);
 
 		// comma seperated list of signals to be plotted (no spaces allowed!)
 		else if( strKey == "--plot_sigs" ) {
@@ -1474,11 +1325,11 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			iss >> options.m_geOptions.nWSFrames;
 		}*/
 
-		/*else if( strKey == "--ge_wframes" ) {
+		else if( strKey == "--ge_wframes" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nWaterFrames;
-		}*/
+		}
 
 		/*else if( strKey == "--ge_coils" ) {
 
