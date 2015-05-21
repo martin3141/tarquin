@@ -723,6 +723,18 @@ void tarquin::CFIDReaderGE::LoadFromOptionsSVS(std::string strFilename, const Op
         cvm::cvector yw(nFieldSize);
         yw.set(tcomplex(0.0, 0.0));
 
+        cvm::cvector y1(nFieldSize);
+        y1.set(tcomplex(0.0, 0.0));
+
+        cvm::cvector yw1(nFieldSize);
+        yw1.set(tcomplex(0.0, 0.0));
+
+        cvm::cvector y2(nFieldSize);
+        y2.set(tcomplex(0.0, 0.0));
+
+        cvm::cvector yw2(nFieldSize);
+        yw2.set(tcomplex(0.0, 0.0));
+
 		// for each coil
 	    for( std::size_t nCoil = 0; nCoil < nCoils; nCoil++ ) 
 		{
@@ -779,10 +791,20 @@ void tarquin::CFIDReaderGE::LoadFromOptionsSVS(std::string strFilename, const Op
                 }
                 else
                 {
-                    if( nFrame <= nWaterFrames )
-                        yw[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
-                    else if( nFrame <= nFrames-1 )
-                        y[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
+                    if ( nCoil % 2 == 0 )
+                    {
+                        if( nFrame <= nWaterFrames )
+                            yw1[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
+                        else if( nFrame <= nFrames-1 )
+                            y1[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
+                    }
+                    else
+                    {
+                        if( nFrame <= nWaterFrames )
+                            yw2[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
+                        else if( nFrame <= nFrames-1 )
+                            y2[n+1] += amps[nCoil % nCoils]*phases[nCoil % nCoils]*tcomplex(sampleReal, sampleImag);
+                    }
                 }
             }
         }
@@ -794,18 +816,46 @@ void tarquin::CFIDReaderGE::LoadFromOptionsSVS(std::string strFilename, const Op
 
         //std::cout << amp_sum << std::endl;
 
-        y /= treal(nCoils)*amp_sum;
-        if ( nWaterFrames > 0 )
-            yw /= treal(nCoils)*amp_sum;
+        if ( nEchoes != 2 )
+        {
+            y /= treal(nCoils)*amp_sum;
+            if ( nWaterFrames > 0 )
+                yw /= treal(nCoils)*amp_sum;
 
-        if ( WS && nFrame > nWaterFrames )
-            m_fid.AppendFromVector(y);
+            if ( WS && nFrame > nWaterFrames )
+                m_fid.AppendFromVector(y);
 
-        if ( !WS && nFrame <= nWaterFrames )
-            m_fid.AppendFromVector(yw);
+            if ( !WS && nFrame <= nWaterFrames )
+                m_fid.AppendFromVector(yw);
+
+            m_fid.SetCols(nWSFrames);
+        }
+        else
+        {
+            y1 /= treal(nCoils)*amp_sum;
+            y2 /= treal(nCoils)*amp_sum;
+            if ( nWaterFrames > 0 )
+            {
+                yw1 /= treal(nCoils)*amp_sum;
+                yw2 /= treal(nCoils)*amp_sum;
+            }
+
+            if ( WS && nFrame > nWaterFrames )
+            {
+                m_fid.AppendFromVector(y1);
+                m_fid.AppendFromVector(y2);
+            }
+
+            if ( !WS && nFrame <= nWaterFrames )
+            {
+                m_fid.AppendFromVector(yw1);
+                m_fid.AppendFromVector(yw2);
+            }
+            
+            m_fid.SetCols(nWSFrames*2);
+        }
     }
 
-    m_fid.SetCols(nWSFrames);
 
     if ( nWSFrames > 1 )
         m_fid.SetDyn(true);
