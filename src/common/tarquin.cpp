@@ -1986,7 +1986,12 @@ bool tarquin::RunTARQUIN(Workspace& work, CBoswell& log)
 			cvm::rvector freq_scale_singlet = fid.GetPPMScale(*fit_it, zf*2);
 
             // guess metabolite FWHM
-            int max_data_pt = YHAT_singlet.real().indofmax();
+            int max_data_pt = 0;
+            if ( options.GetPulSeq() == MEGA_PRESS )
+                YHAT_singlet = YHAT_singlet * -1.0;
+
+            max_data_pt = YHAT_singlet.real().indofmax();
+
             double max_val = YHAT_singlet(max_data_pt).real();
 
             // guess init beta based on the fwhm of prod_shift_cut_metabs

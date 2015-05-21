@@ -7,6 +7,8 @@ Version 4.3.7
 - Bug fix for where dynamic WS scans didn't match W scans.
 - Improved command line parsing code to reduce the number of nested scopes to get round a limitation of the MSVS compiler.
 - Added a command line option to manually override the number of GE water reference data frames (--ge_wframes).
+- Improved p-file reading for GE MEGA-PRESS sequences.
+- Fixed metabolite FWHM estimate for MEGA-PRESS data.
 
 TODO
 - Remove voxels for metabolite map display.
