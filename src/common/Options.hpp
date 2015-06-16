@@ -214,7 +214,7 @@ namespace tarquin
 	    m_bPreFitPhase = true;
 	    m_bPreFitShift = false;
 	    m_bPreFitBl = false;
-	    m_bAppendLCMBasis = true;
+	    m_bAppendLCMBasis = false;
         m_lineshape_corr = false;
 	}
 
