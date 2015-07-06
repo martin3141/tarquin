@@ -9,6 +9,7 @@ Version 4.3.7
 - Added a command line option to manually override the number of GE water reference data frames (--ge_wframes).
 - Improved p-file reading for GE MEGA-PRESS sequences.
 - Fixed metabolite FWHM estimate for MEGA-PRESS data.
+- Internal basis for MEGA-PRESS peaks have been rescaled to 0.4.
 
 TODO
 - Remove voxels for metabolite map display.
