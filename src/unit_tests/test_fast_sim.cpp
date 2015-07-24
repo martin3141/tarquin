@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE( lacate_press )
 	j_coupling_mat(0,3) = 6.933;
 	
 	drv group_vec = drv::Constant(spin_no, 1);
-	drv spin_num_vec = drv::Constant(spin_no, 1);
+	dcv spin_num_vec = dcv::Constant(spin_no, 1);
 
 	double fs = 2000;
 	size_t N = 2048;

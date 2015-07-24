@@ -97,7 +97,8 @@ int main()
 	
 	//drv group_vec = drv::Constant(spin_no, 2);
 	drv group_vec = drv::Constant(spin_no, 1);
-	drv spin_num_vec = drv::Constant(spin_no, 1);
+    std::complex<double> x (1.0,0.0);
+	dcv spin_num_vec = dcv::Constant(spin_no, x);
 	//group_vec(0) = 1;
 
     dcm time_sig_mat;

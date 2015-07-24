@@ -51,7 +51,7 @@ namespace tarquin {
 			group_vec(n) = doubmat[n][0]-spinID_start+1;
 
 		// read spin_num vector
-		drv spin_num_vec(tot_spin_num);
+		dcv spin_num_vec(tot_spin_num);
 		for(int n = 0; n < tot_spin_num; n++)
 			spin_num_vec(n) = doubmat[n][1];
 		

@@ -3,7 +3,7 @@
 #include "pulse_sequences.hpp"
 #include "fast_sim.hpp"
 
-void pulse_acquire(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat)
+void pulse_acquire(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -18,7 +18,7 @@ void pulse_acquire(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv&
 	sys.acquire(time_sig_mat, fs, N, ref, lambda, group_vec);
 }
 
-void spin_echo(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double tau)
+void spin_echo(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double tau)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -40,7 +40,7 @@ void spin_echo(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& gro
 	sys.acquire(time_sig_mat, fs, N, ref, lambda, group_vec);
 }
 
-void press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
+void press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -64,7 +64,7 @@ void press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_v
 	sys.acquire(time_sig_mat, fs, N, ref, lambda, group_vec);
 }
 
-void semi_laser(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double t1, double t2, double t3, double t4)
+void semi_laser(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double t1, double t2, double t3, double t4)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -93,7 +93,7 @@ void semi_laser(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& gr
 }
 
 
-void shaped_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
+void shaped_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -187,7 +187,7 @@ void shaped_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& 
 }
 
 
-void profile_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
+void profile_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -277,7 +277,7 @@ void profile_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv&
     */
 }
 
-void mega_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
+void mega_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE1, double TE2)
 {
     // initialise the spin system
 	spin_sys sys_ed_off(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -330,7 +330,7 @@ void mega_press(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& gr
 }
 
 
-void steam(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE, double TM)
+void steam(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double TE, double TM)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -402,7 +402,7 @@ void steam(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_v
 	time_sig_mat = -time_sig_mat;
 }
 
-void laser(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double tau)
+void laser(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double tau)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -442,7 +442,7 @@ void laser(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_v
 	sys.acquire(time_sig_mat, fs, N, ref, lambda, group_vec);
 }
 
-void cpmg(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, drv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double tau, int cpmg_pulses)
+void cpmg(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double tau, int cpmg_pulses)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);

@@ -73,12 +73,12 @@ class spin_sys {
     void Fx(scm& prod_op);
     void Fy(scm& prod_op);
 
-	void F(scm& prod_op, std::string op, drv& spin_num_vec);
-	void Fz(scm& prod_op, drv& spin_num_vec);
-    void Fp(scm& prod_op, drv& spin_num_vec);
-    void Fm(scm& prod_op, drv& spin_num_vec);
-    void Fx(scm& prod_op, drv& spin_num_vec);
-    void Fy(scm& prod_op, drv& spin_num_vec);
+	void F(scm& prod_op, std::string op, dcv& spin_num_vec);
+	void Fz(scm& prod_op, dcv& spin_num_vec);
+    void Fp(scm& prod_op, dcv& spin_num_vec);
+    void Fm(scm& prod_op, dcv& spin_num_vec);
+    void Fx(scm& prod_op, dcv& spin_num_vec);
+    void Fy(scm& prod_op, dcv& spin_num_vec);
 
 	void H(scm& prod_op);
     void H(dcm& prod_op);

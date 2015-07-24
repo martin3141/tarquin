@@ -1264,7 +1264,7 @@ void spin_sys::F(scm& prod_op, std::string op)
 	}
 }
 
-void spin_sys::F(scm& prod_op, std::string op, drv& spin_num_vec)
+void spin_sys::F(scm& prod_op, std::string op, dcv& spin_num_vec)
 {
     // TODO have an if statement here to create an empty matrix if spin_num_vec == 0
 
@@ -1273,7 +1273,7 @@ void spin_sys::F(scm& prod_op, std::string op, drv& spin_num_vec)
 
 	for ( int n = 1; n < m_spin_vec.size(); n++ )
 	{
-        if ( spin_num_vec(n) != 0 )
+        if ( std::abs(spin_num_vec(n)) != 0 )
         {
 	        scm temp;
             I(temp, n, op);
@@ -1307,27 +1307,27 @@ void spin_sys::Fm(scm& prod_op)
 	F(prod_op, "m");
 }
 
-void spin_sys::Fz(scm& prod_op, drv& spin_num_vec)
+void spin_sys::Fz(scm& prod_op, dcv& spin_num_vec)
 {
 	F(prod_op, "z", spin_num_vec);
 }
 
-void spin_sys::Fx(scm& prod_op, drv& spin_num_vec)
+void spin_sys::Fx(scm& prod_op, dcv& spin_num_vec)
 {
 	F(prod_op, "x", spin_num_vec);
 }
 
-void spin_sys::Fy(scm& prod_op, drv& spin_num_vec)
+void spin_sys::Fy(scm& prod_op, dcv& spin_num_vec)
 {
 	F(prod_op, "y", spin_num_vec);
 }
 
-void spin_sys::Fp(scm& prod_op, drv& spin_num_vec)
+void spin_sys::Fp(scm& prod_op, dcv& spin_num_vec)
 {
 	F(prod_op, "p", spin_num_vec);
 }
 
-void spin_sys::Fm(scm& prod_op, drv& spin_num_vec)
+void spin_sys::Fm(scm& prod_op, dcv& spin_num_vec)
 {
 	F(prod_op, "m", spin_num_vec);
 }
