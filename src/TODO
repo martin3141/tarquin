@@ -10,6 +10,7 @@ Version 4.3.7
 - Improved p-file reading for GE MEGA-PRESS sequences.
 - Fixed metabolite FWHM estimate for MEGA-PRESS data.
 - Internal basis for MEGA-PRESS peaks have been rescaled to 0.4.
+- Added the option to make dynamic frequency correction act in a pairwise fashion (may be useful for MEGA-PRESS).
 
 TODO
 - Remove voxels for metabolite map display.

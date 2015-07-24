@@ -790,15 +790,34 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
     {
         size_t n = 0;
         for ( int slice = 1; slice < m_slices + 1; slice++ )
+        {
             for ( int col = 1; col < m_cols + 1; col++ )
+            {
                 for ( int row = 1; row < m_rows + 1; row++ )
                 {
-	                coord scan(row, col, slice); 
-                    AutoReferenceCorr(scan, options, *this, true, false, true, log);
+                    coord scan(row, col, slice); 
+                    if ( options.GetPDFC() )
+                    {
+                        if ( n % 2 == 0 ) // if even
+                        {
+                            AutoReferenceCorr(scan, options, *this, true, false, true, log);
+                        }
+                        else
+                        {
+                            int m = vox2ind(scan);
+                            m_ref[m].first = m_ref[m-1].first;
+                            m_ref[m].second = true;
 
-			        //AutoPhaseNew(scan, *this, options, log);
+                        }
+                    }
+                    else
+                    {
+                        AutoReferenceCorr(scan, options, *this, true, false, true, log);
+                    }
                     n++;
                 }
+            }
+        }
 
         // clear just in case 
         workspace.ClearDynShift();
@@ -807,8 +826,7 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
             treal shift_hz = ( options.GetRef() - m_ref[m].first ) * GetTransmitterFrequency() / 1e6;
             workspace.AppendDynShift(shift_hz);
         }
-        
-        /*
+        /* 
         // write to txt file
         std::ofstream shiftfile("dyn_shifts.csv");
         if ( shiftfile.is_open() )
@@ -819,7 +837,8 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
                 shiftfile << shift_hz << std::endl;
             }
             shiftfile.close();
-        }*/
+        }
+        */
 
         // hard shift data
         for ( size_t m = 0; m < m_ref.size(); m++ )

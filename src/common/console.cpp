@@ -55,6 +55,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--dyn_av            {default | none | all | subtract | odd | even} water sup. dyn averaging scheme";
 	std::cout << "\n\t--dyn_av_w          {default | none | all | subtract | odd | even} water dyn averaging scheme";
 	std::cout << "\n\t--dyn_freq_corr     {true | false}";
+	std::cout << "\n\t--pdfc              Pair-wise dynamic frequency correction {true | false}";
 	std::cout << "\n\t--ref               reference offset in ppm";
 	std::cout << "\n\t--water_eddy        {true | false}";
 	std::cout << "\n\t--w_conc            NMR visable water concentration (35880)";
@@ -402,6 +403,10 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         // pre dyn av freq correction
         else if( strKey == "--dyn_freq_corr" )
             options.m_dyn_freq_corr = parse_binary(strVal);
+
+        // pairwise dyn av freq correction
+        else if( strKey == "--pdfc" )
+            options.m_pdfc = parse_binary(strVal);
 
         // td or fd for noise estimate
         else if( strKey == "--crlb_td" )

@@ -169,6 +169,7 @@ namespace tarquin
         m_dyn_av = DEFAULT;
         m_dyn_av_w = DEFAULT;
         m_dyn_freq_corr = false;
+        m_pdfc = false;
         m_pul_seq = PRESS;
         m_fit_rows = -1;
         m_fit_cols = -1;
@@ -833,6 +834,11 @@ namespace tarquin
 	    return m_dyn_freq_corr;
 	}
 
+	bool GetPDFC() const
+	{
+	    return m_pdfc;
+	}
+
 	void SetDynFreqCorr(bool dyn_freq_corr)
 	{
 	    m_dyn_freq_corr = dyn_freq_corr;
@@ -1378,6 +1384,9 @@ namespace tarquin
 
     //! pre-averaging frequency correction
     bool m_dyn_freq_corr;
+    
+    //! pair-wise dynamic frequency correction
+    bool m_pdfc;
     
     //! Only fit SVS data?
 	bool m_svs_only;
