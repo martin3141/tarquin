@@ -2,6 +2,9 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+Version 4.3.8
+- MPRESS GABA basis set update to linewidth of GABA_A peak.
+
 Version 4.3.7
 - Regresssion fix where --para_file was not accepted as a valid command line options.
 - Bug fix for where dynamic WS scans didn't match W scans.
