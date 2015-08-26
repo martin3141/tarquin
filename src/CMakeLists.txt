@@ -204,7 +204,7 @@ set(GLOBAL_REV notset)
 
 # The one and only place version numbers are set
 set(TARQUIN_MAJOR_VERSION "4")
-set(TARQUIN_MINOR_VERSION "3.7")
+set(TARQUIN_MINOR_VERSION "3.8")
 
 #
 # end of product version numbers
