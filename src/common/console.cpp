@@ -33,7 +33,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--av_list           CSV file containing voxels to be averaged prior to fitting";
 	std::cout << "\n\t--auto_phase        {true | false}";
 	std::cout << "\n\t--auto_ref          {true | false}";
-	std::cout << "\n\t--optim_crlbs       calculate more optimistic CRLBs in output {true | false}";
+	std::cout << "\n\t--crlb_optim        calculate more optimistic CRLBs in output {true | false}";
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
 	std::cout << "\n\t--max_phi0          the value of phi0 in rads";
 	std::cout << "\n\t--max_phi1          the value of phi1_max/fs/2";

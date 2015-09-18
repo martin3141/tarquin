@@ -3,6 +3,9 @@
 ****************************************************
 
 Version 4.3.8
+- LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
+- Command line help corrected to list --crlb_optim. (TODO)
+- Options added to use exp acquired basis. (TODO)
 - MPRESS GABA basis set update to linewidth of GABA_A peak.
 
 Version 4.3.7
