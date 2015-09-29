@@ -2807,7 +2807,7 @@ void tarquin::getGABA_A(std::vector<std::vector<double> >& doubmat)
 	doubmat.push_back(nan_doubvec);
 	doubvec = nan_doubvec;
 	doubvec[0] = 1;
-	doubvec[1] = 0.4;
+	doubvec[1] = 1.0;
 	doubvec[2] = 0.5;
 	doubvec[3] = 3.04;
 	doubvec[4] = 0;
@@ -2828,7 +2828,7 @@ void tarquin::getGABA_B(std::vector<std::vector<double> >& doubmat)
 	doubmat.push_back(nan_doubvec);
 	doubvec = nan_doubvec;
 	doubvec[0] = 1;
-	doubvec[1] = 0.4;
+	doubvec[1] = 1.0;
 	doubvec[2] = 0.5;
 	doubvec[3] = 2.95;
 	doubvec[4] = 0;
