@@ -253,6 +253,8 @@ void tarquin::CFIDReaderRDA::Load(std::string strFilename, const Options& opts, 
 	file.seekg(binpos, std::ios_base::beg);
 
 	ReadFIDData(file, nSamples);
+
+    m_fid.swap_row_col();
 }
 
 void tarquin::CFIDReaderRDA::ReadFIDData(std::ifstream& file, std::size_t nSamples)

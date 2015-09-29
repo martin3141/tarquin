@@ -4,10 +4,11 @@
 
 Version 4.3.8
 - LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
+- Options added to use exp acquired basis. (TODO)
 - Command line help corrected to list --crlb_optim.
 - MPRESS GABA basis set update to linewidth of GABA_A peak.
 - Internal basis for MEGA-PRESS peaks have been rescaled to 1.0.
-- Options added to use exp acquired basis. (TODO)
+- Fix to swap the rows and col for RDA MRSI data.
 
 Version 4.3.7
 - Regresssion fix where --para_file was not accepted as a valid command line options.
