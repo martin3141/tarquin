@@ -653,6 +653,84 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_max_beta = temp;
 		}
 
+        else if( strKey == "--min_metab_alpha" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_alpha_metab_lower = temp;
+		}
+
+        else if( strKey == "--max_metab_alpha" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_alpha_metab_upper = temp;
+		}
+
+        else if( strKey == "--typ_metab_alpha" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_alpha_metab_typ = temp;
+		}
+
+        else if( strKey == "--min_broad_alpha" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_alpha_metab_lower = temp;
+		}
+
+        else if( strKey == "--max_broad_alpha" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_alpha_metab_upper = temp;
+		}
+
+        else if( strKey == "--typ_broad_alpha" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_alpha_metab_typ = temp;
+		}
+
         else if( strKey == "--beta_scale" ) {
 			// convert string to number and check for errors
 			treal temp;

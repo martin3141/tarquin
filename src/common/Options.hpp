@@ -117,6 +117,14 @@ namespace tarquin
 	    m_phi1_upper = +20;
 	    m_phi1_typ = 0;
 
+        m_alpha_metab_lower = 0.0;
+	    m_alpha_metab_upper = 10.0;
+	    m_alpha_metab_typ = 2.0;
+
+        m_alpha_broad_lower = 0.0;
+	    m_alpha_broad_upper = 50.0;
+	    m_alpha_broad_typ = 2.0;
+
         m_max_beta = 5000;
         m_beta_scale = 1;
 
@@ -245,8 +253,8 @@ namespace tarquin
 		m_constraints.resize( basis.GetGroupMatrix().nsize() );
 
 		// set some sensible default options
-		SetMetabAlphaLimits(0, 10, basis);
-		SetBroadAlphaLimits(0, 50, basis);
+		SetMetabAlphaLimits(m_alpha_metab_lower, m_alpha_metab_upper, basis);
+		SetBroadAlphaLimits(m_alpha_broad_lower, m_alpha_broad_upper, basis);
 		SetBetaLimits(0, m_max_beta);
 		log.LogMessage(LOG_INFO, "Setting metab shift limit to %f ppm", m_max_metab_shift);
 		log.LogMessage(LOG_INFO, "Setting broad shift limit to %f ppm", m_max_broad_shift);
@@ -315,7 +323,7 @@ namespace tarquin
             it->m_maxAlpha = upper;
             //it->m_typAlpha = (upper-lower)/2.0;
             // shouldn't be zero otherise won't work very well
-            it->m_typAlpha = 2;
+            it->m_typAlpha = m_alpha_metab_typ;
         }
 
         n++;
@@ -336,7 +344,7 @@ namespace tarquin
             it->m_maxAlpha = upper;
             //it->m_typAlpha = (upper-lower)/2.0;
             // shouldn't be zero otherise won't work very well
-            it->m_typAlpha = 2;
+            it->m_typAlpha = m_alpha_metab_typ;
         }
 
         n++;
@@ -1445,14 +1453,32 @@ namespace tarquin
 	//! Starting value of phi0.
 	treal m_phi0_typ;
 
-	//! Lower limit on value of phi0.
+	//! Lower limit on value of phi1.
 	treal m_phi1_lower;
 
-	//! Upper limit on value of phi0.
+	//! Upper limit on value of phi1.
 	treal m_phi1_upper;
 
-	//! Starting value of phi0.
+	//! Starting value of phi1.
 	treal m_phi1_typ;
+
+	//! Lower limit on value of metab alpha.
+	treal m_alpha_metab_lower;
+
+	//! Upper limit on value of metab alpha.
+	treal m_alpha_metab_upper;
+
+	//! Starting value of metab alpha.
+	treal m_alpha_metab_typ;
+
+	//! Lower limit on value of broad alpha.
+	treal m_alpha_broad_lower;
+
+	//! Upper limit on value of broad alpha.
+	treal m_alpha_broad_upper;
+
+	//! Starting value of broad alpha.
+	treal m_alpha_broad_typ;
     
     //! Max value for beta
     treal m_max_beta;
