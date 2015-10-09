@@ -595,7 +595,7 @@ namespace tarquin
         assert(0);
     }
 
-    inline void savepdffit(cvm::rvector& scale, cvm::cmatrix& freq_sig, std::string strFilename, std::ostringstream& table, std::string title, const std::vector<std::string>& names, bool ext_output, double ppm_start, double ppm_end, double cex) 
+    inline void savepdffit(cvm::rvector& scale, cvm::cmatrix& freq_sig, cvm::cmatrix& freq_sig_ext, int left , std::string strFilename, std::ostringstream& table, std::string title, const std::vector<std::string>& names, bool ext_output, bool pdf_stack, double ppm_start, double ppm_end, double cex) 
     {	
     
 	// write data to file 
@@ -643,6 +643,66 @@ namespace tarquin
 	gnuplot_outfile	<< "'plot.txt' using 1:8 with lines lw 2 lc rgb 'black'";
 
     gnuplot_outfile << std::endl;
+
+    if ( pdf_stack )
+    {
+        // Write the data to extended_plot.txt
+        std::ofstream data_outfile_extended("extended_plot.txt");
+        for(int m = 1; m < freq_sig_ext.msize() + 1; m++) {
+            data_outfile_extended << scale(m); //PPM Scale
+            for(int n = 1; n < freq_sig_ext.nsize() + 1; n++) {
+                data_outfile_extended << " " << freq_sig_ext(m,n).real();
+            }
+            data_outfile_extended << std::endl;
+        }
+
+        //Write out all the commands needed for gnuplot to produce the plot
+        gnuplot_outfile << "reset" << std::endl;
+        gnuplot_outfile << "set bmargin at screen 0.1" << std::endl;
+        gnuplot_outfile << "set lmargin at screen 0.05" << std::endl;
+        gnuplot_outfile << "set tmargin at screen 0.9" << std::endl;
+        gnuplot_outfile << "set rmargin at screen 0.72" << std::endl;
+        gnuplot_outfile << "set grid" << std::endl;
+        //The followling 13 lines are used to set the y-labels
+        gnuplot_outfile << "set ytics (";
+        gnuplot_outfile << "\"Residual\" "<<freq_sig_ext(left,4).real()<<",";
+        gnuplot_outfile << "\"Data+Fit\" "<<freq_sig_ext(left,1).real()<<",";
+        gnuplot_outfile << "\"Baseline\" "<<freq_sig_ext(left,7).real()<<",";
+        for (int n = 8; n < freq_sig.nsize()+1; n++)
+        {
+            gnuplot_outfile << "\"";
+            gnuplot_outfile << names[n-8] ;
+            gnuplot_outfile << "\" " ;
+            gnuplot_outfile << freq_sig_ext(left,n).real();
+            gnuplot_outfile << ",";
+        }
+        gnuplot_outfile << ") nomirror" << std::endl;
+        gnuplot_outfile << "set key off" << std::endl;
+        gnuplot_outfile << "set xtics nomirror" << std::endl;
+        gnuplot_outfile << "set xtic out" << std::endl;
+        gnuplot_outfile << "set xtics 0.2" << std::endl;
+        gnuplot_outfile << "set xlabel \"Chemical Shift (ppm)\"" << std::endl;
+        gnuplot_outfile << "set label \"" << table.str() << "\" at graph(1.02),graph(0.99) font \"Courier," << 6*cex << "\"" << std::endl;
+        gnuplot_outfile << "set label \"TARQUIN version " << version::version_string() << "\" at graph(0.0),graph(1.03)" << std::endl;
+        gnuplot_outfile << "set label \"" << title << "\" at screen(0.5),graph(1.05) center font \"Arial,"<< 11*cex <<"\"" << std::endl;
+        gnuplot_outfile << "set format x '%1.1f'" << std::endl;
+        gnuplot_outfile << "set xrange [" << ppm_end << ":" << ppm_start << "]" << std::endl;
+        gnuplot_outfile	<< "plot 'extended_plot.txt' using 1:3 with lines lw 6 lc rgb 'red' title \"fit\", "; //Fit
+        gnuplot_outfile	<< "'extended_plot.txt' using 1:2 with lines lw 2 lc rgb 'black' title \"data\", "; //Data
+        gnuplot_outfile	<< "'extended_plot.txt' using 1:4 with lines lw 2 lc rgb 'black' title \"residual\", "; // Residual
+        gnuplot_outfile	<< "'extended_plot.txt' using 1:5 with lines lw 1 lc rgb 'black' title \"zero res\", "; // //Residual mean
+        gnuplot_outfile	<< "'extended_plot.txt' using 1:6 with lines lw 1 lc rgb 'black', "; //Horizontal line between residual and data
+        gnuplot_outfile	<< "'extended_plot.txt' using 1:7 with lines lw 1 lc rgb 'black', "; //Horizontal line above residual
+        gnuplot_outfile	<< "'extended_plot.txt' using 1:8 with lines lw 2 lc rgb 'black', "; //Baseline
+        //Loop through plotting the individual metabolites
+        for (int n = 8; n < freq_sig_ext.nsize()+1; n++) 
+        {
+            gnuplot_outfile	<< "'extended_plot.txt' using 1:" << n+1 << " with lines lw 2 lc rgb 'black', ";
+        }
+        gnuplot_outfile << std::endl;
+    }
+
+
     if ( ext_output )
     {
         for (int n = 8; n < freq_sig.nsize()+1; n++) 

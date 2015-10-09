@@ -1233,6 +1233,10 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
     cvm::cmatrix all(S.msize(),S.nsize()+7);
     all.assign(1,8,S);
 
+    //SJW (In export_data.hpp): Added following two lines for stacked/waterfall plot of the individual metabolites. The matrix all_extended holds the data which will be used to generate extended_plot.txt
+    cvm::cmatrix all_extended(S.msize(),S.nsize()+7);
+    all_extended.assign(1,8,S);
+
     // find points corresponding to ppm start and ppm end
     int left = 1, right = 1;
     for ( int n = 1; n < (freq_scale.size()); n++ ) 
@@ -1294,7 +1298,26 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
         for ( int n = 8; n < all.nsize() + 1 ; n++ )
             all(m,n) = all(m,n) + BASELINE(m);
     }
-   
+
+    //SJW (In export_data.hpp): Added following section for stacked/waterfall plot of the individual metabolites. The matrix all_extended holds the data which will be used to generate extended_plot.txt
+    double Y_scale=0.15;
+    double Y_offset=Y_scale*Ymax*(all_extended.nsize()-6); //Offset to shift the data, fit and residual above the fits for the individual metabolites
+    double Y_offset_baseline=Y_scale*Ymax*(all_extended.nsize()-7); //Offset to shift the baseline between the fits for the individual metabolites and the data and fit
+    for ( int m = 1; m < (S.msize()+1); m++ ) 
+    {
+        all_extended(m,1) = Y(m)+Y_offset; //Data
+        all_extended(m,2) = YHAT(m)+BASELINE(m)+Y_offset; //Fit
+        all_extended(m,3) = RESIDUAL(m) - BASELINE(m) + Ymax - res_min+Y_offset; //Residual
+        all_extended(m,4) = Ymax-res_min+Y_offset; //Residual mean
+        all_extended(m,5) = Ymax+Y_offset; //Horizontal line between residual and data
+        all_extended(m,6) = Ymax-res_min+res_max+Y_offset; //Horizontal line above residual
+        all_extended(m,7) = BASELINE(m)+Y_offset_baseline; //Baseline
+        for ( int n = 8; n < all_extended.nsize() + 1 ; n++ )
+            all_extended(m,n) = (all_extended(m,n) + BASELINE(m))+Y_scale*Ymax*(all_extended.nsize()-n); //Shift each of the invidual metabolite fits so they appear one above the next in a stacked/waterfall plot
+    }
+    //End - SJW (In export_data.hpp): Added following section for stacked/waterfall plot of the individual metabolites. The matrix all_extended holds the data which will be used to generate extended_plot.txt
+
+
     // generate a table
     std::ostringstream table;
     GetTable(table, workspace, fit_num);
@@ -1303,8 +1326,12 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
 
     bool ext_output = options.GetPdfExt();
 
-    // and plot results	
-    savepdffit(freq_scale, all, strFilename, table, title, signal_names, ext_output, options.GetPPMstart(), options.GetPPMend(), options.GetGnuplotCex());
+    //SJW (In export_data.hpp): Added check to determine if stacked/waterfall plot is needed
+    bool pdf_stack = options.GetPdfStack();
+    
+    // and plot results
+    //SJW (In export_data.hpp): Added all_extended (matrix containing data which will be used to make plot_extended.txt), left (used when ) and pdf_stack arguments to savepdffit function which are needed for stacked/waterfall plot of the individual metabolites.
+    savepdffit(freq_scale, all, all_extended, left, strFilename, table, title, signal_names, ext_output, pdf_stack, options.GetPPMstart(), options.GetPPMend(), options.GetGnuplotCex());
 }
 
 

@@ -73,6 +73,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--output_image      plot of the fit in pdf format";
 	std::cout << "\n\t--output_pdf        A4 pdf results page for printing";
 	std::cout << "\n\t--ext_pdf           Extended output {true | false}";
+    std::cout << "\n\t--stack_pdf         Stacked plot {true | false}";
 	std::cout << "\n\t--title             title of results page";
 	std::cout << "\n\t--output_txt        txt output of results";
 	std::cout << "\n\t--output_csv        csv output of results";
@@ -1278,6 +1279,9 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		// LCModel mode option
 		else if( strKey == "--ext_pdf" )
             options.m_bPdfExt = parse_binary(strVal);
+
+        else if( strKey == "--stack_pdf" )
+            options.m_bPdfStack = parse_binary(strVal);
 
         else if( strKey == "--ext_csv_fit" )
             options.m_ext_csv_fit = parse_binary(strVal);

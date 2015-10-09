@@ -3,12 +3,16 @@
 ****************************************************
 
 Version 4.3.8
-- LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
-- Options added to use exp acquired basis. (TODO)
+- New command line option to append pdf output with a stack plot (--stack_pdf true). A very useful contribution from Stephen Wastling at KCL.
+- Fix to swap the rows and col for RDA MRSI data. (TODO)
 - Command line help corrected to list --crlb_optim.
 - MPRESS GABA basis set update to linewidth of GABA_A peak.
 - Internal basis for MEGA-PRESS peaks have been rescaled to 1.0.
-- Fix to swap the rows and col for RDA MRSI data.
+
+
+- Options added to use exp acquired basis. (TODO)
+- LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
+
 
 Version 4.3.7
 - Regresssion fix where --para_file was not accepted as a valid command line options.

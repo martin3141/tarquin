@@ -195,6 +195,7 @@ namespace tarquin
         m_zero_fill = 2;
         m_baseline = 25;
 	    m_bPdfExt = false;
+	    m_bPdfStack = false;
 	    m_bAdaptSp = false;
 	    m_bAdaptEp = false;
         m_press_TE1 = 0.0126;
@@ -1102,6 +1103,11 @@ namespace tarquin
 	    return m_bPdfExt;
 	}
 
+    bool GetPdfStack() const
+	{
+	    return m_bPdfStack;
+	}
+
 	bool GetFastFit() const
 	{
 	    return m_ff;
@@ -1120,6 +1126,11 @@ namespace tarquin
     void SetPdfExt(bool val)
 	{
 	    m_bPdfExt = val;
+	}
+
+    void SetPdfStack(bool val)
+	{
+	    m_bPdfStack = val;
 	}
 
 	bool GetSwapRowCol() const
@@ -1582,6 +1593,9 @@ namespace tarquin
 
 	//! Extended pdf output
     bool m_bPdfExt;
+
+    //SJW (In options.hpp): Added m_bPdfStack for stacked/waterfall plot of the individual metabolites
+    bool m_bPdfStack;
     
     //! Fast fit mode?
     bool m_ff;
