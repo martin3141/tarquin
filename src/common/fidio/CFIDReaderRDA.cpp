@@ -215,6 +215,9 @@ void tarquin::CFIDReaderRDA::Load(std::string strFilename, const Options& opts, 
 			ins.str(it->first);
 			ins >> tmp;
             vec.push_back(tmp);
+            tmp = vec[0];
+		    vec[0] = vec[1]; // FIX from Chris Adamson Oct 2015
+		    vec[1] = tmp;
             m_fid.SetVoxelDim(vec);
         }
 	}

@@ -3296,7 +3296,7 @@ void MainWindow::UpdateGeom()
 
                     if ( m_ui.spinSlices->value() == slice+1 ) // if we're on the correct slice
                     {
-                    QGraphicsPolygonItem *rect = new QGraphicsPolygonItem(QRectF(col*mrs_col_dim,row*mrs_row_dim, mrs_col_dim, mrs_row_dim));
+                    QGraphicsPolygonItem *rect = new QGraphicsPolygonItem(QRectF(col*mrs_row_dim,row*mrs_col_dim, mrs_row_dim, mrs_col_dim));
 
                     int n = 1+row + mrs_rows*col + mrs_rows*mrs_cols*slice;
 

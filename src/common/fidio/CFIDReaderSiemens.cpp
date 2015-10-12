@@ -253,6 +253,12 @@ void tarquin::CFIDReaderSiemens::Load(std::string strFilename, const Options& op
                 voxel_dim[1] = voi_col;
                 voxel_dim[2] = voi_thick;
             }
+
+            double tmp; // FIX from Chris Adamson Oct 2015
+            tmp = voxel_dim[0];
+            voxel_dim[0] = voxel_dim[1];
+            voxel_dim[1] = tmp;
+
             m_fid.SetVoxelDim(voxel_dim);
 
             std::vector<double> voi_dim;
@@ -298,6 +304,10 @@ void tarquin::CFIDReaderSiemens::Load(std::string strFilename, const Options& op
             //std::cout << std::endl;
             //std::cout << "Row dirn : " << new_row << std::endl;
             //std::cout << "Col dirn : " << new_col << std::endl;
+
+            tmp = row_dim; // FIX from Chris Adamson Oct 2015
+            row_dim = col_dim;
+			col_dim = tmp;
 
             // convert CSI grid ceter position to 
             // DICOM style row[0], col[0] position
