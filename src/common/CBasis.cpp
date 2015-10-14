@@ -308,7 +308,7 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
 		metabolites.push_back( BV_31P_PE );
 		metabolites.push_back( BV_31P_PI );
     }
-    if ( options.GetIntBasisSet() == PROTON_BRAIN_MMEXP )
+    else if ( options.GetIntBasisSet() == PROTON_BRAIN_MMEXP )
     {
         metabolites.push_back( BV_ALA );
         metabolites.push_back( BV_ASP );
