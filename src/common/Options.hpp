@@ -55,8 +55,8 @@ namespace tarquin
 		PROTON_BRAIN_NO_PCR,           // Std brain metabolites w/o PCr
 		PROTON_MEGAPRESS_GABA,
 		PROTON_BRAINO,
-		PHOSPH_BRAIN_DECOUP,
-		PROTON_BRAIN_MMEXP          // Std brain metabolites
+		PROTON_BRAIN_MMEXP,          // Std brain metabolites
+		PHOSPH_BRAIN_DECOUP
 	};
 
     //! Supported pulse sequences

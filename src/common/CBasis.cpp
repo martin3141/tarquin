@@ -317,9 +317,9 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_GABA );
         metabolites.push_back( BV_GLC );
         metabolites.push_back( BV_GLN );
+        metabolites.push_back( BV_GLTH );
         metabolites.push_back( BV_GLU );
         metabolites.push_back( BV_GPC );
-        metabolites.push_back( BV_GUA );
         metabolites.push_back( BV_INS );
         metabolites.push_back( BV_LAC );
         metabolites.push_back( BV_MMEXP );

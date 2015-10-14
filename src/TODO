@@ -4,14 +4,16 @@
 
 Version 4.3.8
 - New command line option to append pdf output with a stack plot (--stack_pdf true). A very useful contribution from Stephen Wastling at KCL.
+- New internal basis set including experimentally derived MM basis signal. May give more stable results for normal(ish) brain at 3T, TE~30ms.
 - Bug fix for Siemens IMA and RDA MRSI where the row and col voxel dimensions were the wrong way round. Thanks to Chris Adamson and Bhavana Solanky for helping with this.
 - Command line help corrected to list --crlb_optim.
 - MPRESS GABA basis set update to linewidth of GABA_A peak.
 - Internal basis for MEGA-PRESS peaks have been rescaled to 1.0.
 
 
-- Options added to use exp acquired basis. (TODO)
+
 - LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
+
 
 
 Version 4.3.7
