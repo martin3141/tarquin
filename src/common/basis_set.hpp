@@ -65,6 +65,8 @@ namespace tarquin
         BV_GLX_C,
         BV_GLX_D,
         BV_MM09_MEGA,
+        
+        BV_MMEXP,
 
 		BV_31P_ATP,
 		BV_31P_GPC,

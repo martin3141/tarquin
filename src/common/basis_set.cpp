@@ -58,6 +58,9 @@ namespace tarquin
 	void getGlx_B(std::vector<std::vector<double> >& doubmat);
 	void getGlx_C(std::vector<std::vector<double> >& doubmat);
 	void getGlx_D(std::vector<std::vector<double> >& doubmat);
+    
+    // EXP derrived MM
+	void getMMEXP(std::vector<std::vector<double> >& doubmat, double B0);
 
     // 31P metabs
     void get31P_ATP(std::vector<std::vector<double> >& doubmat);
@@ -204,6 +207,10 @@ void tarquin::getMetaboliteDescription(basis_vector_e metab, std::string& desc)
         
         case BV_MM38:
 			desc = "MM38.csv";
+			break;
+
+        case BV_MMEXP:
+			desc = "MMEXP.csv";
 			break;
 
 		case BV_NAA:
@@ -456,6 +463,10 @@ void tarquin::getMetaboliteMatrix(
 			getMM38(doubmat, tf);
 			break;
 
+        case BV_MMEXP:
+			getMMEXP(doubmat, tf);
+			break;
+
 		case BV_NAA:
 			getNAA(doubmat);
 			break;
@@ -564,6 +575,186 @@ void tarquin::getMetaboliteMatrix(
 			throw std::runtime_error("unknown basis vector enumeration value");
 	}
 }
+
+void tarquin::getMMEXP(std::vector<std::vector<double> >& doubmat, double B0)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(6, d_nan);
+	std::vector<double> doubvec(6, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 1600;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 1307;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 900;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 200;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 5;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 3000;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 6;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 1500;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 7;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 1139;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 8;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 100;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 9;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 700;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 10;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 1139;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 11;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 4000;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 12;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 500;
+	doubmat.push_back(doubvec);
+	doubvec[0] = 13;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 0;
+	doubvec[5] = 5000;
+	doubmat.push_back(doubvec);
+
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = 3.0;
+	doubvec[2] = 0.5;
+	doubvec[3] = 0.90;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 2;
+	doubvec[1] = 1.17;
+	doubvec[2] = 0.5;
+	doubvec[3] = 1.21;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 3;
+	doubvec[1] = 1.58;
+	doubvec[2] = 0.5;
+	doubvec[3] = 1.38;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 4;
+	doubvec[1] = 0.208;
+	doubvec[2] = 0.5;
+	doubvec[3] = 1.63;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 5;
+	doubvec[1] = 1.87;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.01;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 6;
+	doubvec[1] = 1.5;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.09;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 7;
+	doubvec[1] = 1.5;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.25;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 8;
+	doubvec[1] = 0.167;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.61;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 9;
+	doubvec[1] = 0.833;
+	doubvec[2] = 0.5;
+	doubvec[3] = 2.96;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 10;
+	doubvec[1] = 0.458;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.11;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 11;
+	doubvec[1] = 2.67;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.67;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 12;
+	doubvec[1] = 0.2927;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.80;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 13;
+	doubvec[1] = 4.17;
+	doubvec[2] = 0.5;
+	doubvec[3] = 3.96;
+	doubvec[4] = 0;
+	doubmat.push_back(doubvec);
+}
+
 
 void tarquin::getMM38(std::vector<std::vector<double> >& doubmat, double B0)
 {
