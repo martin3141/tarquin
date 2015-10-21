@@ -207,6 +207,27 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 	}
 
+	// sketch of how to do this as separate functions so it will compile on windows
+	// (homework task for Martin)
+//	typedef boost::function<void, std::string, std::string, Options&> handler_type
+//		std::map<std::string, handler_type> handlers;
+//
+//	handlers.insert( std::make_pair("--ge_coils", &ge_coils_parser) );
+//
+//	void ge_coils_parser(std::string strKey, std::string strValue, Options& options)
+//	{
+//		std::istringstream iss(strVal, std::istringstream::in);
+//		iss >> options.m_geOptions.nCoils;
+//	}
+//
+//	for( std::map<std::string, handler_type>::iterator i = handlers.begin(); i != handlers.end(); ++i )
+//	{
+//		if( i->first == strKey )
+//			(*i->second)(strVale, strKey, options);
+//	}
+//
+
+
 	// for each command line argument
 	for(size_t n = 1; n < args.size(); n+=2 ) 
 	{
@@ -426,8 +447,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
             options.m_soft_cons = parse_binary(strVal);
 
         // lineshape correction
-        else if( strKey == "--ls_corr" )
-			options.m_lineshape_corr = parse_binary(strVal);
+        //else if( strKey == "--ls_corr" )
+		//	options.m_lineshape_corr = parse_binary(strVal);
 
         else if( strKey == "--replace_fp" )
             options.m_replace_fp = parse_binary(strVal);
@@ -734,7 +755,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_alpha_metab_typ = temp;
 		}
 
-        else if( strKey == "--beta_scale" ) {
+        /*else if( strKey == "--beta_scale" ) {
 			// convert string to number and check for errors
 			treal temp;
 			std::istringstream iss(strVal, std::istringstream::in);
@@ -745,7 +766,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				return false;
 			}
 			options.m_beta_scale = temp;
-		}
+		}*/
 
         else if( strKey == "--max_phi1" ) {
 			// convert string to number and check for errors
@@ -867,8 +888,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// adaptive starting point of fid
-		else if( strKey == "--adapt_sp" )
-			options.m_bAdaptSp = parse_binary(strVal);
+		/*else if( strKey == "--adapt_sp" )
+			options.m_bAdaptSp = parse_binary(strVal);*/
 
 		// pre-hsvd
 		else if( strKey == "--pre_hsvd" )
@@ -879,8 +900,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_old_phase = parse_binary(strVal);
 
 		// adaptive ending point of fid
-		else if( strKey == "--adapt_ep" )
-            options.m_bAdaptEp = parse_binary(strVal);
+		/*else if( strKey == "--adapt_ep" )
+            options.m_bAdaptEp = parse_binary(strVal);*/
 
         // CSI rows to be fit
 		else if( strKey == "--rows" ) {
@@ -1267,8 +1288,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// plot pausing 
-		else if( strKey == "--pause" )
-            options.m_pause = parse_binary(strVal);
+		//else if( strKey == "--pause" )
+        //    options.m_pause = parse_binary(strVal);
 
 		// water-reference eddy current correction
 		else if( strKey == "--water_eddy" )
@@ -1289,8 +1310,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
             options.m_ext_csv_fit = parse_binary(strVal);
 
 		// fast fit?
-		else if( strKey == "--ff" )
-            options.m_ff = parse_binary(strVal);
+		//else if( strKey == "--ff" )
+         //   options.m_ff = parse_binary(strVal);
 
 		// show preprocessed result
 		else if( strKey == "--show_pre" )
@@ -1414,11 +1435,11 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			iss >> options.m_geOptions.nWSFrames;
 		}*/
 
-		else if( strKey == "--ge_wframes" ) {
+		/*else if( strKey == "--ge_wframes" ) {
 
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_geOptions.nWaterFrames;
-		}
+		}*/
 
 		/*else if( strKey == "--ge_coils" ) {
 
@@ -1446,6 +1467,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
             std::cerr << "\nerror: couldn't recognise '" << strKey << "' as a valid option" << std::endl;
             return false;
         }
+
+
 	}
 
 	if( options.m_strFile == "" && options.m_strViewFile.size() == 0 && options.m_bPrintParas == false && std::string(argv[0]) != "tarquingui" ) 
