@@ -227,6 +227,7 @@ namespace tarquin
 	    m_bPreFitBl = false;
 	    m_bAppendLCMBasis = false;
         m_lineshape_corr = false;
+        m_invert_even_pairs = false;
 	}
 
 	//Options(){}
@@ -459,6 +460,11 @@ namespace tarquin
     bool GetLineshapeCorr() const
 	{
 	    return m_lineshape_corr;
+	}
+
+    bool GetInvertEvenPairs() const
+	{
+	    return m_invert_even_pairs;
 	}
 
 	void SetMetabShiftLimits(treal lower, treal upper, const CFID& fid, const CBasis& basis)
@@ -1742,6 +1748,7 @@ namespace tarquin
     bool m_nnls;
     bool m_soft_cons;
     bool m_lineshape_corr;
+    bool m_invert_even_pairs;
 
     };
 

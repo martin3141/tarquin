@@ -2,6 +2,13 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+Version 4.3.9
+- Added --inv_even_pairs commandline option for working with GE MEGA-PRESS data collected in "no_add" mode.
+- LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
+- Add option to LB alignment spectra to improve accuracy.
+- Add option to export dyn freq. corr shift file.
+- Refactor console to have less scopes.
+
 Version 4.3.8
 - New command line option to append pdf output with a stack plot (--stack_pdf true). A very useful contribution from Stephen Wastling at KCL.
 - New internal basis set including experimentally derived MM basis signal. May give more stable results for normal(ish) brain at 3T, TE~30ms.
@@ -9,12 +16,6 @@ Version 4.3.8
 - Command line help corrected to list --crlb_optim.
 - MPRESS GABA basis set update to linewidth of GABA_A peak.
 - Internal basis for MEGA-PRESS peaks have been rescaled to 1.0.
-
-
-
-- LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
-
-
 
 Version 4.3.7
 - Regresssion fix where --para_file was not accepted as a valid command line options.

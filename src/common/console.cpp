@@ -54,6 +54,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--pul_seq           {press | steam | slaser | laser | pulse_acq | cpmg | se | mega_press}";
 	std::cout << "\n\t--dyn_av            {default | none | all | subtract | odd | even} water sup. dyn averaging scheme";
 	std::cout << "\n\t--dyn_av_w          {default | none | all | subtract | odd | even} water dyn averaging scheme";
+	std::cout << "\n\t--inv_even_paris    {true | false} invert even pairs of dynamic scans (useful for GE data in no_add mode_";
 	std::cout << "\n\t--dyn_freq_corr     {true | false}";
 	std::cout << "\n\t--pdfc              Pair-wise dynamic frequency correction {true | false}";
 	std::cout << "\n\t--ref               reference offset in ppm";
@@ -425,6 +426,10 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         // pre dyn av freq correction
         else if( strKey == "--dyn_freq_corr" )
             options.m_dyn_freq_corr = parse_binary(strVal);
+
+        // pre dyn av freq correction
+        else if( strKey == "--inv_even_pairs" )
+            options.m_invert_even_pairs = parse_binary(strVal);
 
         // pairwise dyn av freq correction
         else if( strKey == "--pdfc" )

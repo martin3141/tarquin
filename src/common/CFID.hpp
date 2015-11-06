@@ -218,6 +218,8 @@ class CFID
 
         void AverageData(Options& options, CBoswell& log, int missmatch = 0);
         
+        void InvertEvenPairs(Options& options, CBoswell& log);
+        
         void FreqCorrData(const Options& options);
 
 		//! Get the frequency scale in Hz, for plotting this FID's DFT [-fs/2,...,+fs/2).

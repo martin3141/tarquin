@@ -862,6 +862,9 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
             options.SetDynAvW(NONE);
     }
 
+    if ( options.GetInvertEvenPairs() )
+        InvertEvenPairs(options, log);
+
     if ( options.GetDynAv() != NONE )
     {
         int WUS_fids = workspace.GetFIDRaw().GetVoxelCount();
@@ -977,6 +980,9 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
         }
     }
 
+    if ( options.GetInvertEvenPairs() )
+        InvertEvenPairs(options, log);
+
     // shouldn't ever be default at this point because WUS data is always loaded after WS data
     if ( options.GetDynAvW() != NONE )
         AverageData(options, log);
@@ -989,6 +995,15 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
     {
         //std::cout << "I'm here" << std::endl;
         AverageData(options, log);
+    }
+}
+
+void tarquin::CFID::InvertEvenPairs(Options& options, CBoswell& log)
+{
+    for ( size_t n = 0; n < m_cvmFID.size(); n++ )
+    {
+        if ( int(std::floor(n/2)) % 2 != 0 ) // n odd?
+            m_cvmFID[n] = m_cvmFID[n]*std::exp( tcomplex(0, M_PI) );
     }
 }
 
