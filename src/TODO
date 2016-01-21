@@ -2,12 +2,15 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+TODO
+- Better GE MRSI support (3D).
+
 Version 4.3.9
-- Added --inv_even_pairs commandline option for working with GE MEGA-PRESS data collected in "no_add" mode.
-- Refactor console to have less scopes. (TODO)
-- Add option to apply k-space filtering to MRSI data (2D and 3D). (TODO) ENSURE WORKS ON both WS AND W DATA
-- LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO)
-- Add option to set left limit for water removal. (TODO)
+- Added --inv_even_pairs c/l option for working with GE MEGA-PRESS data collected in "no_add" mode.
+- Add GUI and c/l options to apply k-space Hamming filtering to MRSI data.
+- Re-factor console to have less scopes. (TODO)
+- LCModel .BASIS format basis sets can now be loaded from the GUI. (TODO?)
+- Add option to make HSVD water removal symmetric about 0Hz. (TODO)
 - Add option to LB alignment spectra to improve accuracy. (TODO)
 - Add option to export dyn freq. corr shift file. (TODO)
 
@@ -28,14 +31,6 @@ Version 4.3.7
 - Fixed metabolite FWHM estimate for MEGA-PRESS data.
 - Internal basis for MEGA-PRESS peaks have been rescaled to 0.4.
 - Added the option to make dynamic frequency correction act in a pairwise fashion (may be useful for MEGA-PRESS).
-
-TODO
-- Remove voxels for metabolite map display.
-- Adjust metabolite map limits.
-- Add average voxel function to GUI.
-- Revamp serialisation method for saving fits.
-- 3D GE MRSI support.
-- More options for MM basis set.
 
 Version 4.3.6
 - GUI bug fix where MRI slice changes caused a crash in some cases.

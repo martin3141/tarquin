@@ -139,6 +139,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
 	m_ui.txtWA->setEnabled(false);
 	m_ui.cbCP->setEnabled(false);
 	m_ui.cbLF->setEnabled(false);
+    m_ui.cbKF->setEnabled(false);
     m_ui.cbAP->setEnabled(false);
 	m_ui.cbAR->setEnabled(false);
 	m_ui.cbECC->setEnabled(false);
@@ -288,6 +289,7 @@ void InputDlg::LoadFID(QString filename, fid_type_e fid_type)
             m_ui.txtWA->setEnabled(true);
             m_ui.cbCP->setEnabled(true);
 	        m_ui.cbLF->setEnabled(true);
+            m_ui.cbKF->setEnabled(true);
             m_ui.cbAP->setEnabled(true);
             m_ui.cbAR->setEnabled(true);
 	        m_ui.cbECC->setEnabled(true);
@@ -384,6 +386,7 @@ void InputDlg::UpdateDlg()
     m_ui.cbCP->setChecked( opts.GetCombinePreproc() );
     m_ui.cbLF->setChecked( opts.GetLipidFilter() );
 
+    m_ui.cbKF->setChecked( opts.GetFilterKspace() );
     m_ui.cbAP->setChecked( opts.GetAutoPhase() );
     m_ui.cbAR->setChecked( opts.GetAutoReference() );
     m_ui.cbECC->setChecked( opts.GetWaterEddy() );
@@ -873,6 +876,7 @@ bool InputDlg::CheckDlg()
     opts.SetLipidFilter( m_ui.cbLF->isChecked() );
     opts.SetFullEcho( m_ui.cbFE->isChecked() );
     
+    opts.SetFilterKspace( m_ui.cbKF->isChecked() );
     opts.SetAutoPhase( m_ui.cbAP->isChecked() );
     opts.SetAutoReference( m_ui.cbAR->isChecked() );
     opts.SetWaterEddy( m_ui.cbECC->isChecked() );

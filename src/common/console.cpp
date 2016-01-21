@@ -37,6 +37,8 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--max_dref          the max deviation from ref allowed by auto_ref";
 	std::cout << "\n\t--max_phi0          the value of phi0 in rads";
 	std::cout << "\n\t--max_phi1          the value of phi1_max/fs/2";
+	std::cout << "\n\t--zfill_kspace      factor to zerofill the row, col direction of MRSI data";
+	std::cout << "\n\t--filter_kspace     {true | false } apply a Hamming filter to MRSI k-space in row, col direction";
 	std::cout << "\n\t--ref_freq          frequency of a single peak to be used for auto referencing (ppm)";
 	std::cout << "\n\t--ref_file          CSV file containing reference peak list";
 	std::cout << "\n\t--ref_signals       {1h_naa_cr_cho_lip | 1h_naa_cho | 1h_naa_cr_cho | 1h_cr_cho | 1h_naa | 1h_cr | 1h_cho | 1h_h2o | 1h_lip | 31p_pcr | 31p_pcr_gammaapt}";
@@ -992,6 +994,10 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				return false;
 			}
 		}
+
+		else if( strKey == "--filter_kspace" )
+            options.m_au_norm  = parse_binary(strVal);
+
 
 		// gnuplot path
 		else if( strKey == "--gnuplot" ) {
