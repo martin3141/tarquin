@@ -214,6 +214,8 @@ class CFID
         
         void zfill_kspace(size_t factor, Options& options, CBoswell& log);
         
+        void filter_kspace(Options& options, CBoswell& log);
+        
         void trans_kspace(Options& options, CBoswell& log);
 
         void AverageData(Options& options, CBoswell& log, int missmatch = 0);

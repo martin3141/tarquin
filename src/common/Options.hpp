@@ -193,6 +193,7 @@ namespace tarquin
 	    m_bFullEcho = false;
 	    m_bSwapRowCol = false;
         m_zfill_kspace = 1;
+        m_filter_kspace = false;
         m_zero_fill = 2;
         m_baseline = 25;
 	    m_bPdfExt = false;
@@ -693,6 +694,16 @@ namespace tarquin
     void SetMaxIters(integer max_iters)
 	{
 	    m_max_iters = max_iters;
+	}
+
+    bool GetFilterKspace() const
+	{
+	    return m_filter_kspace;
+	}
+
+    bool SetFilterKspace(bool filter)
+	{
+	    m_filter_kspace = filter;
 	}
 
     size_t GetZfillKspace() const
@@ -1455,6 +1466,9 @@ namespace tarquin
     
     //! factor to zero-fill kspace
     size_t m_zfill_kspace;
+
+    //! filter kspace?
+    bool m_filter_kspace;
 
 	//! Width of time-domain convolution window.
 	integer m_conv_window_width;

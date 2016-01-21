@@ -147,6 +147,134 @@ void tarquin::CFID::trans_kspace(Options& options, CBoswell& log)
     m_cvmFID = new_fid;
 }
 
+void tarquin::CFID::filter_kspace(Options& options, CBoswell& log)
+{
+
+    log.LogMessage(LOG_INFO, "Filtering k-space");
+
+
+    cvec_stdvec new_fid;
+    for ( size_t slice = 1; slice < ( m_slices + 1 ); slice++ )
+    {
+
+        // convert FID array into k-space planes, one per time point,
+        // by performing the 2D fft
+        cmat_stdvec filter_kspace;
+        for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+        {
+            //std::cout << std::endl << m_rows << " " << m_cols << std::endl;
+            cvm::cmatrix temp_mat(m_rows, m_cols);
+            for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+            {
+                for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+                {
+
+                    coord voxel(row, col, slice); 
+                    cvm::cvector& temp_fid = GetVectorFID(voxel);
+                    temp_mat(row, col) = temp_fid(time_pt);
+                }
+            }
+
+            // 2D ifft on temp_mat
+            temp_mat = ifft(temp_mat);
+            temp_mat = fftshift(temp_mat);
+            // transpose
+            cvm::cmatrix temp_mat_trans = ~temp_mat;
+            cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
+            temp_mat_trans = temp_mat_conj;
+            temp_mat_trans = ifft(temp_mat_trans);
+            temp_mat_trans = fftshift(temp_mat_trans);
+            // transpose back
+            temp_mat = ~temp_mat_trans;
+            cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
+            temp_mat = temp_mat_conj2;
+    
+            // contstruct row hamming window function
+		    cvm::rvector row_wind_fun( m_rows, 0 );
+		    for ( int k = 1; k < m_rows + 1; k++ )
+                row_wind_fun(k) = 0.54 - 0.46*cos((k-1)*2.0*M_PI / (m_rows-1));
+
+            double row_wind_fun_sum = 0;
+            for ( int n = 1; n < m_rows + 1; n++ )
+                row_wind_fun_sum += row_wind_fun(n);
+
+            // contstruct col hamming window function
+		    cvm::rvector col_wind_fun( m_cols, 0 );
+		    for ( int k = 1; k < m_cols + 1; k++ )
+                col_wind_fun(k) = 0.54 - 0.46*cos((k-1)*2.0*M_PI / (m_cols-1));
+
+            double col_wind_fun_sum = 0;
+            for ( int n = 1; n < m_cols + 1; n++ )
+                col_wind_fun_sum += col_wind_fun(n);
+
+            col_wind_fun = col_wind_fun/col_wind_fun_sum;
+            
+            /*
+            if ( time_pt == 1 )
+            {
+                plot(row_wind_fun);
+                plot(col_wind_fun);
+            }*/
+
+            treal factor_sum = 0;
+            cvm::rmatrix filter_mat(m_rows,m_cols);
+            for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+                for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+                {
+                    treal factor = col_wind_fun(col) * row_wind_fun(row);
+                    filter_mat(row,col) = factor;
+                    factor_sum = factor_sum + factor;
+                }
+
+
+            // apply filter to temp_mat 
+            cvm::cmatrix temp_mat_filter(m_rows,m_cols);
+            for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+            {
+                for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+                {
+                    treal factor = filter_mat(row,col);
+                    temp_mat_filter(row,col) = temp_mat(row,col) * factor / factor_sum;
+                }
+            }
+
+            // 2D fft
+            temp_mat_filter = fftshift(temp_mat_filter);
+            temp_mat_filter = fft(temp_mat_filter);
+            // transpose
+            cvm::cmatrix temp_mat_filter_trans = ~temp_mat_filter;
+            cvm::cmatrix temp_mat_filter_conj(temp_mat_filter_trans.real(),-temp_mat_filter_trans.imag());
+            temp_mat_filter_trans = temp_mat_filter_conj;
+            temp_mat_filter_trans = fftshift(temp_mat_filter_trans);
+            temp_mat_filter_trans = fft(temp_mat_filter_trans);
+            // transpose back
+            temp_mat_filter = ~temp_mat_filter_trans;
+            cvm::cmatrix temp_mat_filter_conj2(temp_mat_filter.real(),-temp_mat_filter.imag());
+            temp_mat_filter = temp_mat_filter_conj2;
+            filter_kspace.push_back(temp_mat_filter);
+        }
+
+
+        // convert zfilled k-space back to fid list
+
+        cvm::cmatrix temp_mat(m_rows, m_cols);
+        for ( size_t col = 1; col < ( m_cols + 1 ); col++ )
+        {
+            for ( size_t row = 1; row < ( m_rows + 1 ); row++ )
+            {
+                cvm::cvector temp_fid(m_nPoints);
+                for ( size_t time_pt = 1; time_pt < ( m_nPoints + 1 ); time_pt++ )
+                {
+                    temp_fid(time_pt) = filter_kspace[time_pt-1](row,col);
+                }
+                new_fid.push_back(temp_fid);
+            }
+        }
+    }
+
+    m_cvmFID = new_fid;
+}
+
 void tarquin::CFID::zfill_kspace(size_t factor, Options& options, CBoswell& log)
 {
 
@@ -606,6 +734,10 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
         options.SetFitCols(f_rows);
     }
 
+    // filter k-space if requested
+    if ( options.GetFilterKspace())
+        filter_kspace(options, log);
+
     // zero-fill k-space if requested
     if ( options.GetZfillKspace() != 1 )
         zfill_kspace(options.GetZfillKspace(), options, log);
@@ -928,6 +1060,10 @@ void tarquin::CFID::LoadW(std::string strFilename, Options& options, CBoswell& l
         options.SetFitRows(f_cols);
         options.SetFitCols(f_rows);
     }
+
+    // filter k-space if requested
+    if ( options.GetFilterKspace())
+        filter_kspace(options, log);
 
     // zero-fill k-space if requested
     if ( options.GetZfillKspace() != 1 )
