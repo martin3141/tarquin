@@ -959,19 +959,21 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
             workspace.AppendDynShift(shift_hz);
         }
 
-        /* 
-        // write to txt file
-        std::ofstream shiftfile("dyn_shifts.csv");
-        if ( shiftfile.is_open() )
+        if( options.GetDynShiftFilename() != "" )
         {
-            for ( size_t m = 0; m < m_ref.size(); m++ )
+            log.LogMessage(LOG_INFO, "Writing dynamic shifts to file.");
+            // write to txt file
+            std::ofstream shiftfile(options.GetDynShiftFilename());
+            if ( shiftfile.is_open() )
             {
-                treal shift_hz = ( options.GetRef() - m_ref[m].first ) * GetTransmitterFrequency() / 1e6;
-                shiftfile << shift_hz << std::endl;
+                for ( size_t m = 0; m < m_ref.size(); m++ )
+                {
+                    treal shift_hz = ( options.GetRef() - m_ref[m].first ) * GetTransmitterFrequency() / 1e6;
+                    shiftfile << m+1 << "," << shift_hz << std::endl;
+                }
+                shiftfile.close();
             }
-            shiftfile.close();
         }
-        */
 
         // hard shift data
         for ( size_t m = 0; m < m_ref.size(); m++ )

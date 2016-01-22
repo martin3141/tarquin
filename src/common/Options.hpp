@@ -727,6 +727,16 @@ namespace tarquin
 	    m_strFile = strFile;
 	}
 
+	std::string GetDynShiftFilename() const
+	{
+	    return m_dyn_shift_file;
+	}
+
+	void SetDynShiftFilename(std::string strFile) 
+	{
+	    m_dyn_shift_file = strFile;
+	}
+
 	std::string GetFilenameWater() const
 	{
 	    return m_strFileWater;
@@ -1731,6 +1741,9 @@ namespace tarquin
 
 	//! The name of the text output file
 	std::string m_strFileOutTxt;
+
+    //! Filename to output csv list of shifts
+	std::string m_dyn_shift_file;
 
 	//! The name of the csv output file
 	std::string m_strFileOutCSV;

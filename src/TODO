@@ -10,8 +10,8 @@ Version 4.3.9
 - Add GUI and c/l options to apply k-space Hamming filtering to MRSI data.
 - Added c/l option to specify a downfield water window HSVD filter --water_width_df.
 - LCModel .BASIS format basis sets can now be loaded from the GUI.
-- Add option to export dyn freq. corr shift file. (TODO)
-- Add option to LB alignment spectra to improve accuracy. (TODO)
+- Add c/l option to export dyn freq. corr. shifts to a CSV file --output_dyn_shifts.
+- Add c/l option to LB alignment spectra to improve accuracy. (TODO)
 - Re-factor console to have less scopes. (TODO)
 
 Version 4.3.8

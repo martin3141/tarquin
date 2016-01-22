@@ -59,6 +59,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--dyn_av_w          {default | none | all | subtract | odd | even} water dyn averaging scheme";
 	std::cout << "\n\t--inv_even_paris    {true | false} invert even pairs of dynamic scans (useful for GE data in no_add mode_";
 	std::cout << "\n\t--dyn_freq_corr     {true | false}";
+	std::cout << "\n\t--output_dyn_shifts CSV file to save the dynamic shifts in Hz.";
 	std::cout << "\n\t--pdfc              Pair-wise dynamic frequency correction {true | false}";
 	std::cout << "\n\t--ref               reference offset in ppm";
 	std::cout << "\n\t--water_eddy        {true | false}";
@@ -429,6 +430,12 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         // pre dyn av freq correction
         else if( strKey == "--dyn_freq_corr" )
             options.m_dyn_freq_corr = parse_binary(strVal);
+
+		// name of dynamic shift file
+		else if( strKey == "--output_dyn_shifts" ) {
+			// store the path for loading later
+			options.m_dyn_shift_file = strVal;
+		}
 
         // pre dyn av freq correction
         else if( strKey == "--inv_even_pairs" )
