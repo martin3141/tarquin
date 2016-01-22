@@ -958,6 +958,7 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
             treal shift_hz = ( options.GetRef() - m_ref[m].first ) * GetTransmitterFrequency() / 1e6;
             workspace.AppendDynShift(shift_hz);
         }
+
         /* 
         // write to txt file
         std::ofstream shiftfile("dyn_shifts.csv");

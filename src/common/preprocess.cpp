@@ -129,23 +129,25 @@ void tarquin::Preprocessor::operator() ()
 			// set all frequencies outside of window to zero 
 			// (we are building a model of the water to subtract)
 			treal width = options.GetWaterWindow();
+            treal width_df = options.GetDFWaterWindow();
             
             treal ref = fidproc.GetPPMRef(0);
             //std::cout << "REF = " << ref << std::endl;
             treal trans_freq = fidproc.GetTransmitterFrequency();
             treal lip_freq = ( ref - options.GetLipFilterFreq() ) * trans_freq * 1e-6;
             //treal lip_freq = ( ref - 0.0 ) * trans_freq * 1e-6;
-
+            
+            // select components to remove
 			for( integer i = 0; i < frequencies.size(); i++ )
             {
                 if ( lipid_filter )
                 {
-                    if ( ( frequencies[i+1] > width ) && ( frequencies[i+1] < lip_freq ))
+                    if ( ( (frequencies[i+1] > width) || (frequencies[i+1] < width_df) ) && ( frequencies[i+1] < lip_freq ))
                         ahat[i+1] = 0;
                 }
                 else
                 {
-                    if( frequencies[i+1] > width ) 
+                    if(( frequencies[i+1] > width ) || (frequencies[i+1] < width_df))
                         ahat[i+1] = 0;
                 }
 
@@ -385,6 +387,7 @@ void tarquin::Preprocessor::operator() ()
 			// set all frequencies outside of window to zero 
 			// (we are building a model of the water to subtract)
 			treal width = options.GetWaterWindow();
+            treal width_df = options.GetDFWaterWindow();
 			//treal lip_filt = options.GetWaterWindow();
 
             treal ref = fidproc.GetPPMRef(*i);
@@ -394,7 +397,7 @@ void tarquin::Preprocessor::operator() ()
 			for( integer i = 0; i < frequencies.size(); i++ ) 
             {
                 
-                if( frequencies[i+1] > width ) 
+                if(( frequencies[i+1] > width ) || (frequencies[i+1] < width_df))
                     ahat[i+1] = 0;
 
 				// kill increasing signals
@@ -437,7 +440,7 @@ void tarquin::Preprocessor::operator() ()
 			// set all frequencies outside of window to zero 
 			// (we are building a model of the water to subtract)
 			treal width = options.GetWaterWindow();
-			//treal lip_filt = options.GetWaterWindow();
+            treal width_df = options.GetDFWaterWindow();
 
             treal ref = fidproc.GetPPMRef(*i);
             treal trans_freq = fidproc.GetTransmitterFrequency();
@@ -448,12 +451,12 @@ void tarquin::Preprocessor::operator() ()
                 
                 if ( lipid_filter )
                 {
-                    if ( ( frequencies[i+1] > width ) && ( frequencies[i+1] < lip_freq ))
+                    if ( ( (frequencies[i+1] > width) || (frequencies[i+1] < width_df) ) && ( frequencies[i+1] < lip_freq ))
                         ahat[i+1] = 0;
                 }
                 else
                 {
-                    if( frequencies[i+1] > width ) 
+                    if(( frequencies[i+1] > width ) || (frequencies[i+1] < width_df))
                         ahat[i+1] = 0;
                 }
 

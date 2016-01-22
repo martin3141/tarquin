@@ -132,6 +132,7 @@ namespace tarquin
 	    m_bUsePrecompiled = false;
 	    m_format = NOTSET;
 	    m_water_window = 45;
+	    m_df_water_window = -std::numeric_limits<treal>::infinity();
 	    m_conv_window_width = 0;
 	    m_bAutoPhase = true;
 	    m_bAutoRef = true;
@@ -926,6 +927,11 @@ namespace tarquin
 	    return m_water_window;
 	}
 
+	treal GetDFWaterWindow() const
+	{
+	    return m_df_water_window;
+	}
+
 	treal GetLipFilterFreq() const
     {
         return m_lipid_filt_freq;
@@ -934,6 +940,11 @@ namespace tarquin
 	void SetWaterWindow(treal width)
 	{
 	    m_water_window = width;
+	}
+
+	void SetDFWaterWindow(treal width)
+	{
+	    m_df_water_window = width;
 	}
 
 	treal GetRef() const
@@ -1475,6 +1486,9 @@ namespace tarquin
 
 	//! Width of water removal window.
 	treal m_water_window;
+
+	//! Width of water removal window.
+	treal m_df_water_window;
 
 	//! Lower limit on value of phi0.
 	treal m_phi0_lower;

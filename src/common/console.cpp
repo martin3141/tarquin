@@ -24,6 +24,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--end_pnt           ending sample (1-based)";
 	std::cout << "\n\t--max_iters         maximum number of iterations to perform";
 	std::cout << "\n\t--water_width       width of hsvd in hz";
+	std::cout << "\n\t--water_width_df    width of downfield hsvd in hz (default is -inf)";
 	std::cout << "\n\t--hsvd_comp         number of components in the hsvd decomp";
 	std::cout << "\n\t--max_hsvd_pts      max number of pts used in the hsvd decomp";
 	std::cout << "\n\t--conv_width        width of convolution window in points";
@@ -1087,6 +1088,19 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			// convert string to number and check for errors
 			std::istringstream iss(strVal, std::istringstream::in);
 			iss >> options.m_water_window;
+
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+		}
+
+		// downfield water removal window width
+		else if( strKey == "--water_width_df" ) {
+
+			// convert string to number and check for errors
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> options.m_df_water_window;
 
 			if( iss.fail() ) {
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
