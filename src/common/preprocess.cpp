@@ -2045,6 +2045,8 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
     //plot(Y);
     //plot(magY);
 
+    double lambda = options.GetlbRef();
+
     // generate a reference signal for all reference points
 	cvm::cvector ref_sig(N);
 	std::complex<double> j(0,1); 
@@ -2060,6 +2062,7 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
 	        std::complex<double> jwm(0,2*M_PI*(c_freq-itP->split_hz)*(n-1)/fs); 
             ref_sig(n) += itP->amp/2*exp(jwp);
             ref_sig(n) += itP->amp/2*exp(jwm);
+            ref_sig(n) = ref_sig(n) * exp(-M_PI*lambda * (n-1)/fs);
         }
     }
 
@@ -2080,6 +2083,7 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
                 std::complex<double> jwm(0,2*M_PI*(c_freq-itP->split_hz)*(n-1)/fs); 
                 ref_sig_metabs(n) += itP->amp/2*exp(jwp);
                 ref_sig_metabs(n) += itP->amp/2*exp(jwm);
+                ref_sig_metabs(n) = ref_sig_metabs(n) * exp(-M_PI*lambda * (n-1)/fs);
             }
         }
     }
@@ -2102,7 +2106,7 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
     for ( int n=1; n < N+1; n++ )
         mag_ref_spec_metabs(n) = pow(pow(ref_spec_metabs(n).real(),2) + pow(ref_spec_metabs(n).imag(),2),0.5);
     
-	//plot(mag_ref_spec);
+	plot(mag_ref_spec);
 
     magY.resize(2*N);
     mag_ref_spec.resize(2*N);

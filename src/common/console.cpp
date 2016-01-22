@@ -666,6 +666,19 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_lb = temp;
 		}
 
+		else if( strKey == "--lb_ref" ) {
+			// convert string to number and check for errors
+			treal temp;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> temp;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_lb_ref = temp;
+		}
+
 		else if( strKey == "--init_beta" ) {
 			// convert string to number and check for errors
 			treal temp;

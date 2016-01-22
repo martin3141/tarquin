@@ -154,6 +154,7 @@ namespace tarquin
         m_ppm_end = 4.0; // ppm right
         m_pause = true;
         m_lb = 0.0;
+        m_lb_ref = 0.0;
         m_init_beta = 0.0;
         //m_lambda = 0.05; // old value
         //m_lambda = 10;
@@ -635,6 +636,16 @@ namespace tarquin
 	void Setlb(treal lb)
 	{
 	    m_lb = lb;
+	}
+
+	treal GetlbRef() const
+	{
+	    return m_lb_ref;
+	}
+
+	void SetlbRef(treal lb_ref)
+	{
+	    m_lb_ref = lb_ref;
 	}
     
     size_t GetZF() const
@@ -1550,6 +1561,9 @@ namespace tarquin
     
     //! Gaussian line broadening.
 	treal m_lb;
+
+    //! Reference signal line broadening.
+	treal m_lb_ref;
 	
     //! Zero filling factor
     size_t m_zero_fill;
