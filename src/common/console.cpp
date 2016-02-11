@@ -156,14 +156,102 @@ typedef boost::function<bool (std::string, std::string, tarquin::Options&)> hand
 
 bool lb_parser(std::string strKey, std::string strVal, tarquin::Options& options)
 {
-	tarquin::treal temp;
     std::istringstream iss(strVal, std::istringstream::in);
-	iss >> temp;
+	iss >> options.m_lb;
     if( iss.fail() ) {
         std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
         return false;
     }
-    options.m_lb = temp;
+    return true;
+}
+bool lb_ref_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_lb_ref;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool init_beta_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_init_beta;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool max_beta_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_max_beta;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool conv_width_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_conv_window_width;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool water_width_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_water_window;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool start_pnt_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_nStart;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool end_pnt_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_nEnd;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool ppm_left_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_ppm_end;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool ppm_right_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_ppm_start;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
     return true;
 }
 
@@ -251,6 +339,15 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
     
         std::map<std::string, handler_type> handlers;
         handlers.insert( std::make_pair("--lb", &lb_parser) );
+        handlers.insert( std::make_pair("--lb_ref", &lb_ref_parser) );
+        handlers.insert( std::make_pair("--init_beta", &init_beta_parser) );
+        handlers.insert( std::make_pair("--max_beta", &max_beta_parser) );
+        handlers.insert( std::make_pair("--conv_width", &conv_width_parser) );
+        handlers.insert( std::make_pair("--water_width", &water_width_parser) );
+        handlers.insert( std::make_pair("--start_pnt", &start_pnt_parser) );
+        handlers.insert( std::make_pair("--end_pnt", &end_pnt_parser) );
+        handlers.insert( std::make_pair("--ppm_right", &ppm_right_parser) );
+        handlers.insert( std::make_pair("--ppm_left", &ppm_left_parser) );
 
         for( std::map<std::string, handler_type>::iterator i = handlers.begin(); i != handlers.end(); ++i )
         {
@@ -642,7 +739,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_gnuplot_cex = cex;
 		}
 
-		else if( strKey == "--ppm_right" ) {
+		/*else if( strKey == "--ppm_right" ) {
 			// convert string to number and check for errors
 			treal temp;
 			std::istringstream iss(strVal, std::istringstream::in);
@@ -666,60 +763,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				return false;
 			}
 			options.m_ppm_end = temp;
-		}
-        
-		/*else if( strKey == "--lb" ) {
-			// convert string to number and check for errors
-			treal temp;
-			std::istringstream iss(strVal, std::istringstream::in);
-			iss >> temp;
-			//
-			if( iss.fail() ) {
-				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
-				return false;
-			}
-			//options.m_lb = temp;
 		}*/
-
-		else if( strKey == "--lb_ref" ) {
-			// convert string to number and check for errors
-			treal temp;
-			std::istringstream iss(strVal, std::istringstream::in);
-			iss >> temp;
-			//
-			if( iss.fail() ) {
-				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
-				return false;
-			}
-			options.m_lb_ref = temp;
-		}
-
-		else if( strKey == "--init_beta" ) {
-			// convert string to number and check for errors
-			treal temp;
-			std::istringstream iss(strVal, std::istringstream::in);
-			iss >> temp;
-			//
-			if( iss.fail() ) {
-				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
-				return false;
-			}
-			options.m_init_beta = temp;
-		}
-		
-        else if( strKey == "--max_beta" ) {
-			// convert string to number and check for errors
-			treal temp;
-			std::istringstream iss(strVal, std::istringstream::in);
-			iss >> temp;
-			//
-			if( iss.fail() ) {
-				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
-				return false;
-			}
-			options.m_max_beta = temp;
-		}
-
+        
         else if( strKey == "--min_metab_alpha" ) {
 			// convert string to number and check for errors
 			treal temp;
@@ -872,6 +917,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
 		// ending point of fid
+        /*
 		else if( strKey == "--end_pnt" ) {
 
 			// convert string to number and check for errors
@@ -894,7 +940,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
 				return false;
 			}
-		}
+		}*/
 
 		// min starting point of fid
 		else if( strKey == "--min_start_pnt" ) {
@@ -1118,7 +1164,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
             options.m_au_norm  = parse_binary(strVal);
 
 		// water removal window width
-		else if( strKey == "--water_width" ) {
+		/*else if( strKey == "--water_width" ) {
 
 			// convert string to number and check for errors
 			std::istringstream iss(strVal, std::istringstream::in);
@@ -1128,7 +1174,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
 				return false;
 			}
-		}
+		}*/
 
 		// downfield water removal window width
 		else if( strKey == "--water_width_df" ) {
@@ -1167,20 +1213,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				return false;
 			}
 		}
-
-		// water removal convolution window width
-		else if( strKey == "--conv_width" ) {
-
-			// convert string to number and check for errors
-			std::istringstream iss(strVal, std::istringstream::in);
-			iss >> options.m_conv_window_width;
-
-			if( iss.fail() ) {
-				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
-				return false;
-			}
-		}
-
+        
 		// guess for the ppm value corresponding to 0Hz
 		else if( strKey == "--ref" ) {
 
