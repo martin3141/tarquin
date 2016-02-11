@@ -12,7 +12,7 @@ Version 4.3.9
 - LCModel .BASIS format basis sets can now be loaded from the GUI.
 - Add c/l option to export dyn freq. corr. shifts to a CSV file --output_dyn_shifts.
 - Add c/l option to broaden reference spectra --lb_ref.
-- Re-factor console to have less scopes. (TODO)
+- Re-factored console parsing to have less scopes.
 
 Version 4.3.8
 - New command line option to append pdf output with a stack plot (--stack_pdf true). A very useful contribution from Stephen Wastling at KCL.

@@ -1,5 +1,8 @@
 #include "console.hpp"
 #include "version/version.h"
+#include <boost/function.hpp>
+
+
 
 void tarquin::DisplaySplash()
 {
@@ -149,6 +152,21 @@ namespace
     }
 }
 
+typedef boost::function<bool (std::string, std::string, tarquin::Options&)> handler_type;
+
+bool lb_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+	tarquin::treal temp;
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> temp;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    options.m_lb = temp;
+    return true;
+}
+
 bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& fid)
 {
 
@@ -212,25 +230,6 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 	}
 
-	// sketch of how to do this as separate functions so it will compile on windows
-	// (homework task for Martin)
-//	typedef boost::function<void, std::string, std::string, Options&> handler_type
-//		std::map<std::string, handler_type> handlers;
-//
-//	handlers.insert( std::make_pair("--ge_coils", &ge_coils_parser) );
-//
-//	void ge_coils_parser(std::string strKey, std::string strValue, Options& options)
-//	{
-//		std::istringstream iss(strVal, std::istringstream::in);
-//		iss >> options.m_geOptions.nCoils;
-//	}
-//
-//	for( std::map<std::string, handler_type>::iterator i = handlers.begin(); i != handlers.end(); ++i )
-//	{
-//		if( i->first == strKey )
-//			(*i->second)(strVale, strKey, options);
-//	}
-//
 
 
 	// for each command line argument
@@ -247,6 +246,22 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
         //std::cout << strKey << std::endl;
         //std::cout << strVal << std::endl;
+
+        bool handler_key_found = false;
+    
+        std::map<std::string, handler_type> handlers;
+        handlers.insert( std::make_pair("--lb", &lb_parser) );
+
+        for( std::map<std::string, handler_type>::iterator i = handlers.begin(); i != handlers.end(); ++i )
+        {
+            if( i->first == strKey )
+            {
+                bool ok = (i->second)(strKey, strVal, options);
+                if (!ok)
+                    return false;
+                handler_key_found = true;
+            }
+        }
 
 		// name of FID file
 		if( strKey == "--input" ) 
@@ -652,8 +667,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			}
 			options.m_ppm_end = temp;
 		}
-
-		else if( strKey == "--lb" ) {
+        
+		/*else if( strKey == "--lb" ) {
 			// convert string to number and check for errors
 			treal temp;
 			std::istringstream iss(strVal, std::istringstream::in);
@@ -663,8 +678,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
 				return false;
 			}
-			options.m_lb = temp;
-		}
+			//options.m_lb = temp;
+		}*/
 
 		else if( strKey == "--lb_ref" ) {
 			// convert string to number and check for errors
@@ -1509,8 +1524,11 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         else
         { 
             // if we got here there was some kind of problem
-            std::cerr << "\nerror: couldn't recognise '" << strKey << "' as a valid option" << std::endl;
-            return false;
+            if (!handler_key_found)
+            {
+                std::cerr << "\nerror: couldn't recognise '" << strKey << "' as a valid option" << std::endl;
+                return false;
+            }
         }
 
 

@@ -1428,7 +1428,7 @@ namespace tarquin
 	    return m_truncate_pts;
 	}
 
-	private:
+	//private:
 
 	//! The file format of the incoming FID.
 	fid_format_e m_format;

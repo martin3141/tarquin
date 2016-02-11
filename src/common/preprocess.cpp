@@ -2106,7 +2106,7 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
     for ( int n=1; n < N+1; n++ )
         mag_ref_spec_metabs(n) = pow(pow(ref_spec_metabs(n).real(),2) + pow(ref_spec_metabs(n).imag(),2),0.5);
     
-	plot(mag_ref_spec);
+	//plot(mag_ref_spec);
 
     magY.resize(2*N);
     mag_ref_spec.resize(2*N);
