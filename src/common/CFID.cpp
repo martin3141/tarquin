@@ -963,7 +963,8 @@ void tarquin::CFID::Load(std::string strFilename, Options& options, Workspace& w
         {
             log.LogMessage(LOG_INFO, "Writing dynamic shifts to file.");
             // write to txt file
-            std::ofstream shiftfile(options.GetDynShiftFilename());
+            std::string fname = options.GetDynShiftFilename();
+            std::ofstream shiftfile(fname.c_str());
             if ( shiftfile.is_open() )
             {
                 for ( size_t m = 0; m < m_ref.size(); m++ )
