@@ -152,7 +152,7 @@ void ExportCsvSpectrum(const std::string& strFilename, const Workspace& workspac
     }
 }
 
-void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, int num)
+void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, int num, bool mag)
 {
 	// create a new options 
 	Options options = workspace.GetOptions();
@@ -237,17 +237,40 @@ void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, in
         for ( int m = 1; ( m < Y.size() + 1 ); m++) 
         {
             fout << freq_scale(m) << ",";
-            fout << Y(m).real() << ",";
-            fout << YHAT(m).real() << ",";
-            fout << BASELINE(m).real();
-            
-            if ( options.GetExtCSVFit() )
+
+            if ( mag == false )
             {
-                fout << ",";
-                for ( int n = 1; ( n < s.nsize() ); n++) 
-                    fout << S(m,n).real() << ",";
-                // last one without a ","
-                fout << S(m, s.nsize()).real();
+                fout << Y(m).real() << ",";
+                fout << YHAT(m).real() << ",";
+                fout << BASELINE(m).real();
+                
+                if ( options.GetExtCSVFit() )
+                {
+                    fout << ",";
+                    for ( int n = 1; ( n < s.nsize() ); n++) 
+                        fout << S(m,n).real() << ",";
+                    // last one without a ","
+                    fout << S(m, s.nsize()).real();
+                }
+            }
+            else
+            {
+                fout << std::abs(Y(m)) << ",";
+                fout << std::abs(YHAT(m)) << ",";
+                fout << std::abs(BASELINE(m));
+                
+                if ( options.GetExtCSVFit() )
+                {
+                    fout << ",";
+                    for ( int n = 1; ( n < s.nsize() ); n++) 
+                    {
+                        tcomplex temp = S(m,n);
+                        fout << std::abs(temp) << ",";
+                    }
+                    // last one without a ","
+                    tcomplex temp = S(m, s.nsize());
+                    fout << std::abs(temp);
+                }
             }
 
             fout << std::endl;

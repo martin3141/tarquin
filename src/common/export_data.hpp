@@ -12,7 +12,7 @@ void ExportCsvSpectrum(const std::string& strFilename, const Workspace& workspac
 
 void ExportCsvSpectraAligned(const std::string& strFilename, const Workspace& workspace, bool mag = false);
 
-void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, int num = -1);
+void ExportCsvFit(const std::string& strFilename, const Workspace& workspace, int num = -1, bool mag = false);
 
 void ExportCsvResults(const std::string& strFilename, const Workspace& workspace, int num = -1);
 
