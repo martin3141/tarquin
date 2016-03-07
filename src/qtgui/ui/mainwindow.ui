@@ -380,7 +380,7 @@
      <x>0</x>
      <y>0</y>
      <width>1252</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -473,6 +473,7 @@
     <addaction name="actExport_CSV"/>
     <addaction name="actExport_TXT"/>
     <addaction name="actExport_CSV_fit"/>
+    <addaction name="actionExport_CSV_fits_magnitude"/>
     <addaction name="actExport_CSV_spectra"/>
     <addaction name="actExport_CSV_spectra_mag"/>
     <addaction name="separator"/>
@@ -863,6 +864,11 @@
   <action name="actExport_CSV_fit_SV">
    <property name="text">
     <string>Export CSV fit (selected vox)...</string>
+   </property>
+  </action>
+  <action name="actionExport_CSV_fits_magnitude">
+   <property name="text">
+    <string>Export CSV fits (magnitude)</string>
    </property>
   </action>
  </widget>
