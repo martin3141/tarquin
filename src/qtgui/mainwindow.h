@@ -177,6 +177,8 @@ private slots:
 
 	void OnExportCSVFit();
 	
+    void OnExportCSVFitMag();
+	
     void OnExportCSVFit_SV();
 	
     void OnExportCSVSpectra();

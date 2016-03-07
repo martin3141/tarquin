@@ -473,7 +473,7 @@
     <addaction name="actExport_CSV"/>
     <addaction name="actExport_TXT"/>
     <addaction name="actExport_CSV_fit"/>
-    <addaction name="actionExport_CSV_fits_magnitude"/>
+    <addaction name="actExport_CSV_fit_mag"/>
     <addaction name="actExport_CSV_spectra"/>
     <addaction name="actExport_CSV_spectra_mag"/>
     <addaction name="separator"/>
@@ -866,9 +866,9 @@
     <string>Export CSV fit (selected vox)...</string>
    </property>
   </action>
-  <action name="actionExport_CSV_fits_magnitude">
+  <action name="actExport_CSV_fit_mag">
    <property name="text">
-    <string>Export CSV fits (magnitude)</string>
+    <string>Export CSV fits (magnitude)...</string>
    </property>
   </action>
  </widget>

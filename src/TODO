@@ -7,6 +7,7 @@ TODO
 
 Version 4.3.9
 - Added --inv_even_pairs c/l option for working with GE MEGA-PRESS data collected in "no_add" mode.
+- Added the gui and c/l option (--output_fit_m) to output the magntiude mode of the CSV fit plots.
 - Add GUI and c/l options to apply k-space Hamming filtering to MRSI data.
 - Added c/l option to specify a downfield water window HSVD filter --water_width_df.
 - LCModel .BASIS format basis sets can now be loaded from the GUI.

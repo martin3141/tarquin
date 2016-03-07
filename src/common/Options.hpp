@@ -812,6 +812,11 @@ namespace tarquin
 	{
 	    return m_strFileOutCSVFit;
 	}
+
+	std::string GetFilenameCSVFitMag() const
+	{
+	    return m_strFileOutCSVFitMag;
+	}
     
     void SetFilenameCSV(std::string strFileCSV) 
 	{
@@ -821,6 +826,11 @@ namespace tarquin
     void SetFilenameCSVFit(std::string strFileCSVFit) 
 	{
 	    m_strFileOutCSVFit = strFileCSVFit;
+	}
+
+    void SetFilenameCSVFitAbs(std::string strFileCSVFitMag) 
+	{
+	    m_strFileOutCSVFitMag = strFileCSVFitMag;
 	}
 
 	bool GetUsePrecompiled() const
@@ -1767,6 +1777,9 @@ namespace tarquin
 	
 	//! The name of the csv fit output file
     std::string m_strFileOutCSVFit;
+    
+	//! The name of the csv fit output file mag
+    std::string m_strFileOutCSVFitMag;
     
 	//! The name of the aligned spectra output file
     std::string m_strFileOutCSVSpectraAligned;

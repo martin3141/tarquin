@@ -659,6 +659,13 @@ int main(int argc, char* argv[])
 			log.Out(LOG_INFO) << "\nDone.";
         }
 
+        if( options.GetFilenameCSVFitMag() != "" ) 
+        {
+			log.Out(LOG_INFO) << "\nWriting csv fit file (mag).";
+			ExportCsvFit(options.GetFilenameCSVFitMag(), workspace, -1, true);
+			log.Out(LOG_INFO) << "\nDone.";
+        }
+
         if( options.GetFilenameCSVSpectraAligned() != "" ) 
 			ExportCsvSpectraAligned(options.GetFilenameCSVSpectraAligned(), workspace);
 

@@ -86,8 +86,9 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--output_txt        txt output of results";
 	std::cout << "\n\t--output_csv        csv output of results";
 	std::cout << "\n\t--output_fit        csv output of fit";
+	std::cout << "\n\t--output_fit_m      csv output of fit (magnitude)";
 	std::cout << "\n\t--output_spec       csv output of processed spectra";
-	std::cout << "\n\t--output_spec_m     csv output of processed spectra";
+	std::cout << "\n\t--output_spec_m     csv output of processed spectra (magnitude)";
 	std::cout << "\n\t--write_raw         DPT fidfile of the raw data";
 	std::cout << "\n\t--write_raw_w       DPT fidfile of the raw data";
 	std::cout << "\n\t--write_raw_lcm     LCM fidfile of the raw data";
@@ -1121,6 +1122,12 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		else if( strKey == "--output_fit" ) {
 
 			options.m_strFileOutCSVFit = strVal;
+		}
+
+        // path for csv results mag mode
+		else if( strKey == "--output_fit_m" ) {
+
+			options.m_strFileOutCSVFitMag = strVal;
 		}
 
 		else if( strKey == "--output_spec" ) {
