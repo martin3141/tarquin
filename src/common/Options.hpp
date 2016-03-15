@@ -713,7 +713,7 @@ namespace tarquin
 	    return m_filter_kspace;
 	}
 
-    bool SetFilterKspace(bool filter)
+    void SetFilterKspace(bool filter)
 	{
 	    m_filter_kspace = filter;
 	}

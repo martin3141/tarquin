@@ -1142,7 +1142,7 @@ void tarquin::CFID::InvertEvenPairs(Options& options, CBoswell& log)
 {
     for ( size_t n = 0; n < m_cvmFID.size(); n++ )
     {
-        if ( int(std::floor(n/2)) % 2 != 0 ) // n odd?
+        if ( int(std::floor(n/2.0)) % 2 != 0 ) // n odd?
             m_cvmFID[n] = m_cvmFID[n]*std::exp( tcomplex(0, M_PI) );
     }
 }
