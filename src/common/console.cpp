@@ -52,7 +52,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--basis_csv         path to basis (CSV files)";
 	std::cout << "\n\t--basis_xml         path to basis (precompiled XML files)";
 	std::cout << "\n\t--basis_lcm         path to basis (LCModel .basis format)";
-	std::cout << "\n\t--int_basis         {1h_brain | 1h_brain_exmm | h1_brain_glth | 1h_brain_gly_glth | 1h_brain_gly_cit_glth | 1h_brain_full | 1h_brain_le | 1h_brain_no_pcr | megapress_gaba | braino | 31p_brain}";
+	std::cout << "\n\t--int_basis         {1h_brain | 1h_brain_exmm | h1_brain_glth | 1h_brain_gly_glth | 1h_brain_gly_cit_glth | 1h_brain_full | 1h_brain_le | 1h_brain_no_pcr | 1h_brain_metab_only | megapress_gaba | braino | 31p_brain}";
 	std::cout << "\n\t--echo              echo time in seconds";
 	std::cout << "\n\t--te1               te1 time in seconds for PRESS sequence";
 	std::cout << "\n\t--tm                tm time in seconds for STEAM sequence";
@@ -255,6 +255,26 @@ bool ppm_right_parser(std::string strKey, std::string strVal, tarquin::Options& 
     }
     return true;
 }
+bool min_metab_alpha_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_alpha_metab_lower;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool max_metab_alpha_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_alpha_metab_upper;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
 
 bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& fid)
 {
@@ -349,6 +369,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         handlers.insert( std::make_pair("--end_pnt", &end_pnt_parser) );
         handlers.insert( std::make_pair("--ppm_right", &ppm_right_parser) );
         handlers.insert( std::make_pair("--ppm_left", &ppm_left_parser) );
+        handlers.insert( std::make_pair("--min_metab_alpha", &min_metab_alpha_parser) );
+        handlers.insert( std::make_pair("--max_metab_alpha", &max_metab_alpha_parser) );
 
         for( std::map<std::string, handler_type>::iterator i = handlers.begin(); i != handlers.end(); ++i )
         {
@@ -619,6 +641,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.SetIntBasisSet(PROTON_BRAIN);
 			else if( strVal == "1h_brain_exmm" ) 
 				options.SetIntBasisSet(PROTON_BRAIN_MMEXP);
+			else if( strVal == "1h_brain_metab_only" ) 
+				options.SetIntBasisSet(PROTON_BRAIN_METAB_ONLY);
 			else if( strVal == "1h_brain_glth" ) 
 				options.SetIntBasisSet(PROTON_BRAIN_GLTH);
 			else if( strVal == "1h_brain_gly_glth" ) 
@@ -774,7 +798,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_ppm_end = temp;
 		}*/
         
-        else if( strKey == "--min_metab_alpha" ) {
+        /*else if( strKey == "--min_metab_alpha" ) {
 			// convert string to number and check for errors
 			treal temp;
 			std::istringstream iss(strVal, std::istringstream::in);
@@ -798,7 +822,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				return false;
 			}
 			options.m_alpha_metab_upper = temp;
-		}
+		}*/
 
         else if( strKey == "--typ_metab_alpha" ) {
 			// convert string to number and check for errors

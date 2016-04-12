@@ -69,6 +69,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     m_ui.cmbIntBasisSet->addItem("1H MEGA-PRESS GABA",      QVariant(tarquin::PROTON_MEGAPRESS_GABA));
     m_ui.cmbIntBasisSet->addItem("1H BRAINO phantom",      QVariant(tarquin::PROTON_BRAINO));
     m_ui.cmbIntBasisSet->addItem("1H brain + Glth + exp MM",      QVariant(tarquin::PROTON_BRAIN_MMEXP));
+    m_ui.cmbIntBasisSet->addItem("1H brain + Glth + no Lip/MM",      QVariant(tarquin::PROTON_BRAIN_METAB_ONLY));
     m_ui.cmbIntBasisSet->addItem("31P brain, 1H decoupled", QVariant(tarquin::PHOSPH_BRAIN_DECOUP));
 
     m_ui.cmbDynAv->addItem("Default",                         QVariant(tarquin::DEFAULT));
@@ -139,6 +140,7 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
 	m_ui.txtWA->setEnabled(false);
 	m_ui.cbCP->setEnabled(false);
 	m_ui.cbLF->setEnabled(false);
+	m_ui.cbKPWFS->setEnabled(false);
     m_ui.cbKF->setEnabled(false);
     m_ui.cbAP->setEnabled(false);
 	m_ui.cbAR->setEnabled(false);
@@ -289,6 +291,7 @@ void InputDlg::LoadFID(QString filename, fid_type_e fid_type)
             m_ui.txtWA->setEnabled(true);
             m_ui.cbCP->setEnabled(true);
 	        m_ui.cbLF->setEnabled(true);
+	        m_ui.cbKPWFS->setEnabled(true);
             m_ui.cbKF->setEnabled(true);
             m_ui.cbAP->setEnabled(true);
             m_ui.cbAR->setEnabled(true);
@@ -385,6 +388,7 @@ void InputDlg::UpdateDlg()
     m_ui.txtMBS->setText( QString::number( opts.GetMaxBroadShift() ));
     m_ui.cbCP->setChecked( opts.GetCombinePreproc() );
     m_ui.cbLF->setChecked( opts.GetLipidFilter() );
+    m_ui.cbKPWFS->setChecked( opts.GetKeepPreWsShift() );
 
     m_ui.cbKF->setChecked( opts.GetFilterKspace() );
     m_ui.cbAP->setChecked( opts.GetAutoPhase() );
@@ -874,6 +878,7 @@ bool InputDlg::CheckDlg()
     opts.SetWAtt(water_att);
     opts.SetCombinePreproc( m_ui.cbCP->isChecked() );
     opts.SetLipidFilter( m_ui.cbLF->isChecked() );
+    opts.SetKeepPreWsShift( m_ui.cbKPWFS->isChecked() );
     opts.SetFullEcho( m_ui.cbFE->isChecked() );
     
     opts.SetFilterKspace( m_ui.cbKF->isChecked() );

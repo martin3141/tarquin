@@ -55,7 +55,8 @@ namespace tarquin
 		PROTON_BRAIN_NO_PCR,           // Std brain metabolites w/o PCr
 		PROTON_MEGAPRESS_GABA,
 		PROTON_BRAINO,
-		PROTON_BRAIN_MMEXP,          // Std brain metabolites
+		PROTON_BRAIN_MMEXP,          // Std brain metabolites 
+		PROTON_BRAIN_METAB_ONLY,   // Std brain metabolites Glth, no lip mm's
 		PHOSPH_BRAIN_DECOUP
 	};
 
@@ -1187,6 +1188,11 @@ namespace tarquin
 	bool GetKeepPreWsShift() const
 	{
         return m_keep_pre_ws_shift;
+	}
+
+	bool SetKeepPreWsShift(bool val)
+	{
+        m_keep_pre_ws_shift = val;
 	}
 
     void SetPdfExt(bool val)
