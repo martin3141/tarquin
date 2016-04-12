@@ -540,6 +540,14 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			}
 		}
         
+        // center the water peak before water removal?
+        else if( strKey == "--pre_ws_shift" )
+            options.m_pre_ws_shift = parse_binary(strVal);
+
+        // keep the above shift?
+        else if( strKey == "--keep_pre_ws_shift" )
+            options.m_keep_pre_ws_shift = parse_binary(strVal);
+
         // pre dyn av freq correction
         else if( strKey == "--dyn_freq_corr" )
             options.m_dyn_freq_corr = parse_binary(strVal);

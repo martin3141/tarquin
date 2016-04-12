@@ -213,6 +213,7 @@ namespace tarquin
         m_lcm_basis_pts = 4096;
         m_ff = true;
         m_pre_ws_shift = true;
+        m_keep_pre_ws_shift = false;
 
         m_prepend_pts = 0;
         m_truncate_pts = 0;
@@ -1183,6 +1184,11 @@ namespace tarquin
         return m_pre_ws_shift;
 	}
 
+	bool GetKeepPreWsShift() const
+	{
+        return m_keep_pre_ws_shift;
+	}
+
     void SetPdfExt(bool val)
 	{
 	    m_bPdfExt = val;
@@ -1671,6 +1677,9 @@ namespace tarquin
 
     //! Shift water to middle of spec before water removal?
     bool m_pre_ws_shift;
+    
+    //! Keep the above shift
+    bool m_keep_pre_ws_shift;
 
 	//! Swap CSI rows and columns?
     bool m_bSwapRowCol;

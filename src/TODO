@@ -5,6 +5,12 @@
 TODO
 - Better GE MRSI support (3D).
 
+Version 4.3.10
+- Make it possible to do dyn freq correction with autoreferecing set to false.
+- Add to option to keep the pre_ws_shift shift.
+- Add above option to GUI.
+- Add internal basis set for all metabs, excluding MMs and Lip for inv-rec data. - TODO
+
 Version 4.3.9
 - Added --inv_even_pairs c/l option for working with GE MEGA-PRESS data collected in "no_add" mode.
 - Added the gui and c/l option (--output_fit_m) to output the magntiude mode of the CSV fit plots.

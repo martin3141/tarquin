@@ -546,7 +546,7 @@ void tarquin::Preprocessor::operator() ()
         }*/
 
         // shift back to old value 
-        if ( options.GetPreWsShift() )
+        if ( options.GetPreWsShift() && !options.GetKeepPreWsShift() )
         {
             fidproc.ShiftRef( new_ref, voxel_num-1);
             fidproc.SetPPMRef(*i, old_ref);
@@ -2184,7 +2184,7 @@ bool tarquin::AutoReferenceCorr(const coord& proc_coord, Options& options, CFID&
 	treal ref_freq_ppm = ref_guess - (1e6 * ref_freq_hz / ft);
 
 	// transfer this new ref to the FID
-    if ( options.GetAutoReference() || pre_ws_shift )
+    if ( options.GetAutoReference() || pre_ws_shift || dyn_mode )
     {
         fid.SetPPMRef(proc_coord, ref_freq_ppm);	
         bos_log.LogMessage(LOG_INFO, "Ref new = %f ppm", ref_freq_ppm);
