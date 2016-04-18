@@ -177,13 +177,13 @@ void tarquin::CFID::filter_kspace(Options& options, CBoswell& log)
 
             // 2D ifft on temp_mat
             temp_mat = ifft(temp_mat);
-            temp_mat = fftshift(temp_mat);
+            temp_mat = ifftshift(temp_mat);
             // transpose
             cvm::cmatrix temp_mat_trans = ~temp_mat;
             cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
             temp_mat_trans = temp_mat_conj;
             temp_mat_trans = ifft(temp_mat_trans);
-            temp_mat_trans = fftshift(temp_mat_trans);
+            temp_mat_trans = ifftshift(temp_mat_trans);
             // transpose back
             temp_mat = ~temp_mat_trans;
             cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
@@ -207,6 +207,7 @@ void tarquin::CFID::filter_kspace(Options& options, CBoswell& log)
             for ( int n = 1; n < m_cols + 1; n++ )
                 col_wind_fun_sum += col_wind_fun(n);
 
+            row_wind_fun = row_wind_fun/row_wind_fun_sum;
             col_wind_fun = col_wind_fun/col_wind_fun_sum;
             
             /*
@@ -305,13 +306,13 @@ void tarquin::CFID::zfill_kspace(size_t factor, Options& options, CBoswell& log)
 
             // 2D ifft on temp_mat
             temp_mat = ifft(temp_mat);
-            temp_mat = fftshift(temp_mat);
+            temp_mat = ifftshift(temp_mat);
             // transpose
             cvm::cmatrix temp_mat_trans = ~temp_mat;
             cvm::cmatrix temp_mat_conj(temp_mat_trans.real(),-temp_mat_trans.imag());
             temp_mat_trans = temp_mat_conj;
             temp_mat_trans = ifft(temp_mat_trans);
-            temp_mat_trans = fftshift(temp_mat_trans);
+            temp_mat_trans = ifftshift(temp_mat_trans);
             // transpose back
             temp_mat = ~temp_mat_trans;
             cvm::cmatrix temp_mat_conj2(temp_mat.real(),-temp_mat.imag());
@@ -324,7 +325,16 @@ void tarquin::CFID::zfill_kspace(size_t factor, Options& options, CBoswell& log)
 
             // zero-fill
             cvm::cmatrix temp_mat_zfill(m_rows*factor, m_cols*factor);
-            temp_mat_zfill.assign(m_rows*factor/2-m_rows/2+1,m_cols*factor/2-m_cols/2+1,temp_mat); // this probobally needs checking for factors != 2
+            int row_start = (int) round(m_rows*factor/2.0-m_rows/2.0);
+            int col_start = (int) round(m_cols*factor/2.0-m_cols/2.0);
+            
+            if ( m_rows%2 == 0 ) // if even
+                row_start = row_start + 1;
+ 
+            if ( m_cols%2 == 0 ) // if even
+                col_start = col_start + 1;
+
+            temp_mat_zfill.assign(row_start,col_start,temp_mat); // this probobally needs checking for factors != 2
 
             //cvm::cvector plot_vec2(m_rows);
             //plot_vec2 = temp_mat(8);

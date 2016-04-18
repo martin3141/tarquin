@@ -142,9 +142,6 @@ namespace tarquin
 		}
 		return freq_sig;
 	}
-
-	
-
     
 	template<typename vector_t> vector_t fftshift(const vector_t& vec_in) 
 	{
@@ -152,6 +149,28 @@ namespace tarquin
 		vector_t vec_out(vec_in.size());
 
 		int cutoff = (int) ceil(vec_in.size()/2.0);
+
+		for( int n = cutoff+1 ; n < vec_in.size()+1 ; ++n) 
+		{
+			vec_out(p) = vec_in(n);
+			p++;
+		}
+
+		for( int n = 1 ; n < cutoff+1 ; ++n ) 
+		{
+			vec_out(p) = vec_in(n);
+			p++;
+		}
+
+		return vec_out;
+	}
+
+	template<typename vector_t> vector_t ifftshift(const vector_t& vec_in) 
+	{
+		int p = 1;
+		vector_t vec_out(vec_in.size());
+
+		int cutoff = (int) floor(vec_in.size()/2.0);
 
 		for( int n = cutoff+1 ; n < vec_in.size()+1 ; ++n) 
 		{
@@ -179,6 +198,25 @@ namespace tarquin
 
 			//cvm::cvector temp_vec(fftshift(temp_vec));
 			cvm::cvector freq_sig_vec(fftshift(temp_vec));
+
+			// this is for non-fftshfting
+			freq_sig_shift(n) = freq_sig_vec;
+		}
+
+		return freq_sig_shift;
+	}
+
+    inline cvm::cmatrix ifftshift(cvm::cmatrix& freq_sig) 
+    {
+		cvm::cmatrix freq_sig_shift(freq_sig.msize(), freq_sig.nsize());
+
+		for( int n = 1 ; n <= freq_sig.nsize() ; ++n) 
+		{
+
+			cvm::cvector temp_vec(freq_sig(n));
+
+			//cvm::cvector temp_vec(fftshift(temp_vec));
+			cvm::cvector freq_sig_vec(ifftshift(temp_vec));
 
 			// this is for non-fftshfting
 			freq_sig_shift(n) = freq_sig_vec;

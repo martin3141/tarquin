@@ -9,6 +9,7 @@ Version 4.3.10
 - Bug fix to allow dyn freq correction to be applied with autoreferecing set to false.
 - Add internal basis set for metabs, excluding MM and Lipid signals
 - Add to c/l and GUI option to keep the pre water supression shift (can be useful when the residual water signals are poorly supressed).
+- Bug fix for k-space filtering of 2D MRSI with odd number of voxels in a given direction.
 
 Version 4.3.9
 - Added --inv_even_pairs c/l option for working with GE MEGA-PRESS data collected in "no_add" mode.
