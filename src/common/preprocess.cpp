@@ -442,6 +442,8 @@ void tarquin::Preprocessor::operator() ()
 			treal width = options.GetWaterWindow();
             treal width_df = options.GetDFWaterWindow();
 
+	        const cvm::rvector& t = fidproc.GetTimeScale();
+
             treal ref = fidproc.GetPPMRef(*i);
             treal trans_freq = fidproc.GetTransmitterFrequency();
             treal lip_freq = ( ref - options.GetLipFilterFreq() ) * trans_freq * 1e-6;
@@ -469,7 +471,12 @@ void tarquin::Preprocessor::operator() ()
 			// make the model of the water
 			cvm::cvector yw = basis*ahat;
 
+            // measure the amplitude
+
             y = y - yw;
+
+		    std::vector<double>& res_water_amp_vec = m_workspace.GetResWaterAmp();
+            res_water_amp_vec.push_back(GetTimeDomainAmplitude(yw,t));
 
             /*
             if ( options.GetPreHSVD() )
@@ -491,6 +498,11 @@ void tarquin::Preprocessor::operator() ()
             */
 
 		}
+        else
+        {
+		    std::vector<double>& res_water_amp_vec = m_workspace.GetResWaterAmp();
+            res_water_amp_vec.push_back(-1.0);
+        }
 
 		        
         // now the water supression has been done
@@ -2591,19 +2603,10 @@ void tarquin::residual_objective_ref(treal* pp, treal* pyhat, integer nParams, i
 	//plot(Z);
 }
 
-tarquin::treal tarquin::ComputeWaterNormalisation(const coord& proc_coord, const CFID& fid, CBoswell& log)
+tarquin::treal tarquin::GetTimeDomainAmplitude(const cvm::cvector& y, const cvm::rvector& t)
 {
-	// some local copies for quick ref.
-	const cvm::cvector& y = fid.GetVectorFID(proc_coord);
-
-	cvm::cvector yy = y;
-    //std::cout << std::endl << yy.size() << std::endl;
-	//plot(yy);
-
     // fitting method from mathworld
     // http://mathworld.wolfram.com/LeastSquaresFittingExponential.html
-
-	cvm::rvector t = fid.GetTimeScale();
 
 	int start_pt = 10;
 	int end_pt = 50;
@@ -2644,7 +2647,16 @@ tarquin::treal tarquin::ComputeWaterNormalisation(const coord& proc_coord, const
 	sum7 = sum3*sum3;
 
 	a = ( sum1 * sum2 - sum3 * sum4 ) / ( sum5 * sum6 - sum7 );
-
-	//log.LogMessage(LOG_INFO, "Water amplitude is: %.2f", exp(a));
 	return exp(a);
+}
+
+
+tarquin::treal tarquin::ComputeWaterNormalisation(const coord& proc_coord, const CFID& fid, CBoswell& log)
+{
+	// some local copies for quick ref.
+	const cvm::cvector& y = fid.GetVectorFID(proc_coord);
+	const cvm::rvector& t = fid.GetTimeScale();
+
+    treal amp = GetTimeDomainAmplitude(y, t);
+    return amp;
 }

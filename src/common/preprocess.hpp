@@ -20,6 +20,7 @@ namespace tarquin
 
 	treal ComputeWaterNormalisation(const coord& proc_coord, const CFID& fid, CBoswell& log);
 
+    treal GetTimeDomainAmplitude(const cvm::cvector& y, const cvm::rvector& t);
 
 /*!
  * Do preprocessing on FID, i.e. water removal, simple phasing, referencing, eddy current, etc.
