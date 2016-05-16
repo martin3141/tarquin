@@ -1190,7 +1190,7 @@ namespace tarquin
         return m_keep_pre_ws_shift;
 	}
 
-	bool SetKeepPreWsShift(bool val)
+	void SetKeepPreWsShift(bool val)
 	{
         m_keep_pre_ws_shift = val;
 	}
