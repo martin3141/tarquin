@@ -5,8 +5,13 @@
 TODO
 - Better GE MRSI support (3D).
 
+Version 4.3.11
+- Residual water amplitude is now correctly listed in csv results for MRSI. - TODO
+- Improved support for Gnuplot 5 font sizes. - TODO
+- Version bump. - TODO
+
 Version 4.3.10
-- Residual water amplitude now listed in csv results output and expressed as a percentage of unsuppressed water signal in the PDF output (HSVD based water removal only).
+- Residual water amplitude now listed in csv results output and expressed as a percentage of unsuppressed water signal in the PDF output (HSVD based water removal for SVS data only).
 - Bug fix to allow dyn freq correction to be applied with auto referencing set to false.
 - Add to c/l and GUI option to keep the pre water suppression shift (can be a useful alternative to "auto referencing" when the residual water signals are poorly suppressed).
 - Added internal basis set for metabs, excluding MM and Lipid signals.
