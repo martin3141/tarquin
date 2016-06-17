@@ -6,7 +6,7 @@ TODO
 - Better GE MRSI support (3D).
 
 Version 4.3.11
-- Residual water amplitude is now correctly listed in csv results for MRSI. - TODO
+- Residual water amplitude is now correctly listed in csv results for MRSI.
 - Improved support for Gnuplot 5 font sizes. - TODO
 - Version bump. - TODO
 

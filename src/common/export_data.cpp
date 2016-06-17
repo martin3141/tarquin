@@ -615,6 +615,7 @@ void ExportCsvResults(const std::string& strFilename, const Workspace& workspace
         ++i_spec_noise;
         ++i_td_noise;
         ++i_metab_snr;
+        ++i_res_water_amp;
         ++fit;
 	}
     
