@@ -1262,6 +1262,37 @@ bool tarquin::CBasis::ReadLCMBasis(std::string strBasisPath, const CFID& fidMatc
         }
     }
 
+    if ( options.GetAppendNegRefBasis() )
+    {
+        // append lipid and MM signals
+        std::vector< basis_vector_e > metabolites;
+        metabolites.push_back( BV_NEG_REF );
+    
+        // simulate each metabolite
+        for( size_t i = 0; i < metabolites.size(); ++i )
+        {
+            // get the description/name
+            std::string fname;
+            getMetaboliteDescription(metabolites[i], fname);
+
+            std::vector< std::vector<double> > metab;
+            // get the hardcoded parameters
+            getMetaboliteMatrix(metabolites[i], metab, fidMatch.GetTransmitterFrequency());
+
+            // store the filename 
+            m_vecSignalFiles.push_back(fs::path(fname));
+
+            // is it broad?
+            m_broad_sig.push_back(has_broad_signal_name(fname));
+
+            CSignal signal;
+
+            // simulate
+            signal_simulate_full(metab, signal, fidMatch, options, fname);
+            m_signals.push_back(signal);
+        }
+    }
+
 	makeBasisMatrix();
 	makeGroupMatrix();
 

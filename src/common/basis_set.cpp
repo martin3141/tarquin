@@ -45,6 +45,7 @@ namespace tarquin
 	void getGlth(std::vector<std::vector<double> >& doubmat);
 	void getPCr(std::vector<std::vector<double> >& doubmat);
 	void getPEth(std::vector<std::vector<double> >& doubmat);
+	void getNEGREF(std::vector<std::vector<double> >& doubmat);
 	
     void getTNAA(std::vector<std::vector<double> >& doubmat);
     void getTCho(std::vector<std::vector<double> >& doubmat);
@@ -111,6 +112,10 @@ void tarquin::getMetaboliteDescription(basis_vector_e metab, std::string& desc)
         
         case BV_PETH:
 			desc = "PEth.csv";
+			break;
+
+        case BV_NEG_REF:
+			desc = "NegRef.csv";
 			break;
 
 		case BV_GABA:
@@ -365,6 +370,10 @@ void tarquin::getMetaboliteMatrix(
 
         case BV_PETH:
 			getPEth(doubmat);
+			break;
+
+        case BV_NEG_REF:
+			getNEGREF(doubmat);
 			break;
 
 		case BV_GABA:
@@ -2216,6 +2225,28 @@ void tarquin::getAsp(std::vector<std::vector<double> >& doubmat)
 	doubvec[4] = 9.107;
 	doubvec[5] = -17.426;
 	doubvec[6] = 0;
+	doubmat.push_back(doubvec);
+}
+
+void tarquin::getNEGREF(std::vector<std::vector<double> >& doubmat)
+{
+	double d_nan = std::numeric_limits<double>::quiet_NaN();
+	std::vector<double> nan_doubvec(6, d_nan);
+	std::vector<double> doubvec(6, d_nan);
+	doubmat.push_back(nan_doubvec);
+	doubvec[0] = 1;
+	doubvec[1] = 1;
+	doubvec[2] = 0;
+	doubvec[4] = 5;
+	doubvec[5] = 0;
+	doubmat.push_back(doubvec);
+	doubmat.push_back(nan_doubvec);
+	doubvec = nan_doubvec;
+	doubvec[0] = 1;
+	doubvec[1] = -1;
+	doubvec[2] = 0.5;
+	doubvec[3] = 0;
+	doubvec[4] = 0;
 	doubmat.push_back(doubvec);
 }
 

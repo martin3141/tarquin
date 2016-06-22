@@ -1287,6 +1287,9 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
         else if( strKey == "--append_lcm_basis" )
             options.m_bAppendLCMBasis = parse_binary(strVal);
+
+        else if( strKey == "--append_neg_ref_basis" )
+            options.m_bAppendNegRefBasis = parse_binary(strVal);
         
         else if( strKey == "--lipid_filter" )
             options.m_bLipidFilter = parse_binary(strVal);

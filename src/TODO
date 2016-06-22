@@ -9,6 +9,7 @@ Version 4.3.11
 - Residual water amplitude is now correctly listed in csv results for MRSI.
 - Improved support for Gnuplot 5 font sizes. - TODO
 - Add GUI option for pdf stackplot. - TODO
+- Add residual water freq to csv output. - TODO
 
 Version 4.3.10
 - Residual water amplitude now listed in csv results output and expressed as a percentage of unsuppressed water signal in the PDF output (HSVD based water removal for SVS data only).

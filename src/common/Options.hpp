@@ -231,6 +231,7 @@ namespace tarquin
 	    m_bPreFitShift = false;
 	    m_bPreFitBl = false;
 	    m_bAppendLCMBasis = false;
+	    m_bAppendNegRefBasis = false;
         m_lineshape_corr = false;
         m_invert_even_pairs = false;
 	}
@@ -1140,6 +1141,11 @@ namespace tarquin
 	    return m_bAppendLCMBasis;
 	}
 
+	bool GetAppendNegRefBasis() const
+	{
+	    return m_bAppendNegRefBasis;
+	}
+
 	bool GetLipidFilter() const
 	{
 	    return m_bLipidFilter;
@@ -1665,6 +1671,7 @@ namespace tarquin
     bool m_bPreFitBl;
 
 	bool m_bAppendLCMBasis;
+	bool m_bAppendNegRefBasis;
 
 	//! Filter out lipids using HSVD?
     bool m_bLipidFilter;

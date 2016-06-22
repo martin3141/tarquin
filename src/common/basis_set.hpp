@@ -51,6 +51,7 @@ namespace tarquin
 		BV_GLY,
 		BV_CIT,
 		BV_PETH,
+		BV_NEG_REF,
 
         BV_GLTH,
 
