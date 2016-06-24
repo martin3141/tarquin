@@ -13,6 +13,10 @@
 #include <string.h>
 #include "version/version.h"
 
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+
 
 #define BOOST_SYSTEM_NO_LIB 1
 
@@ -115,6 +119,34 @@ namespace tarquin
 
 		return nEnd-nStart;
 	}
+
+#ifdef _MSC_VER
+    inline std::string exec(const char* cmd)
+    {
+        char buffer[128];
+        std::string result = "";
+        std::shared_ptr<FILE> pipe(_popen(cmd, "r"), pclose);
+        if (!pipe) throw std::runtime_error("popen() failed!");
+        while (!feof(pipe.get())) {
+            if (fgets(buffer, 128, pipe.get()) != NULL)
+                result += buffer;
+        }
+        return result;
+    }
+#else
+    inline std::string exec(const char* cmd)
+    {
+        char buffer[128];
+        std::string result = "";
+        std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+        if (!pipe) throw std::runtime_error("popen() failed!");
+        while (!feof(pipe.get())) {
+            if (fgets(buffer, 128, pipe.get()) != NULL)
+                result += buffer;
+        }
+        return result;
+    }
+#endif
 
     //! Get part of file name up to extension.
     inline std::string GetFilenameBase(std::string strFilename)
@@ -597,6 +629,21 @@ namespace tarquin
 
     inline void savepdffit(cvm::rvector& scale, cvm::cmatrix& freq_sig, cvm::cmatrix& freq_sig_ext, int left , std::string strFilename, std::ostringstream& table, std::string title, const std::vector<std::string>& names, bool ext_output, bool pdf_stack, double ppm_start, double ppm_end, double cex) 
     {	
+
+	std::string strRunMe_ver = g_strGnuPlot + " --version";
+    std::string str_out = exec(strRunMe_ver.c_str());
+    // make the fonts bigger if we're using gnuplot 5
+    std::string gnuplot_ver = str_out.substr(8,1);
+    std::cout << gnuplot_ver << std::endl;
+    if ( gnuplot_ver == "5" )
+    {
+        std::cout << "Gnuplot version 5 detected, increasing font sizes." << std::endl;
+        cex = cex*2;
+    }
+    else
+    {
+        std::cout << "Gnuplot version 4 detected." << std::endl;
+    }
     
 	// write data to file 
 	std::ofstream data_outfile("plot.txt");
@@ -749,6 +796,7 @@ namespace tarquin
     }
 
     //void ExportToTXT(std::string& strFile, Workspace& workspace);
+
 
     inline void str2rvec(const std::string& str_in, std::vector<double>& vec_out)
     {

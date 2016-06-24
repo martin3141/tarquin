@@ -248,6 +248,52 @@ void MainWindow::OnExportPDF()
 	if( !file.size() )
 		return;
 
+    m_session->GetWorkspace().GetOptions().SetPdfStack(true);
+    
+    // export the data
+	try
+	{
+	    int fit_no = m_session->m_fit_number;
+		ExportPdfResults(file.toStdString(), m_session->GetWorkspace(),fit_no);
+
+		InfoDialog(this, tr("Success"), tr("File was exported to: ") + file);
+	}
+	catch( const std::exception& e )
+	{
+		ErrorDialog(this, tr("Error Exporting File"), tr("There was an error: ") + e.what());
+	}
+}
+
+void MainWindow::OnExportPDFStack()
+{
+    if( !m_session )
+    {
+    	QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+    }
+
+	if( !m_session->FitAvailable() )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("You need to generate some results before you can export."));
+		return;
+	}
+
+    if ( !m_session->m_in_fit_list )
+	{
+		QMessageBox::information(this, tr("No Data Ready"), 
+				tr("This voxel has not been analysed."));
+		return;
+	}
+
+	QString file = QFileDialog::getSaveFileName(this, tr("Export PDF"), "", tr("PDF Files (*.pdf)"));
+
+	if( !file.size() )
+		return;
+
+    
+    m_session->GetWorkspace().GetOptions().SetPdfStack(true);
     
     // export the data
 	try

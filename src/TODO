@@ -2,13 +2,10 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
-TODO
-- Better GE MRSI support (3D).
-
 Version 4.3.11
 - Residual water amplitude is now correctly listed in csv results for MRSI.
-- Improved support for Gnuplot 5 font sizes. - TODO
-- Add GUI option for pdf stackplot. - TODO
+- Gnuplot pdf output from GUI now includes stackplot.
+- Improved font sizes for gnuplot pdf output for version 5.
 - Add residual water freq to csv output. - TODO
 
 Version 4.3.10

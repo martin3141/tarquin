@@ -168,6 +168,8 @@ private slots:
 	void OnViewAmplitudes();
 
 	void OnExportPDF();
+	
+    void OnExportPDFStack();
 
 	void OnExportTXT();
 
