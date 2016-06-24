@@ -634,7 +634,6 @@ namespace tarquin
     std::string str_out = exec(strRunMe_ver.c_str());
     // make the fonts bigger if we're using gnuplot 5
     std::string gnuplot_ver = str_out.substr(8,1);
-    std::cout << gnuplot_ver << std::endl;
     if ( gnuplot_ver == "5" )
     {
         std::cout << "Gnuplot version 5 detected, increasing font sizes." << std::endl;

@@ -417,6 +417,21 @@ namespace tarquin
 				m_res_w_amp = res_water_amp;
 			}
 
+            const std::vector<double>& GetResWaterFreq() const
+			{
+				return m_res_w_freq;
+			}
+            
+            std::vector<double>& GetResWaterFreq()
+			{
+				return m_res_w_freq;
+			}
+
+			void SetResWaterFreq(std::vector<double> res_water_freq)
+			{
+				m_res_w_freq = res_water_freq;
+			}
+
 
 			/*!
 			 * \brief Compute the normalised amplitude of the argument, i.e. scaled
@@ -768,6 +783,9 @@ namespace tarquin
 
             //! Residual water amplitude
             std::vector<double> m_res_w_amp;
+
+            //! Residual water frequency
+            std::vector<double> m_res_w_freq;
             
             //! Combined metabolite names found (TNAA, TCho...)
             std::vector<std::string> m_metab_names_comb;

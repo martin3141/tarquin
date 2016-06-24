@@ -337,12 +337,18 @@ void tarquin::Preprocessor::operator() ()
             AutoReferenceCorr(*i, options, fidproc, false, true, true, m_log);
             new_ref = fidproc.GetPPMRef(*i);
             fidproc.ShiftRef( old_ref, *i);
+
+            treal res_water_freq = -(old_ref - new_ref)*fidproc.GetTransmitterFrequency()*1e-6;
+		    m_log.LogMessage(LOG_INFO, "Residual water freq. (Hz) : %f", res_water_freq);
+
+		    std::vector<double>& res_water_freq_vec = m_workspace.GetResWaterFreq();
+            res_water_freq_vec.push_back(res_water_freq);
         }
-        
-        /*
-        std::cout << old_ref << std::endl;
-        std::cout << new_ref << std::endl;
-        */
+        else
+        {
+		    std::vector<double>& res_water_freq_vec = m_workspace.GetResWaterFreq();
+            res_water_freq_vec.push_back(0);
+        }
         
         // are we doing convolution based water removal?
 		if( options.GetConvWindowWidth()>0 ) 
