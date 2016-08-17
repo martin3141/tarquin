@@ -26,8 +26,26 @@ void tarquin::CFIDReaderDCM::Load(std::string strFilename, const Options& opts, 
 
 	file.Open(strFilename);
 
+    // check this is DICOM MRS
+    long bytes = file.MoveToTag("0002", "0002"); 
+    if( -1 == bytes )
+    {
+		throw Exception("Could not find SOP class tag.");
+    }
+    std::vector<char> SOPClass(bytes, 0);
+	file.GetFileStream().read(&SOPClass[0], bytes);
+	std::string SOPClass_str(SOPClass.begin(), SOPClass.end());
+	std::string SOPClass_str_cut = SOPClass_str.substr(0,27);
+    //std::cout << std::endl << SOPClass_str;
+
+    if ( SOPClass_str_cut.compare("1.2.840.10008.5.1.4.1.1.4.2") != 0 )
+    {
+        std::cout << std::endl << "SOP UID : " << SOPClass_str << std::endl;
+        throw Exception("SOP class UID is not MRS.");
+    }
+
     // find sampling frequency tag
-    long bytes = file.MoveToTag("0018", "9052"); 
+    bytes = file.MoveToTag("0018", "9052"); 
     if( -1 == bytes )
     {
 		throw Exception("Could not find the sampling frequency tag.");

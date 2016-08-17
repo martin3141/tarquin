@@ -7,8 +7,7 @@ Version 4.3.11
 - Residual water freq added to csv output.
 - Gnuplot pdf output from GUI now includes a stackplot by default.
 - Improved font sizes for gnuplot pdf output for version 5.
-- Updated Siemens DCM reader to correctly handle syngo MR B19 software. - TODO
-- Relaxed requirement for all data parameters to be correctly found before loading DICOM MRS data. - TODO
+- DICOM MRS reader now checks SOP class UID is correct before loading.
 
 Version 4.3.10
 - Residual water amplitude now listed in csv results output and expressed as a percentage of unsuppressed water signal in the PDF output (HSVD based water removal for SVS data only).
