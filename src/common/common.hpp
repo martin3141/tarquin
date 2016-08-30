@@ -636,8 +636,9 @@ namespace tarquin
     std::string gnuplot_ver = str_out.substr(8,1);
     if ( gnuplot_ver == "5" )
     {
-        std::cout << "Gnuplot version 5 detected, increasing font sizes." << std::endl;
-        cex = cex*2;
+        std::cout << "Gnuplot version 5 detected." << std::endl;
+        //std::cout << "Gnuplot version 5 detected, increasing font sizes." << std::endl;
+        //cex = cex*2;
     }
     else
     {

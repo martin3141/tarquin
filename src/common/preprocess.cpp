@@ -236,6 +236,8 @@ void tarquin::Preprocessor::operator() ()
 		{
             // compute the value
 			treal norm_val = ComputeWaterNormalisation(*i, fidwater, m_log);
+            std::cout << "Water amp : " << norm_val << std::endl;
+
             // get a reference
 			std::vector<double>& norm_val_vec = m_workspace.GetNormalisationValue();
             // append value to vector
@@ -482,7 +484,8 @@ void tarquin::Preprocessor::operator() ()
             y = y - yw;
 
 		    std::vector<double>& res_water_amp_vec = m_workspace.GetResWaterAmp();
-            res_water_amp_vec.push_back(GetTimeDomainAmplitude(yw,t));
+            float res_water_amp = GetTimeDomainAmplitude(yw,t);
+            res_water_amp_vec.push_back(res_water_amp);
 
             /*
             if ( options.GetPreHSVD() )
@@ -2609,13 +2612,13 @@ void tarquin::residual_objective_ref(treal* pp, treal* pyhat, integer nParams, i
 	//plot(Z);
 }
 
-tarquin::treal tarquin::GetTimeDomainAmplitude(const cvm::cvector& y, const cvm::rvector& t)
+tarquin::treal tarquin::GetTimeDomainAmplitude(const cvm::cvector& y, const cvm::rvector& t, int start_pt, int end_pt)
 {
     // fitting method from mathworld
     // http://mathworld.wolfram.com/LeastSquaresFittingExponential.html
 
-	int start_pt = 10;
-	int end_pt = 50;
+	//int start_pt = 10;
+	//int end_pt = 50;
 
 	cvm::rvector x_sec(end_pt-start_pt+1);
 	cvm::rvector x_sec_sq(end_pt-start_pt+1);

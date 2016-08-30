@@ -415,7 +415,7 @@ int main(int argc, char* argv[])
         if( options.GetBasisSaveFileLCM() != "" ) 
         {
 
-            if( !options.GetUsePrecompiled() ) 
+            if( options.GetUsePrecompiled() ) 
             {
                 basis.SaveLCM(options.GetBasisSaveFileLCM().c_str(),fidproc);
             }
@@ -699,7 +699,6 @@ int main(int argc, char* argv[])
 		else if( 6 == info[0][6] )
 			std::cout << "\nstopping by small l2 norm of error\n";
 
-		std::cout << "\n\nTARQUIN has finished. Please use \"--view_fit\" to inspect the results.";
 		std::cout << "\n" << std::endl;
 	}
 	catch( const tarquin::CFIDReader::Exception& e )

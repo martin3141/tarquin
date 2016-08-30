@@ -6,8 +6,8 @@ Version 4.3.11
 - Residual water amplitude is now correctly listed in csv results for MRSI.
 - Residual water freq added to csv output.
 - Gnuplot pdf output from GUI now includes a stackplot by default.
-- Improved font sizes for gnuplot pdf output for version 5.
 - DICOM MRS reader now checks SOP class UID is correct before loading.
+- Auto scaling (based on the amplitude of the scyllo-inositol singlet) is now applied to imported LCModel format basis sets (can be disabled with --scale_lcm_basis false).
 
 Version 4.3.10
 - Residual water amplitude now listed in csv results output and expressed as a percentage of unsuppressed water signal in the PDF output (HSVD based water removal for SVS data only).

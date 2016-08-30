@@ -581,6 +581,9 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 		}
 
         // pre dyn av freq correction
+        else if( strKey == "--rescale_lcm_basis" )
+            options.m_rescale_lcm_basis = parse_binary(strVal);
+
         else if( strKey == "--inv_even_pairs" )
             options.m_invert_even_pairs = parse_binary(strVal);
 

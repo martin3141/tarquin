@@ -3,6 +3,7 @@
 #include "signal_simulate_full.hpp"
 #include "basis_set.hpp"
 #include "Options.hpp"
+#include "preprocess.hpp"
 #include "fidio/CFIDReaderDPT.hpp"
 
 #include "threadpool/boost/threadpool.hpp"
@@ -687,8 +688,8 @@ void tarquin::CBasis::SaveLCM(string file_name, CFID fid)
     basisfile << " FMTBAS = '(6E13.5)'," << std::endl;
     basisfile << " BADELT =  " << 1.0/fid.GetSamplingFrequency() << "," << std::endl;
     basisfile << " NDATAB = " << zf * fid.GetNumberOfPoints() << " $END" << std::endl;
-
-
+    //basisfile << " NDATAB = " << m_matBasis.msize() << " $END" << std::endl;
+    
     basisfile << std::scientific;
     // metabolite
     for ( int n = 0; n < m_matBasis.nsize(); n++ )
@@ -1221,6 +1222,50 @@ bool tarquin::CBasis::ReadLCMBasis(std::string strBasisPath, const CFID& fidMatc
 
     // set scaling factor TODO
     // check ref values? TODO
+    
+    bool ref_sig_found = false;
+    if ( options.GetRescaleLCMBasis() )
+    {
+        float rescale = 1.0;
+        for (int n = 0; n < m_signals.size(); n++ ) 
+        {
+            CSignal temp_sig = m_signals[n];
+            std::string fn = temp_sig.m_fids[0].GetFilename();
+            if ( fn == "Scyllo" || fn == "sIns" )
+            {
+                ref_sig_found = true;
+                cvm::cvector temp_fid = temp_sig.m_fids[0].GetVectorFID(0);
+                cvm::rvector temp_t = temp_sig.m_fids[0].GetTimeScale();
+                treal val = GetTimeDomainAmplitude(temp_fid, temp_t, 2, 10);
+                //std::cout << "Basis scaling value : " << val << std::endl;
+		        log.Out(LOG_INFO) << "Basis scaling value : " << val;
+                rescale = val/3.0;
+            }
+        }
+        
+        if ( !ref_sig_found )
+        {
+            Exception e("Could not find sIns signal in LCM basis for scaling. Disable auto-scaling with --rescale_lcm_basis false option.", strBasisPath.c_str()); 
+            throw e;
+        }
+
+        if ( rescale != 1.0 )
+        {
+            for (int n = 0; n < m_signals.size(); n++ ) 
+            {
+                CSignal& temp_sig = m_signals[n];
+                cvm::cvector& temp_fid = temp_sig.m_fids[0].GetVectorFID(0);
+                temp_fid = temp_fid / rescale;
+
+                //std::string fn = temp_sig.m_fids[0].GetFilename();
+                //std::cout << fn << std::endl;
+                //cvm::rvector temp_t = temp_sig.m_fids[0].GetTimeScale();
+                //treal val = GetTimeDomainAmplitude(temp_fid, temp_t, 2, 10);
+                //std::cout << "New basis scaling value : " << val << std::endl;
+		        //log.Out(LOG_INFO) << "New basis scaling value : " << val;
+            }
+        }
+    }
     
     if ( options.GetAppendLCMBasis() )
     {
