@@ -18,7 +18,7 @@ namespace tarquin {
 
 	    void EatTokens(const Options& opts);
 
-	    void EatTokensFID(TokenList::iterator it_token, std::size_t nSamples, const Options& opts, TokenList::iterator end_token);
+	    void EatTokensFID(TokenList::iterator it_token, std::size_t nSamples, const Options& opts, TokenList::iterator end_token, int skip);
 
     };
 }

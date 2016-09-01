@@ -8,6 +8,7 @@ Version 4.3.11
 - Gnuplot pdf output from GUI now includes a stackplot by default.
 - DICOM MRS reader now checks SOP class UID is correct before loading.
 - Auto scaling (based on the amplitude of the scyllo-inositol singlet) is now applied to imported LCModel format basis sets (can be disabled with --scale_lcm_basis false).
+- JMRUI text format reader now detects if the spectral data pairs are missing and parses accordingly.
 
 Version 4.3.10
 - Residual water amplitude now listed in csv results output and expressed as a percentage of unsuppressed water signal in the PDF output (HSVD based water removal for SVS data only).

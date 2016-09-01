@@ -68,7 +68,12 @@ void tarquin::CFIDReaderJMRUITXT::EatTokens(const Options& opts)
 		else if( it->first == "Signal" ) 
 		{
 			it+=14;
-			return EatTokensFID(it, nSamples, opts, m_tokens.end());
+            int count = std::distance(it, m_tokens.end());
+            std::cout << count << std::endl;
+            if ( count == 2*nSamples )
+                return EatTokensFID(it, nSamples, opts, m_tokens.end(), 1);
+            else
+			    return EatTokensFID(it, nSamples, opts, m_tokens.end(), 3);
 		}
 		else 
 		{
@@ -88,7 +93,7 @@ void tarquin::CFIDReaderJMRUITXT::EatTokens(const Options& opts)
 		throw Exception("failed to ready any samples from the file");
 }
 
-void tarquin::CFIDReaderJMRUITXT::EatTokensFID(TokenList::iterator it_token, std::size_t nSamples, const Options& opts, TokenList::iterator end_token)
+void tarquin::CFIDReaderJMRUITXT::EatTokensFID(TokenList::iterator it_token, std::size_t nSamples, const Options& opts, TokenList::iterator end_token, int skip)
 {
 	assert( nSamples > 0 );
     
@@ -171,6 +176,7 @@ void tarquin::CFIDReaderJMRUITXT::EatTokensFID(TokenList::iterator it_token, std
         // read in points
         for(std::size_t n = 0; n < nSamples; n++) 
         {
+            //std::cout << n << std::endl;
             double real_part, imag_part;	
             ins.clear();
             if ( it_token > end_token )
@@ -200,7 +206,7 @@ void tarquin::CFIDReaderJMRUITXT::EatTokensFID(TokenList::iterator it_token, std
                 throw Exception("error reading FID tokens: '%s' should be a number.", it_token->first.c_str());
             }
 
-            it_token+=3;
+            it_token+=skip;
 
             FID[n+1] = tcomplex(real_part, -imag_part);
         }
