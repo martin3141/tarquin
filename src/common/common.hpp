@@ -136,7 +136,7 @@ namespace tarquin
 #else
     inline std::string exec(const char* cmd)
     {
-        char buffer[128];
+        /*char buffer[128]; // C++11 version
         std::string result = "";
         std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
         if (!pipe) throw std::runtime_error("popen() failed!");
@@ -144,6 +144,22 @@ namespace tarquin
             if (fgets(buffer, 128, pipe.get()) != NULL)
                 result += buffer;
         }
+        return result;*/
+
+        char buffer[128];
+        std::string result = "";
+        FILE* pipe = popen(cmd, "r");
+        if (!pipe) throw std::runtime_error("popen() failed!");
+        try {
+            while (!feof(pipe)) {
+                if (fgets(buffer, 128, pipe) != NULL)
+                    result += buffer;
+            }
+        } catch (...) {
+            pclose(pipe);
+            throw;
+        }
+        pclose(pipe);
         return result;
     }
 #endif
