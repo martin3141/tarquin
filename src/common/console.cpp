@@ -1487,6 +1487,11 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_title = strVal;
 		}
 
+        // pdf fit line col
+		else if( strKey == "--fit_col" ) {
+			options.m_fit_color = strVal;
+		}
+
         // lambda
 		else if( strKey == "--lambda" ) {
             std::istringstream iss(strVal, std::istringstream::in);

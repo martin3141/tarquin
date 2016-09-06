@@ -643,8 +643,8 @@ namespace tarquin
         assert(0);
     }
 
-    inline void savepdffit(cvm::rvector& scale, cvm::cmatrix& freq_sig, cvm::cmatrix& freq_sig_ext, int left , std::string strFilename, std::ostringstream& table, std::string title, const std::vector<std::string>& names, bool ext_output, bool pdf_stack, double ppm_start, double ppm_end, double cex) 
-    {	
+    inline void savepdffit(cvm::rvector& scale, cvm::cmatrix& freq_sig, cvm::cmatrix& freq_sig_ext, int left , std::string strFilename, std::ostringstream& table, std::string title, const std::vector<std::string>& names, bool ext_output, bool pdf_stack, double ppm_start, double ppm_end, double cex, std::string fit_col) 
+    {
 
 	std::string strRunMe_ver = g_strGnuPlot + " --version";
     std::string str_out = exec(strRunMe_ver.c_str());
@@ -697,7 +697,7 @@ namespace tarquin
 
 	//gnuplot_outfile << "set xrange [" << ppm_start << ":" << ppm_end << "] reverse" << std::endl;
     gnuplot_outfile << "set xrange [" << ppm_end << ":" << ppm_start << "]" << std::endl;
-	gnuplot_outfile	<< "plot 'plot.txt' using 1:3 with lines lw 6 lc rgb 'red' title \"fit\", ";
+	gnuplot_outfile	<< "plot 'plot.txt' using 1:3 with lines lw 6 lc rgb '" << fit_col << "' title \"fit\", ";
 	gnuplot_outfile	<< "'plot.txt' using 1:2 with lines lw 2 lc rgb 'black' title \"data\", ";
 	gnuplot_outfile	<< "'plot.txt' using 1:4 with lines lw 2 lc rgb 'black' title \"residual\", ";
 	gnuplot_outfile	<< "'plot.txt' using 1:5 with lines lw 1 lc rgb 'black' title \"zero res\", ";
@@ -750,7 +750,7 @@ namespace tarquin
         gnuplot_outfile << "set label \"" << title << "\" at screen(0.5),graph(1.05) center font \"Arial,"<< 11*cex <<"\"" << std::endl;
         gnuplot_outfile << "set format x '%1.1f'" << std::endl;
         gnuplot_outfile << "set xrange [" << ppm_end << ":" << ppm_start << "]" << std::endl;
-        gnuplot_outfile	<< "plot 'extended_plot.txt' using 1:3 with lines lw 6 lc rgb 'red' title \"fit\", "; //Fit
+        gnuplot_outfile	<< "plot 'extended_plot.txt' using 1:3 with lines lw 6 lc rgb '" << fit_col << "' title \"fit\", "; //Fit
         gnuplot_outfile	<< "'extended_plot.txt' using 1:2 with lines lw 2 lc rgb 'black' title \"data\", "; //Data
         gnuplot_outfile	<< "'extended_plot.txt' using 1:4 with lines lw 2 lc rgb 'black' title \"residual\", "; // Residual
         gnuplot_outfile	<< "'extended_plot.txt' using 1:5 with lines lw 1 lc rgb 'black' title \"zero res\", "; // //Residual mean
@@ -795,7 +795,7 @@ namespace tarquin
             gnuplot_outfile << "set xrange [" << ppm_end << ":" << ppm_start << "]" << std::endl;
 
             gnuplot_outfile	<< "plot 'plot.txt' using 1:2 with lines lw 2 lc rgb 'black' title \"data\", ";
-            gnuplot_outfile	<< "'plot.txt' using 1:" << n+1 << " with lines lw 6 lc rgb 'red' title \"metab\", ";
+            gnuplot_outfile	<< "'plot.txt' using 1:" << n+1 << " with lines lw 6 lc rgb '" << fit_col << "' title \"metab\", ";
 	        gnuplot_outfile	<< "'plot.txt' using 1:8 with lines lw 2 lc rgb 'black'";
             gnuplot_outfile << std::endl;
         }

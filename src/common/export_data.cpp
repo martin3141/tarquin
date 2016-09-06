@@ -1374,7 +1374,7 @@ void ExportPdfResults(const std::string& strFilename, const Workspace& workspace
     
     // and plot results
     //SJW (In export_data.hpp): Added all_extended (matrix containing data which will be used to make plot_extended.txt), left (used when ) and pdf_stack arguments to savepdffit function which are needed for stacked/waterfall plot of the individual metabolites.
-    savepdffit(freq_scale, all, all_extended, left, strFilename, table, title, signal_names, ext_output, pdf_stack, options.GetPPMstart(), options.GetPPMend(), options.GetGnuplotCex());
+    savepdffit(freq_scale, all, all_extended, left, strFilename, table, title, signal_names, ext_output, pdf_stack, options.GetPPMstart(), options.GetPPMend(), options.GetGnuplotCex(), options.GetFitCol());
 }
 
 

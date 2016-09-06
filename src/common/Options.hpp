@@ -207,6 +207,7 @@ namespace tarquin
         m_steam_TM = 0.012;
         m_cpmg_N = 10;
         m_gnuplot_cex = 2;
+        m_fit_color = "red";
         m_threads = 0;
         m_pre_hsvd = false;
         m_old_phase = false;
@@ -1027,6 +1028,11 @@ namespace tarquin
         return m_gnuplot_cex;
     }
 
+    std::string GetFitCol() const
+    {
+        return m_fit_color;
+    }
+
     treal GetThreads() const
     {
         return m_threads;
@@ -1643,6 +1649,9 @@ namespace tarquin
     
     //! gnuplot font expansion
     treal m_gnuplot_cex;
+    
+    //! PDF fit line color
+    std::string m_fit_color;
 
     //! how many threads to use?
     int m_threads;
