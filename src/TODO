@@ -2,6 +2,8 @@
 * Outstanding features/fixes for the next releases *
 ****************************************************
 
+TODO - export CSV of covarience matrix.
+
 Version 4.3.11
 - Residual water amplitude is now correctly listed in csv results for MRSI.
 - Residual water freq added to csv output.
