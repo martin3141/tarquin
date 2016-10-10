@@ -96,10 +96,10 @@ class spin_sys {
 	void zero_multqcs();
 	void apply_op(dcm& a, dcm& b);
 
-    void acquire(dcv& time_sig, double fs, size_t N, double ref, double lambda, double rec_phase = 180);
+    void acquire(dcv& time_sig, double fs, size_t N, double ref, double lambda, double rec_phase = 180, double delay = 0);
 	void get_peak_groups(std::vector<double>& freqs, std::vector<int>& freq_id, drv& group_vec);
 
-    void acquire(dcm& time_sig, double fs, size_t N, double ref, double lambda, drv group_vec, double rec_phase = 180);
+    void acquire(dcm& time_sig, double fs, size_t N, double ref, double lambda, drv group_vec, double rec_phase = 180, double delay = 0);
 
     void shaped_xpulse(drv& waveform, drv& phase, double angle, double t, double offset = 0);
     void shaped_ypulse(drv& waveform, drv& phase, double angle, double t, double offset = 0);

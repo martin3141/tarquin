@@ -205,6 +205,7 @@ namespace tarquin
 	    m_bAdaptEp = false;
         m_press_TE1 = 0.0126;
         m_steam_TM = 0.012;
+        m_acq_delay = 0.0;
         m_cpmg_N = 10;
         m_gnuplot_cex = 2;
         m_fit_color = "red";
@@ -1023,6 +1024,11 @@ namespace tarquin
         return m_press_TE1;
     }
 
+    treal GetAcqDelay() const
+    {
+        return m_acq_delay;
+    }
+
     treal GetGnuplotCex() const
     {
         return m_gnuplot_cex;
@@ -1646,6 +1652,9 @@ namespace tarquin
     
     //! PRESS TE1 parameter
     treal m_press_TE1;
+
+    //! Acquisition delay parameter
+    treal m_acq_delay;
     
     //! gnuplot font expansion
     treal m_gnuplot_cex;

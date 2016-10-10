@@ -56,6 +56,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--echo              echo time in seconds";
 	std::cout << "\n\t--te1               te1 time in seconds for PRESS sequence";
 	std::cout << "\n\t--tm                tm time in seconds for STEAM sequence";
+	std::cout << "\n\t--acq_delay         acquistion delay time for pulse acquire seq in seconds";
 	std::cout << "\n\t--cpmg_pulses       number of pulses for CPMG sequence";
 	std::cout << "\n\t--pul_seq           {press | steam | slaser | laser | pulse_acq | cpmg | se | mega_press}";
 	std::cout << "\n\t--dyn_av            {default | none | all | subtract | odd | even} water sup. dyn averaging scheme";
@@ -743,6 +744,21 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				return false;
 			}
 			options.SetSTEAM_TM(tm);
+		}
+
+        // tm steam parameter
+		else if( strKey == "--acq_delay" ) {
+
+			// convert string to number and check for errors
+			treal acq_delay;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> acq_delay;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_acq_delay = acq_delay;
 		}
         
         // tm steam parameter

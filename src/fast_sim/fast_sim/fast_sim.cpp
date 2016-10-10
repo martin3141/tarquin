@@ -1089,7 +1089,7 @@ void spin_sys::get_peak_groups(std::vector<double>& freqs, std::vector<int>& fre
 	}
 }
 
-void spin_sys::acquire(dcm& time_sig, double fs, size_t N, double ref, double lambda, drv group_vec, double rec_phase)
+void spin_sys::acquire(dcm& time_sig, double fs, size_t N, double ref, double lambda, drv group_vec, double rec_phase, double delay)
 {
 	std::vector<double> freqs;
 	std::vector<int> freq_id;	
@@ -1129,7 +1129,7 @@ void spin_sys::acquire(dcm& time_sig, double fs, size_t N, double ref, double la
 
     drv t(N);
     for (int n = 0; n < t.size(); n++)
-        t(n) = n/fs;
+        t(n) = n/fs + delay;
     
 	// used for filtering out coherence orders
 	//drv qn_states_vec;
@@ -1176,7 +1176,7 @@ void spin_sys::acquire(dcm& time_sig, double fs, size_t N, double ref, double la
     time_sig(0) = time_sig(0) * 0.5;
 }
 
-void spin_sys::acquire(dcv& time_sig, double fs, size_t N, double ref, double lambda, double rec_phase)
+void spin_sys::acquire(dcv& time_sig, double fs, size_t N, double ref, double lambda, double rec_phase, double delay)
 {
     // resize time_sig according to the N parameter
     time_sig.resize(N);
@@ -1198,7 +1198,7 @@ void spin_sys::acquire(dcv& time_sig, double fs, size_t N, double ref, double la
 
     drv t(N);
     for (int n = 0; n < t.size(); n++)
-        t(n) = n/fs;
+        t(n) = n/fs + delay;
     
     std::complex<double> j(0,1); 
     std::complex<double> amp;

@@ -3,7 +3,7 @@
 #include "pulse_sequences.hpp"
 #include "fast_sim.hpp"
 
-void pulse_acquire(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat)
+void pulse_acquire(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double delay)
 {
     // initialise the spin system
 	spin_sys sys(spin_vec, chem_shift_vec, j_coupling_mat, B0);
@@ -15,7 +15,7 @@ void pulse_acquire(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv&
 	sys.set_state(rho);
 	
 	// acquire the result	
-	sys.acquire(time_sig_mat, fs, N, ref, lambda, group_vec);
+	sys.acquire(time_sig_mat, fs, N, ref, lambda, group_vec, 180, delay);
 }
 
 void spin_echo(drv& spin_vec, drv& chem_shift_vec, drm& j_coupling_mat, drv& group_vec, dcv& spin_num_vec, double B0, double fs, size_t N, double ref, double lambda, dcm& time_sig_mat, double tau)

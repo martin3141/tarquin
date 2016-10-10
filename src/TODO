@@ -5,6 +5,7 @@
 TODO - export CSV of covarience matrix.
 
 Version 4.3.11
+- Added an acquisiton delay parameter to the command line version (--acq_delay) for FID based MRSI localisation analysis.
 - Residual water amplitude is now correctly listed in csv results for MRSI.
 - Residual water freq added to csv output.
 - Gnuplot pdf output from GUI now includes a stackplot by default.

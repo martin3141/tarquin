@@ -15,6 +15,8 @@ namespace tarquin {
 		const treal ref = 4.65;
 		const treal tau = fidMatch.GetEchoTime();
 		
+        const treal delay = options.GetAcqDelay();
+		
 		// assumed for the purposes of the PRESS sequence		
         const treal TE1 = options.GetPRESS_TE1();
 		const treal TE2 = tau - TE1;
@@ -91,7 +93,7 @@ namespace tarquin {
 			semi_laser(spin_vec, chem_shift_vec, j_coupling_mat, group_vec, spin_num_vec, B0, fs, N, ref, lambda, time_sig_mat, t1, t2, t3, t4);
         
         else if ( pul_seq == PULSE_ACQUIRE )
-			pulse_acquire(spin_vec, chem_shift_vec, j_coupling_mat, group_vec, spin_num_vec, B0, fs, N, ref, lambda, time_sig_mat);
+			pulse_acquire(spin_vec, chem_shift_vec, j_coupling_mat, group_vec, spin_num_vec, B0, fs, N, ref, lambda, time_sig_mat, delay);
         
         else if ( pul_seq == CPMG )
 			cpmg(spin_vec, chem_shift_vec, j_coupling_mat, group_vec, spin_num_vec, B0, fs, N, ref, lambda, time_sig_mat, tau, cpmg_pulses);
