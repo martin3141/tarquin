@@ -57,6 +57,7 @@ namespace tarquin
 		PROTON_BRAINO,
 		PROTON_BRAIN_MMEXP,          // Std brain metabolites 
 		PROTON_BRAIN_METAB_ONLY,   // Std brain metabolites Glth, no lip mm's
+		PROTON_BRAIN_LCM,   // Std brain metabolites Glth, no lip mm's or -CH2
 		PHOSPH_BRAIN_DECOUP
 	};
 
@@ -208,6 +209,7 @@ namespace tarquin
         m_acq_delay = 0.0;
         m_cpmg_N = 10;
         m_gnuplot_cex = 2;
+        m_gnuplot_xtic = 0.2;
         m_fit_color = "red";
         m_threads = 0;
         m_pre_hsvd = false;
@@ -1034,6 +1036,11 @@ namespace tarquin
         return m_gnuplot_cex;
     }
 
+    treal GetGnuplotXtic() const
+    {
+        return m_gnuplot_xtic;
+    }
+
     std::string GetFitCol() const
     {
         return m_fit_color;
@@ -1658,6 +1665,9 @@ namespace tarquin
     
     //! gnuplot font expansion
     treal m_gnuplot_cex;
+    
+    //! gnuplot xtic
+    treal m_gnuplot_xtic;
     
     //! PDF fit line color
     std::string m_fit_color;

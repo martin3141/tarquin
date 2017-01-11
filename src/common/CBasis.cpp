@@ -352,6 +352,26 @@ bool tarquin::CBasis::Simulate(const CFID& fidMatch, const Options& options, CBo
         metabolites.push_back( BV_SCYLLO );
         metabolites.push_back( BV_TAU );
     }
+    else if ( options.GetIntBasisSet() == PROTON_BRAIN_LCM )
+    {
+        metabolites.push_back( BV_ALA );
+        metabolites.push_back( BV_ASP );
+        metabolites.push_back( BV_CR );
+        metabolites.push_back( BV_GABA );
+        metabolites.push_back( BV_GLC );
+        metabolites.push_back( BV_GLN );
+        metabolites.push_back( BV_GLTH );
+        metabolites.push_back( BV_GLU );
+        metabolites.push_back( BV_GPC );
+        metabolites.push_back( BV_INS );
+        metabolites.push_back( BV_LAC );
+        metabolites.push_back( BV_NAA );
+        metabolites.push_back( BV_NAAG );
+        metabolites.push_back( BV_PCH );
+        metabolites.push_back( BV_PCR );
+        metabolites.push_back( BV_SCYLLO );
+        metabolites.push_back( BV_TAU );
+    }
     else
     {
 		log.Out(LOG_ERROR) << "Requested internal basis set not found";

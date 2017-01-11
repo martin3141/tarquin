@@ -48,6 +48,10 @@ namespace tarquin
     // for some reason, this is better of as a forward slash rather than backslash
     const std::string filesep = "/";
 
+    // change output format to have a two digit exponent for consistancy with unix
+    unsigned int old_exponent_format;
+    old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
+
 #ifndef M_PI
 	const double M_PI = 3.14159265358979323846264338327950288;
 #endif
@@ -643,7 +647,7 @@ namespace tarquin
         assert(0);
     }
 
-    inline void savepdffit(cvm::rvector& scale, cvm::cmatrix& freq_sig, cvm::cmatrix& freq_sig_ext, int left , std::string strFilename, std::ostringstream& table, std::string title, const std::vector<std::string>& names, bool ext_output, bool pdf_stack, double ppm_start, double ppm_end, double cex, std::string fit_col) 
+    inline void savepdffit(cvm::rvector& scale, cvm::cmatrix& freq_sig, cvm::cmatrix& freq_sig_ext, int left , std::string strFilename, std::ostringstream& table, std::string title, const std::vector<std::string>& names, bool ext_output, bool pdf_stack, double ppm_start, double ppm_end, double cex, std::string fit_col, double xtic)
     {
 
 	std::string strRunMe_ver = g_strGnuPlot + " --version";
@@ -684,7 +688,7 @@ namespace tarquin
 	gnuplot_outfile << "set key off" << std::endl;
 	gnuplot_outfile << "set xtics nomirror" << std::endl;
 	gnuplot_outfile << "set xtic out" << std::endl;
-	gnuplot_outfile << "set xtics 0.2" << std::endl;
+	gnuplot_outfile << "set xtics " << xtic << std::endl;
 	gnuplot_outfile << "set xlabel \"Chemical Shift (ppm)\"" << std::endl;
     gnuplot_outfile << "set label \"" << table.str() << "\" at graph(1.02),graph(0.99) font \"Courier," << 6*cex << "\"" << std::endl;
 

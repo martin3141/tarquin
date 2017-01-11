@@ -77,6 +77,7 @@ void tarquin::DisplayUsage()
 	std::cout << "\n\t--plot_sig          whitespace seperated list of signals";
 	std::cout << "\n\t--gnuplot           path to gnuplot";
 	std::cout << "\n\t--gnuplot_cex       gnuplot font expansion factor";
+	std::cout << "\n\t--gnuplot_xtic      gnuplot xtic spacing (0.2ppm)";
 	std::cout << "\n\t--output_basis      basis XML file";
 	std::cout << "\n\t--output_basis_lcm  LCModel basis file";
 	std::cout << "\n\t--output_image      plot of the fit in pdf format";
@@ -276,6 +277,46 @@ bool max_metab_alpha_parser(std::string strKey, std::string strVal, tarquin::Opt
     }
     return true;
 }
+bool typ_metab_alpha_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_alpha_metab_typ;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool min_broad_alpha_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_alpha_broad_lower;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool max_broad_alpha_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_alpha_broad_upper;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
+bool typ_broad_alpha_parser(std::string strKey, std::string strVal, tarquin::Options& options)
+{
+    std::istringstream iss(strVal, std::istringstream::in);
+	iss >> options.m_alpha_broad_typ;
+    if( iss.fail() ) {
+        std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+        return false;
+    }
+    return true;
+}
 
 bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& fid)
 {
@@ -372,6 +413,10 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
         handlers.insert( std::make_pair("--ppm_left", &ppm_left_parser) );
         handlers.insert( std::make_pair("--min_metab_alpha", &min_metab_alpha_parser) );
         handlers.insert( std::make_pair("--max_metab_alpha", &max_metab_alpha_parser) );
+        handlers.insert( std::make_pair("--typ_metab_alpha", &typ_metab_alpha_parser) );
+        handlers.insert( std::make_pair("--min_broad_alpha", &min_broad_alpha_parser) );
+        handlers.insert( std::make_pair("--max_broad_alpha", &max_broad_alpha_parser) );
+        handlers.insert( std::make_pair("--typ_broad_alpha", &typ_broad_alpha_parser) );
 
         for( std::map<std::string, handler_type>::iterator i = handlers.begin(); i != handlers.end(); ++i )
         {
@@ -659,6 +704,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				options.SetIntBasisSet(PROTON_BRAIN_LE);
 			else if( strVal == "1h_brain_no_pcr" ) 
 				options.SetIntBasisSet(PROTON_BRAIN_NO_PCR);
+			else if( strVal == "1h_brain_lcm" ) 
+				options.SetIntBasisSet(PROTON_BRAIN_LCM);
 			else if( strVal == "megapress_gaba" ) 
 				options.SetIntBasisSet(PROTON_MEGAPRESS_GABA);
 			else if( strVal == "braino" ) 
@@ -791,6 +838,21 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			options.m_gnuplot_cex = cex;
 		}
 
+        // gnuplot font expansion
+		else if( strKey == "--gnuplot_xtic" ) {
+
+			// convert string to number and check for errors
+			treal cex;
+			std::istringstream iss(strVal, std::istringstream::in);
+			iss >> cex;
+			//
+			if( iss.fail() ) {
+				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
+				return false;
+			}
+			options.m_gnuplot_xtic = cex;
+		}
+
 		/*else if( strKey == "--ppm_right" ) {
 			// convert string to number and check for errors
 			treal temp;
@@ -842,7 +904,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 			}
 			options.m_alpha_metab_upper = temp;
 		}*/
-
+        /*
         else if( strKey == "--typ_metab_alpha" ) {
 			// convert string to number and check for errors
 			treal temp;
@@ -866,7 +928,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
 				return false;
 			}
-			options.m_alpha_metab_lower = temp;
+			options.m_alpha_broad_lower = temp;
 		}
 
         else if( strKey == "--max_broad_alpha" ) {
@@ -879,7 +941,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
 				return false;
 			}
-			options.m_alpha_metab_upper = temp;
+			options.m_alpha_broad_upper = temp;
 		}
 
         else if( strKey == "--typ_broad_alpha" ) {
@@ -892,8 +954,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 				std::cerr << "\nerror: couldn't recognise '" << strVal << "' as a number" << std::endl;
 				return false;
 			}
-			options.m_alpha_metab_typ = temp;
-		}
+			options.m_alpha_broad_typ = temp;
+		} */
 
         /*else if( strKey == "--beta_scale" ) {
 			// convert string to number and check for errors
@@ -1637,11 +1699,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 	{
 		std::cerr << "\nerror: you must specify at least:";
 		std::cerr << "\n    --input";
-		std::cerr << "\nOR:";
-		std::cerr << "\n    --view_fit" << std::endl;
-		std::cerr << "\nOR:";
-		std::cerr << "\n    --input" << std::endl;
-		std::cerr << "\n    --print_paras" << std::endl;
+		std::cerr << "\n" << std::endl;
+		std::cerr << "\nuse --help to see a list of common options" << std::endl;
 
 		return false;
 	}

@@ -69,7 +69,8 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
     m_ui.cmbIntBasisSet->addItem("1H MEGA-PRESS GABA",      QVariant(tarquin::PROTON_MEGAPRESS_GABA));
     m_ui.cmbIntBasisSet->addItem("1H BRAINO phantom",      QVariant(tarquin::PROTON_BRAINO));
     m_ui.cmbIntBasisSet->addItem("1H brain + Glth + exp MM",      QVariant(tarquin::PROTON_BRAIN_MMEXP));
-    m_ui.cmbIntBasisSet->addItem("1H brain + Glth + no Lip/MM",      QVariant(tarquin::PROTON_BRAIN_METAB_ONLY));
+    m_ui.cmbIntBasisSet->addItem("1H brain + Glth - Lip/MM",      QVariant(tarquin::PROTON_BRAIN_METAB_ONLY));
+    m_ui.cmbIntBasisSet->addItem("1H brain LCModel",      QVariant(tarquin::PROTON_BRAIN_LCM));
     m_ui.cmbIntBasisSet->addItem("31P brain, 1H decoupled", QVariant(tarquin::PHOSPH_BRAIN_DECOUP));
 
     m_ui.cmbDynAv->addItem("Default",                         QVariant(tarquin::DEFAULT));
