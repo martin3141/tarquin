@@ -1846,7 +1846,7 @@ void MainWindow::OnSetPivot()
 void MainWindow::PPMSelected(const QwtDoublePoint &point)
 {
     bool ok;
-    double d = QInputDialog::getDouble(this, tr("Set calibration point"), tr("Frequency (PPM):"), point.x(), -std::numeric_limits<treal>::infinity(), std::numeric_limits<treal>::infinity(), 6, &ok);
+    double d = QInputDialog::getDouble(this, tr("Set calibration point"), tr("Frequency (ppm):"), point.x(), -std::numeric_limits<treal>::infinity(), std::numeric_limits<treal>::infinity(), 6, &ok);
     
     if (ok)
     {

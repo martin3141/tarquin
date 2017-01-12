@@ -173,7 +173,7 @@ void Session::add_frequencydomain_signal(
 	if( PPM == m_show_flags.units_fd )
 	{
 		curve_fd->setData(&ppm[1], &YR[1], YR.size());
-		plot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Chemical Shift (PPM)"));
+		plot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Chemical Shift (ppm)"));
 
 		// flip sign of axis for retarded convention
 		engine->setAttribute(QwtScaleEngine::Inverted, true);
