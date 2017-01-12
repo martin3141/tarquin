@@ -1717,8 +1717,8 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
     */
 
 	// if the user didn't specify the output file, default to something sensible
-	if( 0 == options.GetFilenameTxt().size() && options.m_strViewFile.size() == 0 ) 
-		options.m_strFileOutTxt = "results.txt";
+	//if( 0 == options.GetFilenameTxt().size() && options.m_strViewFile.size() == 0 ) 
+	    //options.m_strFileOutTxt = "results.txt";
 
 	return true;
 }
