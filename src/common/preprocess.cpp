@@ -236,7 +236,7 @@ void tarquin::Preprocessor::operator() ()
 		{
             // compute the value
 			treal norm_val = ComputeWaterNormalisation(*i, fidwater, m_log);
-            std::cout << "Water amp : " << norm_val << std::endl;
+            //std::cout << "Water amp : " << norm_val << std::endl;
 
             // get a reference
 			std::vector<double>& norm_val_vec = m_workspace.GetNormalisationValue();
