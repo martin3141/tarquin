@@ -335,7 +335,7 @@ bool tarquin::ParseCommandLine(int argc, char* argv[], Options& options, CFID& f
 
 		if( strKey == "--help" ) {
 			DisplayUsage();
-			return false;
+			return true;
 		}
 
 		if( n == args.size()-1 ) {
