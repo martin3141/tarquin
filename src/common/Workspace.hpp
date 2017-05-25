@@ -456,15 +456,15 @@ namespace tarquin
                 assert(m_fidProc.GetNormValue() == 1.0);
 				val *= m_fidProc.GetNormValue();
 
-                // divide the amplitude of the value by 2
-                // to undo the simulator 1H scaling factor of 1/2
-                // ie simulator outputs signal with amp=0.5
-                // for molecule containing one proton
-                val /= 2.0;
-                
                 // find out if a water file has been specified
                 if ( m_options.GetFilenameWater().size() > 0 )
                 {
+                    // divide the amplitude of the value by 2
+                    // to undo the simulator 1H scaling factor of 1/2
+                    // ie simulator outputs signal with amp=0.5
+                    // for molecule containing one proton
+                    val /= 2.0;
+
                     // factor of 2.0 is for 2 protons in water
                     val *= m_options.GetWConc() * m_options.GetWAtt() * 2.0 / aw;
                 }
