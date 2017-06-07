@@ -248,12 +248,13 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     log.LogMessage(LOG_INFO, "z dim : %i",zcsi);
     //std::cout << "zcsi : " << zcsi << std::endl;
 
-	// find the field strength
-	int ft = 0;
+	unsigned int ft = 0;
 	file.seekg(424, std::ios_base::beg);
 	file.read((char*)&ft, 4);
+     
     if ( swap_end )
         ft = LongSwap(ft);
+
 	//std::cout << "Trans freq : " << ft << std::endl;
 
     int TE = 0;
