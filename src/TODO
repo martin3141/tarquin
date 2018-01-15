@@ -3,6 +3,7 @@
 ****************************************************
 
 Version 4.3.11
+- Added support for more recent versions of the GE p-file format.
 - Bug fix for GE 7T data where the field strength was incorrectly read.
 - Added an acquisiton delay parameter to the command line version (--acq_delay) for FID based MRSI localisation analysis.
 - Residual water amplitude is now correctly listed in csv results for MRSI.

@@ -112,13 +112,19 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     {
 		p_file_off = 66072;
     }
-	else if ( (int) rdb_header_rev > 11 )
+	else if ( ((int) rdb_header_rev > 11) && ((int) rdb_header_rev < 25))
 	{
 		file.seekg(1468, std::ios_base::beg);
 		file.read((char*)&p_file_off, 4);
 	}
+	else if ( (int) rdb_header_rev > 25 )
+	{
+		file.seekg(4, std::ios_base::beg);
+		file.read((char*)&p_file_off, 4);
+	}
 	else
 		throw Exception("Problem with the rdb header number", strFilename.c_str());
+
 
     if ( swap_end )
         rdb_header_rev = FloatSwap(rdb_header_rev);
@@ -132,7 +138,12 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
 
 	// find the offset to the data	
 	short frame_size;
-	file.seekg(80, std::ios_base::beg);
+
+	if ( (int) rdb_header_rev > 25 )
+	    file.seekg(80+19*4, std::ios_base::beg);
+    else
+	    file.seekg(80, std::ios_base::beg);
+
 	file.read((char*)&frame_size, 2);
     if ( swap_end )
         frame_size = ShortSwap(frame_size);
@@ -150,7 +161,11 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
 
     // find the number of echoes
 	short necho;
-	file.seekg(70, std::ios_base::beg);
+	if ( (int) rdb_header_rev > 25 )
+	    file.seekg(70+19*4, std::ios_base::beg); //TODO
+    else
+	    file.seekg(70, std::ios_base::beg);
+
 	file.read((char*)&necho, 2);
     if ( swap_end )
         necho = ShortSwap(necho);
@@ -159,14 +174,22 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
 
 	// find the number of data frames	
 	short nframes;
-	file.seekg(74, std::ios_base::beg);
+	if ( (int) rdb_header_rev > 25 )
+        file.seekg(74+19*4, std::ios_base::beg);
+    else
+        file.seekg(74, std::ios_base::beg);
+
 	file.read((char*)&nframes, 2);
     if ( swap_end )
         nframes = ShortSwap(nframes);
 
-	// find number of water reference frames
+	// find number of water reference frames (rhuser19)
 	float num_ref_frames;
-	file.seekg(292, std::ios_base::beg);
+	if ( (int) rdb_header_rev > 25 )
+	    file.seekg(292+64, std::ios_base::beg);
+    else
+	    file.seekg(292, std::ios_base::beg);
+
 	file.read((char*)&num_ref_frames, 4);
     if ( swap_end )
         num_ref_frames = FloatSwap(num_ref_frames);
@@ -175,23 +198,27 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     if ( m_options.nWaterFrames > 0 )
         num_ref_frames = m_options.nWaterFrames;
     
+	log.LogMessage(LOG_INFO, "Water ref frames : %f",num_ref_frames);
 	if( num_ref_frames > 32768 || num_ref_frames < 0 )
         throw Exception("Unrealistic number of reference frames, check data type.");
 
-	log.LogMessage(LOG_INFO, "Water ref frames : %f",num_ref_frames);
 	//std::cout << "Water ref frames : " << num_ref_frames << std::endl;
 	float num_sig_frames = nframes - num_ref_frames;
 
-	if( num_sig_frames > 32768 || num_sig_frames < 0 )
-        throw Exception("Unrealistic number of reference frames, check data type.");
-	
     log.LogMessage(LOG_INFO, "Water sup frames : %f",num_sig_frames);
+	if( num_sig_frames > 32768 || num_sig_frames < 0 )
+        throw Exception("Unrealistic number of signal frames, check data type.");
+	
 	//std::cout << "Water supressed frames : " << num_sig_frames << std::endl;
 
-	// find number of coils
+	// find number of coils (start_rcv)
 	std::vector<short> coil_array;
 	short coil_tmp;
-	file.seekg(200, std::ios_base::beg);
+	if ( (int) rdb_header_rev > 25 )
+	    file.seekg(200+64, std::ios_base::beg);
+    else
+	    file.seekg(200, std::ios_base::beg);
+
 	for ( size_t n = 0; n < 8; n++ )
 	{
 		file.read((char*)&coil_tmp, 2);
@@ -211,9 +238,13 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     log.LogMessage(LOG_INFO, "Number of coils : %i", coils);
     //std::cout << coils << std::endl;
 
-	// find the sampling frequency 
+	// find the sampling frequency (spectral_width)
 	float fs = 0;
-	file.seekg(368, std::ios_base::beg);
+	if ( (int) rdb_header_rev > 25 )
+	    file.seekg(368+64, std::ios_base::beg);
+    else
+	    file.seekg(368, std::ios_base::beg);
+
 	file.read((char*)&fs, 4);
     if ( swap_end )
         fs = FloatSwap(fs);
@@ -221,7 +252,11 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
 	//std::cout << "Sampling freq : " << fs << std::endl;
 
 	short csi_dims = 0;
-	file.seekg(372, std::ios_base::beg);
+	if ( (int) rdb_header_rev > 25 )
+	    file.seekg(372+64, std::ios_base::beg);
+    else
+	    file.seekg(372, std::ios_base::beg);
+
 	file.read((char*)&csi_dims, 2);
     if ( swap_end )
         csi_dims = ShortSwap(csi_dims);
@@ -248,8 +283,13 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
     log.LogMessage(LOG_INFO, "z dim : %i",zcsi);
     //std::cout << "zcsi : " << zcsi << std::endl;
 
+    // rh_ps_mps_freq 
 	unsigned int ft = 0;
-	file.seekg(424, std::ios_base::beg);
+	if ( (int) rdb_header_rev > 25 )
+	    file.seekg(424+64, std::ios_base::beg);
+    else
+	    file.seekg(424, std::ios_base::beg);
+
 	file.read((char*)&ft, 4);
      
     if ( swap_end )
@@ -276,20 +316,20 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
         file.seekg(65032, std::ios_base::beg);
         file.read((char*)&TE, 4);
     }
-    else if ( rdb_header_rev > 11.0 )
+    else if ( (rdb_header_rev > 11.0) && (rdb_header_rev < 25) )
     {
-        // comes from noise_weights_te.m by Fred J. Frigo
-        /*
-        file.seekg(1504, std::ios_base::beg);
-        file.read((char*)&image_offset, 4);
-        file.seekg(image_offset + 1064, std::ios_base::beg);
-        file.read((char*)&TE, 4);
-        */
-
-        // comes from my own hacking about
+        int te_int;
         file.seekg(4*303, std::ios_base::beg);
-        file.read((char*)&TE, 4);
+        file.read((char*)&te_int, 2);
+        TE = te_int;
     }
+	else if ( rdb_header_rev > 25 )
+	{
+        int te_int;
+        file.seekg(4*303-64, std::ios_base::beg);
+        file.read((char*)&te_int, 2);
+        TE = te_int;
+	}
 
     if ( swap_end )
         TE = LongSwap(TE);
