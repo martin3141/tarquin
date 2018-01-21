@@ -137,7 +137,7 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
 	//std::cout << "P-file offset : " << p_file_off << std::endl;
 
 	// find the offset to the data	
-	short frame_size;
+	unsigned short frame_size;
 
 	if ( (int) rdb_header_rev > 25 )
 	    file.seekg(80+19*4, std::ios_base::beg);
