@@ -3,6 +3,7 @@
 ****************************************************
 
 Version 4.3.11
+- Bug fix for some Siemens orientations where the cross product calculation was 0.
 - Added support for more recent versions of the GE p-file format.
 - Bug fix for GE 7T data where the field strength was incorrectly read.
 - Added an acquisiton delay parameter to the command line version (--acq_delay) for FID based MRSI localisation analysis.

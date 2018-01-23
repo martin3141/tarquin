@@ -926,7 +926,10 @@ class CFID
             vec_out(3) = a(1)*b(2)-a(2)*b(1);
 
             // normalise at the end
-            vec_out = vec_out/vec_out.norm2();
+            if (vec_out.norm2() != 0)
+            {
+                vec_out = vec_out/vec_out.norm2();
+            }
         }
 
 };
