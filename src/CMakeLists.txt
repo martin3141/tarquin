@@ -233,7 +233,7 @@ if( NOT WIN32 )
 	set( CVM_LIB     cvm )
 endif()
 
-set( EIGEN3_INCLUDE ${CMAKE_SOURCE_DIR}/fast_sim/eigen3_1_1 )
+set( EIGEN3_INCLUDE ${CMAKE_SOURCE_DIR}/fast_sim/eigen3_3_7 )
 
 add_subdirectory(levmar/levmar-2.5)
 
