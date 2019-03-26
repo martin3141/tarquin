@@ -26,7 +26,7 @@ cmake -DCMAKE_BUILD_TYPE=Release ../
 make
 ```
 
-## Arch Linux
+## Arch Linux and Manjaro
 ```
 git clone https://aur.archlinux.org/tarquin.git
 cd tarquin
