@@ -4,7 +4,7 @@
 
 Version 4.3.12
 - Eigen library update from v3.1.1 to v3.3.7.
-- Feature to save xml format files has been removed due to poor performance with large datasets. The protobuf library is no longer a dependency. - TODO
+- Feature to save xml format files has been removed due to poor performance with large datasets. The protobuf library is no longer a dependency.
 - QT update from v4 to v5. - TODO
 
 Version 4.3.11
