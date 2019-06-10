@@ -3586,8 +3586,11 @@ Point MainWindow::calc_pt(double d, Eigen::Vector3d line_norm, Eigen::Vector3d l
 
 	Eigen::JacobiSVD<Eigen::MatrixXd> svd(M,Eigen::ComputeThinU|Eigen::ComputeThinV);
 	//Eigen::JacobiSVD<Eigen::Matrix4d> svd(M);
-	Eigen::MatrixXd result;
-	svd.pinv(result);
+	//Eigen::MatrixXd result;
+	//svd.pinv(result);
+
+    Eigen::MatrixXd result = M.completeOrthogonalDecomposition().pseudoInverse();
+
 	Eigen::Vector4d pt = result*intersect_pt_long;
 
 	//Eigen::Vector3d pt = M_cut.inverse()*intersect_pt;
