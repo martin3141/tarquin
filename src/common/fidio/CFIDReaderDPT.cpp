@@ -109,7 +109,9 @@ void tarquin::CFIDReaderDPT::EatTokens()
 			ins.str(it->first);
 			treal tau = 0;
 			ins >> tau;
-			m_fid.SetEchoTime(tau);
+            if ( !m_fid.IsKnownEchoTime() ) {
+			    m_fid.SetEchoTime(tau);
+            }
 		}
 		else if( it->first == "Real_FID" ) 
 		{
