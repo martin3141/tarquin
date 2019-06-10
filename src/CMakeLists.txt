@@ -28,8 +28,8 @@ if( ${CMAKE_SYSTEM} MATCHES "Linux" )
 	set( FFTW_LIB     -lfftw3 )
 	#set( FFTW_LIB     /usr/lib/i386-linux-gnu/libfftw3.a )
 
-	set( QWT_INCLUDE /usr/include/qwt-qt4 )
-	set( QWT_LIB     -lqwt-qt4 )
+	set( QWT_INCLUDE /usr/include/qwt )
+	set( QWT_LIB     -lqwt-qt5 )
 
 	#set( QWT_INCLUDE /usr/local/qwt-5.2.3/include )
 	#set( QWT_LIB     /usr/local/qwt-5.2.3/lib/libqwt.a )

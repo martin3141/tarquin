@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include <qwt_plot.h>
 #include <qwt_plot_picker.h>
+#include <qwt_compat.h>
 #include <QtGui>
 
 #include "MRI.hpp"

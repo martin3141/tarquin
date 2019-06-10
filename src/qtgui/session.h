@@ -3,7 +3,7 @@
 
 #include "Workspace.hpp"
 #include <QObject>
-#include <qwt_double_rect.h>
+#include <qwt_compat.h>
 #include "MRI.hpp"
 
 class MainWindow;
