@@ -4,10 +4,12 @@ project(tarquingui)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Qt5 package is mandatory
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Concurrent PrintSupport REQUIRED)
 
 # include QT stuff
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
+include_directories(${Qt5Concurrent_INCLUDE_DIRS})
+include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
 
 # include the output directory, because we need the header files generated from the UI files
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

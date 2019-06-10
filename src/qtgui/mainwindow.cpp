@@ -17,11 +17,14 @@
 #include "MRI.hpp"
 
 #include <QtWidgets>
+#include <QtConcurrent>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <qwt_plot.h>
 #include <qwt_legend.h>
 #include <qwt_plot_picker.h>
 
-MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
+MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags flags) :
 	QMainWindow(parent, flags),
 	m_session(NULL)
 {
@@ -730,7 +733,7 @@ void MainWindow::OnFilePrint()
 		return;
 
 	// and print
-	m_plot->print(printer);
+	// m_plot->print(printer); TODO
 }
 
 void MainWindow::OnFilePrintLocalisation()
@@ -770,13 +773,13 @@ void MainWindow::OnFileExportPDF()
 	{
 		// print to a PDF file
 		// reduce the font size first
-		QwtLegend* legend = m_plot->legend();
+		QwtAbstractLegend* legend = m_plot->legend();
 		legend->setFont(QFont("Courier", 6));
 		QPrinter printer(QPrinter::HighResolution);
 		printer.setOrientation( QPrinter::Landscape );
 		printer.setColorMode( QPrinter::Color );
 		printer.setOutputFileName(file);
-		m_plot->print(printer);
+		//m_plot->print(printer); TODO
 		legend->setFont(QFont("Courier", 8));
 
 		InfoDialog(this, tr("Success"), tr("Saved successfully to: ") + file);
@@ -989,7 +992,7 @@ Session* MainWindow::MakeNewSession()
         m_ui.listWidget_numer->clear();
         m_ui.listWidget_denom->clear();
 
-	    m_plot->clear();
+	    // m_plot->clear(); TODO
         qDeleteAll(m_scene->items());
 
         // disable spinners
@@ -2004,7 +2007,7 @@ void MainWindow::OnHideMRI()
 void MainWindow::OnSetTrans()
 {
     bool ok;
-    int d = QInputDialog::getInteger(this, tr("Set transparency (%)"),
+    int d = QInputDialog::getInt(this, tr("Set transparency (%)"),
             tr("Percent:"), m_session->grid_trans, 0, 100, 1, &ok);
     if (ok)
         m_session->grid_trans = d;
@@ -2450,7 +2453,7 @@ void MainWindow::OnSetZF()
 	tarquin::Options& options = workspace.GetOptions();
 
      bool ok;
-     int d = QInputDialog::getInteger(this, tr("Set zero-filling factor"),
+     int d = QInputDialog::getInt(this, tr("Set zero-filling factor"),
                                         tr("Factor:"), options.GetZF(), 1, 1000000, 1, &ok);
      if (ok)
          options.SetZF(d);
@@ -2467,7 +2470,7 @@ void MainWindow::OnSetBS()
 	tarquin::Options& options = workspace.GetOptions();
 
      bool ok;
-     double d = QInputDialog::getInteger(this, tr("Set number of data points for smoothing"),
+     double d = QInputDialog::getInt(this, tr("Set number of data points for smoothing"),
                                         tr("Data points:"), options.GetBL(), 1, 100000, 2, &ok);
      if (ok)
          options.SetBL(d);

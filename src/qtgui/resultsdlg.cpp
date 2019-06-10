@@ -20,7 +20,7 @@ ResultsDlg::ResultsDlg(QWidget* parent, Session* session) :
 	// aesthetics
 	m_ui.treeView->setRootIsDecorated(false);
 	m_ui.treeView->setAlternatingRowColors(true);
-	m_ui.treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+	//m_ui.treeView->header()->ResizeMode(QHeaderView::ResizeToContents);
 }
 
 namespace

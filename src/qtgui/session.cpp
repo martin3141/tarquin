@@ -13,7 +13,7 @@
 #include <qwt_plot_zoomer.h>
 #include <qwt_scale_engine.h>
 #include <qwt_legend.h>
-#include <qwt_legend_item.h>
+//#include <qwt_legend_item.h>
 
 #include "common.hpp"
 
@@ -99,14 +99,14 @@ void Session::add_timedomain_signal(
         cvm::rvector xaxis(signal_length);
         for( int n = ns; n <= ne; ++n )
             xaxis[n+1] = n*dt;
-        curve_td->setData(&xaxis[1], &signal[1], signal_length);
+        curve_td->setSamples(&xaxis[1], &signal[1], signal_length);
     }
     else if ( TD_PTS == m_show_flags.units_td )
     {
         cvm::rvector xaxis(signal_length);
         for( int n = ns; n <= ne; ++n )
             xaxis[n+1] = n+1;
-        curve_td->setData(&xaxis[1], &signal[1], signal_length);
+        curve_td->setSamples(&xaxis[1], &signal[1], signal_length);
     }
 
 	//curve_td->setVisible( DISPLAY_CURVE == is_visible );
@@ -171,7 +171,7 @@ void Session::add_frequencydomain_signal(
 	// PPM on the x axis?
 	if( PPM == m_show_flags.units_fd )
 	{
-		curve_fd->setData(&ppm[1], &YR[1], YR.size());
+		curve_fd->setSamples(&ppm[1], &YR[1], YR.size());
 		plot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Chemical Shift (ppm)"));
 
 		// flip sign of axis for retarded convention
@@ -181,13 +181,13 @@ void Session::add_frequencydomain_signal(
 	else if( HERTZ == m_show_flags.units_fd )
  
 	{
-		curve_fd->setData(&hz[1], &YR[1], YR.size());
+		curve_fd->setSamples(&hz[1], &YR[1], YR.size());
 		plot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Frequency (Hz)"));
 	}
 	else if( FD_PTS == m_show_flags.units_fd )
  
 	{
-		curve_fd->setData(&PTS[1], &YR[1], YR.size());
+		curve_fd->setSamples(&PTS[1], &YR[1], YR.size());
 		plot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Frequency / (points)"));
 	}
 	
@@ -202,7 +202,7 @@ void Session::add_frequencydomain_signal(
 void Session::Update(bool all/*=true*/)
 {
 	TarquinPlotWidget* plot = m_parent->GetPlot();
-	plot->clear();
+	//plot->clear(); # TODO
 
 	tarquin::Options& options = m_workspace.GetOptions();
 	const std::vector<tarquin::coord>& fit_list = options.GetFitList();
