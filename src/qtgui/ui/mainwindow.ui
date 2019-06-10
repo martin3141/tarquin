@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1252</width>
+    <width>1346</width>
     <height>612</height>
    </rect>
   </property>
@@ -379,8 +379,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1252</width>
-     <height>27</height>
+     <width>1346</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -406,8 +406,6 @@
     <addaction name="actionQuick_Fit"/>
     <addaction name="actionOpen_FID"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen_fit"/>
-    <addaction name="actionSave_fit"/>
     <addaction name="separator"/>
     <addaction name="menuExport_plot_pdf"/>
     <addaction name="menuExport_localisation"/>
