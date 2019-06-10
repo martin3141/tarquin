@@ -80,7 +80,7 @@ class MainWindow : public QMainWindow
 
 public:
 
-	MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
+	MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
 	TarquinPlotWidget* GetPlot() { return m_plot; }
 
