@@ -1,7 +1,7 @@
 #include "guicommon.h"
 #include "CBoswell.hpp"
 
-#include <QtGui>
+#include <QtWidgets>
 
 /*!
  * \brief Obtain the application log for the GUI.

@@ -3,11 +3,11 @@ project(tarquingui)
 # Include the directory itself as a path to include directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# Qt4 package is mandatory
-find_package( Qt4 REQUIRED )
+# Qt5 package is mandatory
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
-# include all the QT stuff
-include( ${QT_USE_FILE} )
+# include QT stuff
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
 
 # include the output directory, because we need the header files generated from the UI files
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -48,13 +48,13 @@ set( tarquingui_QRC resources/tarquingui.qrc )
 file(GLOB tarquingui_UIs ui/*.ui )
 
 # handle the UI files
-qt4_wrap_ui( tarquingui_SRCS ${tarquingui_UIs} )
+qt5_wrap_ui( tarquingui_SRCS ${tarquingui_UIs} )
 
 # Resources for this application get turned into C++ files
-qt4_add_resources( tarquingui_SRCS ${tarquingui_QRC} )
+qt5_add_resources( tarquingui_SRCS ${tarquingui_QRC} )
 
 # moc all the appopriate headers
-qt4_wrap_cpp( tarquingui_SRCS ${tarquingui_MOC_HEADERS} )
+qt5_wrap_cpp( tarquingui_SRCS ${tarquingui_MOC_HEADERS} )
 
 # Create the executable file (windows RC file is for application icon)
 add_executable(tarquingui WIN32 

@@ -558,7 +558,7 @@ void InputDlg::OnBtnOpenParaFile()
 	tarquin::CFID& fidraw = m_session->GetWorkspace().GetFIDRaw();
 
 	// TODO what happens if this fails?
-	QByteArray path_str_by = path.toAscii();
+	QByteArray path_str_by = path.toLatin1();
 	char* path_str = path_str_by.data();
 	int argc = 3;
 	char* argv[3];

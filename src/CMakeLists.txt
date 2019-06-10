@@ -206,6 +206,8 @@ set( EIGEN3_INCLUDE ${CMAKE_SOURCE_DIR}/fast_sim/eigen3_3_7 )
 
 add_subdirectory(levmar/levmar-2.5)
 
+set(CMAKE_CXX_FLAGS "-fPIC")
+
 #
 # Parts of TARQUIN
 #

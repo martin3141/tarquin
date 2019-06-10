@@ -2,7 +2,7 @@
 #define __MRI__
 
 #include <iostream>
-#include <QtGui>
+#include <QtWidgets>
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/SVD>
