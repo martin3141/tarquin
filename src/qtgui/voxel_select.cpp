@@ -1,4 +1,3 @@
-#include "proto_buf.hpp"
 #include "session.h"
 #include "exception.hpp"
 #include "voxel_select.h"

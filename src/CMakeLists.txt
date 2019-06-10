@@ -37,18 +37,6 @@ if( ${CMAKE_SYSTEM} MATCHES "Linux" )
 	set( QWT_LIB_RELEASE ${QWT_LIB} )
 	set( QWT_LIB_DEBUG   ${QWT_LIB} )
 
-	# this find package works on Linux
-	find_package(Protobuf 2.3.0 REQUIRED)
-    
-    # dynamic lib
-	set( PROTOBUF_LIB_DEBUG   ${PROTOBUF_LIBRARY} )
-	set( PROTOBUF_LIB_RELEASE ${PROTOBUF_LIBRARY} )
-    
-    # static lib
-    #set( PROTOBUF_LIB_DEBUG   /usr/lib/libprotobuf.a )
-	#set( PROTOBUF_LIB_RELEASE /usr/lib/libprotobuf.a )
-
-
 endif()
 
 #
@@ -85,15 +73,6 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
 	set( QWT_LIB_RELEASE ${QWT_LIB} )
 	set( QWT_LIB_DEBUG   ${QWT_LIB} )
 
-	# this find package works on OSX
-	find_package(Protobuf 2.3.0 REQUIRED)
-
-	#set( PROTOBUF_LIB_DEBUG   ${PROTOBUF_LIBRARY} )
-	#set( PROTOBUF_LIB_RELEASE ${PROTOBUF_LIBRARY} )
-    
-	set( PROTOBUF_LIB_DEBUG   /usr/local/lib/libprotobuf.a )
-	set( PROTOBUF_LIB_RELEASE /usr/local/lib/libprotobuf.a )
-
 endif()
 
 #
@@ -125,11 +104,6 @@ if( WIN32 )
 	set( FFTW_LIBRARY_DIR          "${FFTW_ROOT}/fftw-3.2.2-libs/Release/" )
 	set( FFTW_LIB                  "${FFTW_LIBRARY_DIR}/libfftw-3.2.2.lib" "${FFTW_LIBRARY_DIR}/libfftwf-3.2.2.lib" )
 
-	set( PROTOBUF_BASE_DIR         "${TARQUIN_DEPS_DIR}/protobuf-2.3.0/")
-	set( PROTOBUF_INCLUDE_DIRS     "${PROTOBUF_BASE_DIR}/src/" )
-	set( PROTOBUF_LIB_RELEASE  "${PROTOBUF_BASE_DIR}/vsprojects/Release/libprotobuf.lib" )
-	set( PROTOBUF_LIB_DEBUG    "${PROTOBUF_BASE_DIR}/vsprojects/Debug/libprotobuf.lib" )
-
 	set( QWT_ROOT                  "${TARQUIN_DEPS_DIR}/qwt-5.2")
 	set( QWT_INCLUDE               "${QWT_ROOT}/src" )
 	set( QWT_LIB_RELEASE           "${QWT_ROOT}/lib/qwt.lib" )
@@ -158,11 +132,6 @@ add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 # we will want boost for all projects
 include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
-
-#
-# We are using Google's protobuf
-#
-include_directories(${PROTOBUF_INCLUDE_DIRS})
 
 #
 # We are still using FFTW 'cos Greggy's FFT still isn't fast enough

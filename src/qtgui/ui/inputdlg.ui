@@ -1062,7 +1062,7 @@ padding: 0 3px;
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Basis set input (.xml/.basis)</string>
+            <string>Basis set input (.basis)</string>
            </property>
           </widget>
          </item>
@@ -1134,53 +1134,13 @@ padding: 0 3px;
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Basis set output (.xml)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="txtSaveBasis">
-           <property name="readOnly">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QToolButton" name="btnSaveXML">
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../resources/tarquingui.qrc">
-             <normaloff>:/standardbutton-open-32.png</normaloff>:/standardbutton-open-32.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonIconOnly</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
           <widget class="QLabel" name="label_50">
            <property name="text">
             <string>Basis set output (.basis)</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="2" column="1">
           <widget class="QLineEdit" name="txtSaveBasisLCM">
            <property name="text">
             <string/>
@@ -1190,7 +1150,7 @@ padding: 0 3px;
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
+         <item row="2" column="2">
           <widget class="QToolButton" name="btnSaveLCM">
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -1362,22 +1322,6 @@ padding: 0 3px;
     <hint type="sourcelabel">
      <x>752</x>
      <y>399</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>312</x>
-     <y>291</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnSaveXML</sender>
-   <signal>clicked()</signal>
-   <receiver>InputDlg</receiver>
-   <slot>OnBtnSaveXML()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>766</x>
-     <y>231</y>
     </hint>
     <hint type="destinationlabel">
      <x>312</x>

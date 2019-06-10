@@ -69,7 +69,6 @@ add_executable(tarquingui WIN32
 target_link_libraries(tarquingui 
 	tarquincore
 	version
-	debug ${PROTOBUF_LIB_DEBUG} optimized ${PROTOBUF_LIB_RELEASE}
 	debug ${QWT_LIB_DEBUG} optimized ${QWT_LIB_RELEASE}
 	${QT_LIBRARIES} 
 	${QT_QTMAIN_LIBRARY}

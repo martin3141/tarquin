@@ -16,7 +16,6 @@ add_executable(simulate ${tarquincmd_SOURCES})
 # This library uses cvmlib
 target_link_libraries(simulate 
 	tarquincore
-	debug ${PROTOBUF_LIB_DEBUG} optimized ${PROTOBUF_LIB_RELEASE}
 	${Boost_FILESYSTEM_LIBRARY} 
 	${Boost_DATE_TIME_LIBRARY} 
 	${Boost_THREAD_LIBRARY} 

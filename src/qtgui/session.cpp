@@ -1,4 +1,3 @@
-#include "proto_buf.hpp"
 #include "session.h"
 #include "mainwindow.h"
 #include "tarquinplotwidget.h"
@@ -611,54 +610,6 @@ void Session::ShowResults()
 bool Session::FitAvailable()
 {
 	return m_workspace.GetAmplitudes().size() > 0;
-}
-
-/*!
- * Save the workspace as an XML file.
- */
-void Session::Save(const QString& filename)
-{
-	if( !save_results(filename.toStdString().c_str(), m_workspace) )
-		throw std::runtime_error("failed to save file");
-}
-
-/*!
- * Load the workspace as an XML file.
- */
-void Session::Load(const QString& filename)
-{
-	if( !load_results(filename.toStdString().c_str(), m_workspace) )
-		throw std::runtime_error("failed to load file");
-
-	// now turn on all the flags
-	m_show_flags.show_input   = true;
-	m_show_flags.show_preproc = true;
-	m_show_flags.show_model   = true;
-	m_show_flags.domain       = Session::FREQUENCY_DOMAIN;
-	m_show_flags.units_fd     = Session::PPM;
-	// set a default fit number
-	m_fit_number = 0;
-
-	// add all the vectors to display
-	m_show_flags.basis_indices.clear();
-	const tarquin::cmat_stdvec& S_vec = GetWorkspace().GetBasisMatrix();
-	const cvm::cmatrix& S = S_vec[m_fit_number];
-	for( int i = 0; i < S.nsize(); ++i )
-		m_show_flags.basis_indices.push_back(i);
-
-	// and redraw
-	Update();
-
-	// hide the processed signal	
-	//QwtPlot* plot = m_parent->GetPlot();
-	//QwtLegend* legend = plot->legend();
-	//QList<QWidget*> items = legend->legendItems();
-	//((QwtLegendItem*)items[0])->setChecked(false);
-	// does not work - ((QwtPlotItem*)items[0])->setVisible(false);
-    //plot->replot();	
-	//legend->updateLegend();
-	//greenCurve.detach();
-	
 }
 
 void Session::SetVoxel(const tarquin::coord& voxel)

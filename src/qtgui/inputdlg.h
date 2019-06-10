@@ -43,12 +43,10 @@ class InputDlg : public QDialog
 		
 	    void OnBtnOpenWU();
 
-	    void OnBtnOpenXML();
-	    
+        void OnBtnOpenXML();
+
 		void OnBtnOpenCSV();
 
-		void OnBtnSaveXML();
-		
         void OnBtnSaveLCM();
 		
 		void OnBtnOpenParaFile();

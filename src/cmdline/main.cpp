@@ -5,11 +5,9 @@
 #include "cvm_util.hpp"
 #include "preprocess.hpp"
 #include "console.hpp"
-#include "fitviewer.hpp"
 #include "CBoswell.hpp"
 #include "td_conv_ws.hpp"
 #include <algorithm>
-#include "proto_buf.hpp"
 #include "export_data.hpp"
 #include "exception.hpp"
 #include "fidio/CFIDReader.hpp"
@@ -36,14 +34,6 @@ int main(int argc, char* argv[])
 	try
 	{
 		//std::cout << fidraw.GetPPMRef() << std::endl << std::flush;
-
-		// are we passing control to the fitviewer code?
-		if( options.GetViewFile() != "" ) 
-		{
-			//std::cout << options.GetPlotSigs() << std::endl;
-			return FitView(options.GetViewFile(), options.GetPlotSigs(), 
-					options.GetPPMstart(), options.GetPPMend(), options.Getlb(), options.GetPause());
-		}
 
         // save some paras before they get corrupted
         CFID orig_fid = fidraw;
@@ -346,24 +336,11 @@ int main(int argc, char* argv[])
             else
                 str_end = "";
 
-
-            if (( str_end == ".basis" ) || ( str_end == ".BASIS" ))
+            if( false == basis.ReadLCMBasis(options.GetBasisPath(), fidraw, options, log) )
             {
-                if( false == basis.ReadLCMBasis(options.GetBasisPath(), fidraw, options, log) )
-                {
-                    log.Out(LOG_ERROR) << "failed to load basis file: \"" << options.GetBasisPath() << "\"";
-                    return -1;
-                }
+                log.Out(LOG_ERROR) << "failed to load basis file: \"" << options.GetBasisPath() << "\"";
+                return -1;
             }
-            else
-            {
-                if( false == load_basis(options.GetBasisPath(), basis) ) 
-                {
-                    log.Out(LOG_ERROR) << "failed to load basis file: \"" << options.GetBasisPath() << "\"";
-                    return -1;
-                }
-            }
-
 		}
 		else 
 		{
@@ -386,25 +363,6 @@ int main(int argc, char* argv[])
                     return -1;
                 }
             }
-
-			//basis.ApplyRef(fidproc.GetPPMRef());	
-
-			// did the user specify to save it?
-			if( options.GetBasisSaveFile() != "" ) 
-			{
-				basis.Initialise(4.65f);
-
-				log.Out(LOG_INFO) << "\nSaving basis to \"" << options.GetBasisSaveFile() << "\".";
-
-				if( false == save_basis(options.GetBasisSaveFile().c_str(), basis) ) 
-				{
-					log.Out(LOG_ERROR) << "failed to write basis file, quitting";
-					return -1;
-				}
-
-				log.Out(LOG_INFO) << "\nWrote \"" << options.GetBasisSaveFile() << "\".";
-			}
-    
 		}
         
         if( options.GetBasisSaveFileCSV() != "" ) 
@@ -465,22 +423,6 @@ int main(int argc, char* argv[])
 			log.Out(LOG_WARNING) << "TARQUIN could not fit this data (low quality?).";
 			return -1;
 		}
-
-		// serialise results 
-		std::string OutputXMLPath = options.GetOutputXMLPath();
-
-		// since this now has a default, it must always be set to something
-		//assert( OutputXMLPath.size() > 0 );
-
-		// try and save the results
-        if ( OutputXMLPath.size() != 0 )
-        {
-            if( false == save_results( OutputXMLPath.c_str(), workspace ) ) 
-            {
-                log.Out(LOG_ERROR) << "failed to write results file to:\"" << OutputXMLPath << "\"";
-                return -1;
-            }
-        }
 
 		// are we outputting a dpt file of the signal with TARQUIN phasing?
 		if( options.GetOutPostFile() != "" ) 

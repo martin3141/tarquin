@@ -1,4 +1,3 @@
-#include "proto_buf.hpp"
 #include "session.h"
 #include "mainwindow.h"
 #include "version/version.h"
@@ -42,8 +41,6 @@ MainWindow::MainWindow(QWidget* parent, Qt::WFlags flags) :
 	// connect up actions on the file menu
 	connect(m_ui.actionQuick_Fit, SIGNAL(triggered()), this, SLOT(OnFileQF()));
 	connect(m_ui.actionOpen_FID,        SIGNAL(triggered()), this, SLOT(OnFileOpenFID()));
-	connect(m_ui.actionOpen_fit,        SIGNAL(triggered()), this, SLOT(OnFileOpenFit()));
-	connect(m_ui.actionSave_fit,        SIGNAL(triggered()), this, SLOT(OnFileSaveFit()));
 	connect(m_ui.actionAbout,           SIGNAL(triggered()), this, SLOT(OnFileAbout()));
 	connect(m_ui.actionPrint_Plot,      SIGNAL(triggered()), this, SLOT(OnFilePrint()));
 	connect(m_ui.actionPrint_Localisation,      SIGNAL(triggered()), this, SLOT(OnFilePrintLocalisation()));
@@ -1171,88 +1168,6 @@ void MainWindow::SetWindowTitle(QString filename)
 {
 }*/
 
-void MainWindow::OnFileOpenFit()
-{
-	if( !MakeNewSession() )
-		return;
-
-	// bring up a dialog
-	QString file = QFileDialog::getOpenFileName(this, tr("Load Workspace"), "", tr("XML Files (*.xml)"));
-
-	if( !file.size() )
-		return;
-			
-	try
-	{
-		m_session->Load(file);
-    }
-	catch( const std::exception& /*e*/ )
-	{
-		ErrorDialog(this, tr("Failure"), tr("Failed to open file."));
-	}
-        
-    
-    // looks like the data loaded ok
-    // set current voxel and spinners to be in the middle of the grid
-    int start_row = 1;
-    int start_col = 1;
-    int start_slice = 1;
-
-    disconnect(m_ui.spinSlices, SIGNAL(valueChanged(int)), this, SLOT(OnVoxelChange()));
-    disconnect(m_ui.spinRows, SIGNAL(valueChanged(int)), this, SLOT(OnVoxelChange()));
-    disconnect(m_ui.spinCols, SIGNAL(valueChanged(int)), this, SLOT(OnVoxelChange()));
-
-    m_ui.spinRows->setValue(start_row);
-    m_ui.spinCols->setValue(start_col);
-    m_ui.spinSlices->setValue(start_slice);
-
-    connect(m_ui.spinSlices, SIGNAL(valueChanged(int)), this, SLOT(OnVoxelChange()));
-    connect(m_ui.spinRows, SIGNAL(valueChanged(int)), this, SLOT(OnVoxelChange()));
-    connect(m_ui.spinCols, SIGNAL(valueChanged(int)), this, SLOT(OnVoxelChange()));
-
-    coord current(start_row, start_col, start_slice); 
-	m_session->SetVoxel(current);
-
-
-    // set correct max vals
-    m_ui.spinRows->setMaximum(m_session->GetWorkspace().GetFID().GetRows());
-    m_ui.spinCols->setMaximum(m_session->GetWorkspace().GetFID().GetCols());
-    m_ui.spinSlices->setMaximum(m_session->GetWorkspace().GetFID().GetSlices());
-
-    OnVoxelChange();
-    //OnEditFin();
-
-    // enable spinners
-    m_ui.spinRows->setEnabled(true);
-    m_ui.spinCols->setEnabled(true);
-    m_ui.spinSlices->setEnabled(true);
-
-    SetWindowTitle(QString::fromStdString(m_session->GetWorkspace().GetFID().GetFilename()));
-
-}
-
-void MainWindow::OnFileSaveFit()
-{
-	if( !m_session )
-		return;
-
-	// bring up a dialog
-	QString file = QFileDialog::getSaveFileName(this, tr("Save Workspace"), "", tr("XML Files (*.xml)"));
-
-	if( !file.size() )
-		return;
-			
-	try
-	{
-		m_session->Save(file);
-		InfoDialog(this, tr("Success"), tr("Saved successfully to: ") + file);
-	}
-	catch( const std::exception& /*e*/ )
-	{
-		ErrorDialog(this, tr("Failure"), tr("Failed to save file."));
-	}
-}
-
 void MainWindow::OnFileAbout()
 {
 	AboutDlg dlg(this);
@@ -1532,14 +1447,6 @@ void MainWindow::OnAnalysisRunTARQUIN()
 			ErrorDialog(this, tr("Basis Simulation Failed"), 
 					tr("The simulation step failed. Check the csv directory for bad files."));
 			return;
-		}
-
-		// save the basis if specified
-		if ( opts.GetBasisSaveFile() != "")
-		{
-			basis.Initialise(4.65f);
-			if( !save_basis(opts.GetBasisSaveFile().c_str(), basis) )
-				throw std::runtime_error("The save_basis function generally failed.");
 		}
 	}
 

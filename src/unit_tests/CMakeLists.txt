@@ -11,7 +11,6 @@ file(GLOB tarquin_tests_DATA data/*.dpt data/*.SDAT data/*.SPAR data/*.ref data/
 include_directories(${TARQUIN_INCLUDE})
 include_directories(${CVM_INCLUDE})
 include_directories(${LEVMAR_INCLUDE})
-include_directories(${PROTOBUF_INCLUDE_DIRS})
 include_directories(${FAST_SIM_INCLUDE})
 include_directories(${EIGEN3_INCLUDE})
 
@@ -19,7 +18,6 @@ add_executable(tarquin_tests ${tarquin_tests_SOURCES})
 
 target_link_libraries(tarquin_tests 
 	tarquincore
-	debug ${PROTOBUF_LIB_DEBUG} optimized ${PROTOBUF_LIB_RELEASE}
 	${Boost_FILESYSTEM_LIBRARY} 
 	${Boost_DATE_TIME_LIBRARY} 
 	${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}

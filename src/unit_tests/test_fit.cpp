@@ -12,8 +12,8 @@
 #include "CBasis.hpp"
 #include "Workspace.hpp"
 #include "preprocess.hpp"
-#include "proto_buf.hpp"
 #include "export_data.hpp"
+#include "tarquin.hpp"
 
 namespace fs = boost::filesystem;
 
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( nb_fit_test_no_iters )
 	//BOOST_REQUIRE_EQUAL(basis.check(fidraw, log), true);
 
 	// do the analysis
-	BOOST_REQUIRE_EQUAL(RunTARQUIN(workspace, log), true);
+	BOOST_REQUIRE_EQUAL(tarquin::RunTARQUIN(workspace, log), true);
 
 	const tarquin::rvec_stdvec& ahat_vec = workspace.GetAmplitudesNormalised();
 	cvm::rvector ahat = ahat_vec[0];
@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE( nb_fit_test )
     basis.Simulate(fidproc, options, log);
 	
 	// do the analysis
-	BOOST_REQUIRE_EQUAL(RunTARQUIN(workspace, log), true);
+	BOOST_REQUIRE_EQUAL(tarquin::RunTARQUIN(workspace, log), true);
 
 	const tarquin::rvec_stdvec& ahat_vec = workspace.GetAmplitudesNormalised();
 	cvm::rvector ahat = ahat_vec[0];

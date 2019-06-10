@@ -97,10 +97,6 @@ private slots:
 
 	void OnFileOpenFID();
 
-	void OnFileOpenFit();
-
-	void OnFileSaveFit();
-
 	void OnFileAbout();
 	
 	void OnFilePrint();

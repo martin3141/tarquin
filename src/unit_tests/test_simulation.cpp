@@ -12,7 +12,6 @@
 #include "CBasis.hpp"
 #include "Workspace.hpp"
 #include "preprocess.hpp"
-#include "proto_buf.hpp"
 #include "test_util.hpp"
 
 namespace fs = boost::filesystem;

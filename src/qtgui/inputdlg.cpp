@@ -1,5 +1,4 @@
 
-#include "proto_buf.hpp"
 #include "session.h"
 #include "exception.hpp"
 #include "inputdlg.h"
@@ -117,14 +116,11 @@ InputDlg::InputDlg(QWidget* parent, Session* session) :
 	m_ui.txtBL->setEnabled(false);
 	m_ui.txtLB->setEnabled(false);
 
-	m_ui.btnOpenXML->setEnabled(false);
+    m_ui.btnOpenXML->setEnabled(false);
 	m_ui.btnOpenCSV->setEnabled(false);
-	m_ui.btnSaveXML->setEnabled(false);
 	m_ui.btnSaveLCM->setEnabled(false);
 	
     m_ui.txtBasisCSV->setEnabled(false);
-    m_ui.txtBasisXML->setEnabled(false);
-    m_ui.txtSaveBasis->setEnabled(false);
     m_ui.txtSaveBasisLCM->setEnabled(false);
 
     m_ui.txtSP->setEnabled(false);
@@ -267,15 +263,11 @@ void InputDlg::LoadFID(QString filename, fid_type_e fid_type)
             m_ui.txtPPMend->setEnabled(true);
             m_ui.txtBL->setEnabled(true);
             m_ui.txtLB->setEnabled(true);
-
             m_ui.btnOpenXML->setEnabled(true);
             m_ui.btnOpenCSV->setEnabled(true);
-            m_ui.btnSaveXML->setEnabled(true);
             m_ui.btnSaveLCM->setEnabled(true);
 
             m_ui.txtBasisCSV->setEnabled(true);
-            m_ui.txtBasisXML->setEnabled(true);
-            m_ui.txtSaveBasis->setEnabled(true);
             m_ui.txtSaveBasisLCM->setEnabled(true);
 
             m_ui.txtSP->setEnabled(true);
@@ -408,17 +400,15 @@ void InputDlg::UpdateDlg()
 
     if ( opts.GetUsePrecompiled() )
     {
-        m_ui.txtBasisXML->setText( QString::fromStdString(opts.GetBasisPath()) );
         m_ui.txtBasisCSV->setText( QString::fromStdString("") );
     }
     else
     {
         m_ui.txtBasisCSV->setText( QString::fromStdString(opts.GetBasisPath()) );
-        m_ui.txtBasisXML->setText( QString::fromStdString("") );
     }
-	m_ui.txtSaveBasis->setText( QString::fromStdString(opts.GetBasisSaveFile()) );
 	m_ui.txtSaveBasisLCM->setText( QString::fromStdString(opts.GetBasisSaveFileLCM()) );
 }
+
 
 /*!
  * Select a precompiled basis header file and attempt to load it.
@@ -440,9 +430,9 @@ void InputDlg::OnBtnOpenXML()
 	QSettings settings;
 
 	QString path = QFileDialog::getOpenFileName(this, 
-			tr("Open Basis File (XML/LCModel BASIS)"), 
+			tr("Open Basis File (LCModel BASIS)"), 
 			settings.value("basis_xml_input_dir", QString()).toString(),
-			tr("XML/basis Files (*.xml *.basis);;all files (*.*)"));
+			tr("basis Files (*.basis);;all files (*.*)"));
 
 	// nothing selected, they must have pushed cancel
 	if( !path.size() )
@@ -464,16 +454,8 @@ void InputDlg::OnBtnOpenXML()
         else
             str_end = "";
 
-        if (( str_end == ".basis" ) || ( str_end == ".BASIS" ))
-        {
-            if( !basis.ReadLCMBasis(path.toStdString(), m_session->GetWorkspace().GetFIDRaw(), opts, GetLog()) )
-                throw std::runtime_error("The ReadLCMBasis function generally failed.");
-        }
-        else
-        {
-            if( !load_basis(path.toStdString(), basis) )
-                throw std::runtime_error("The load_basis function generally failed.");
-        }
+        if( !basis.ReadLCMBasis(path.toStdString(), m_session->GetWorkspace().GetFIDRaw(), opts, GetLog()) )
+            throw std::runtime_error("The ReadLCMBasis function generally failed.");
 		
 		// check that the basis matches the FID parameters
 		if( !basis.check(m_session->GetWorkspace().GetFIDRaw(), GetLog()) )
@@ -522,28 +504,6 @@ void InputDlg::OnBtnOpenCSV()
 	opts.SetBasisPath(path.toStdString());	
 	opts.SetUsePrecompiled(false);
 	m_loaded_basis = true;
-}
-
-// save the basis set if it has been simulated
-void InputDlg::OnBtnSaveXML()
-{
-	// retrieve the path that was last used from the settings
-	QSettings settings;
-	
-	QString path = QFileDialog::getSaveFileName(this, 
-			tr("Save TARQUIN Basis File (.xml)"), 
-			settings.value("save_basis", QString()).toString(),
-			tr("XML Files (*.xml)"));
-	
-	// nothing selected, they must have pushed cancel
-	if( !path.size() )
-		return;
-	
-	// set the file on the form
-	m_ui.txtSaveBasis->setText(path);
-	
-	// they have specified a file, so keep the directory for next time
-	settings.setValue("save_basis", path);
 }
 
 // save the basis set if it has been simulated
@@ -863,7 +823,6 @@ bool InputDlg::CheckDlg()
 	opts.SetCPMG_N(cn);
 	opts.SetFilenameWater(water_unsuppressed.toStdString());
 	opts.SetFilename(water_suppressed.toStdString());
-	opts.SetBasisSaveFile(m_ui.txtSaveBasis->text().toStdString());
 	opts.SetBasisSaveFileLCM(m_ui.txtSaveBasisLCM->text().toStdString());
     opts.SetRangeStart(n_start);
     opts.SetRangeEnd(n_end);
