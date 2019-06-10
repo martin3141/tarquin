@@ -4,7 +4,7 @@
 #include "guicommon.h"
 
 #include <boost/filesystem.hpp>
-#include <QtGui>
+#include <QtWidgets>
 
 
 formatdlg::formatdlg(QWidget *parent, Session* session) :

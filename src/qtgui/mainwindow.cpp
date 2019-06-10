@@ -16,7 +16,7 @@
 
 #include "MRI.hpp"
 
-#include <QtGui>
+#include <QtWidgets>
 #include <qwt_plot.h>
 #include <qwt_legend.h>
 #include <qwt_plot_picker.h>

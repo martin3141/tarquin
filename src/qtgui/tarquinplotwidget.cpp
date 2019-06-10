@@ -1,5 +1,5 @@
 #include "tarquinplotwidget.h"
-#include <QtGui>
+#include <QtWidgets>
 
 #include <qwt_plot.h>
 #include <qwt_plot_marker.h>

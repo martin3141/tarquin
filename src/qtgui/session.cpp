@@ -6,7 +6,7 @@
 #include "common.hpp"
 #include "CFID.hpp"
 #include <sstream> 
-#include <QtGui>
+#include <QtWidgets>
 #include "guicommon.h"
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>

@@ -5,7 +5,7 @@
 #include <qwt_plot.h>
 #include <qwt_plot_picker.h>
 #include <qwt_compat.h>
-#include <QtGui>
+#include <QtWidgets>
 
 #include "MRI.hpp"
 #include "CFID.hpp"

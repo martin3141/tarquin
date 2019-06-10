@@ -6,7 +6,7 @@
 #include "formatdlg.h"
 
 #include <boost/filesystem.hpp>
-#include <QtGui>
+#include <QtWidgets>
 
 
 quickfitdlg::quickfitdlg(QWidget *parent, Session* session) :

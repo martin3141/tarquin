@@ -5,7 +5,7 @@
 #include "CFID.hpp"
 
 #include <boost/filesystem.hpp>
-#include <QtGui>
+#include <QtWidgets>
 
 
 voxel_select::voxel_select(QWidget *parent, Session* session) :

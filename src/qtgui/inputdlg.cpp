@@ -6,7 +6,7 @@
 #include "voxel_select.h"
 
 #include <boost/filesystem.hpp>
-#include <QtGui>
+#include <QtWidgets>
 
 
 InputDlg::InputDlg(QWidget* parent, Session* session) :

@@ -2,7 +2,7 @@
 #include "Options.hpp"
 #include "CFID.hpp"
 #include "resultsdlg.h"
-#include <QtGui>
+#include <QtWidgets>
 #include "session.h"
 
 ResultsDlg::ResultsDlg(QWidget* parent, Session* session) :
