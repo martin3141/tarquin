@@ -316,20 +316,16 @@ void tarquin::CFIDReaderGE::DiscoverOptions(std::string strFilename, CBoswell& l
         file.seekg(65032, std::ios_base::beg);
         file.read((char*)&TE, 4);
     }
-    else if ( (rdb_header_rev > 11.0) && (rdb_header_rev < 25) )
+    else if ( (rdb_header_rev > 11.0) && (rdb_header_rev <= 25.001 ) )
     {
-        int te_int;
         file.seekg(4*303, std::ios_base::beg);
-        file.read((char*)&te_int, 2);
-        TE = te_int;
+        file.read((char*)&TE, 4);
     }
-	else if ( rdb_header_rev > 25 )
-	{
-        int te_int;
+    else if ( rdb_header_rev > 25.001 )
+    {
         file.seekg(4*303-64, std::ios_base::beg);
-        file.read((char*)&te_int, 2);
-        TE = te_int;
-	}
+        file.read((char*)&TE, 4);
+    }
 
     if ( swap_end )
         TE = LongSwap(TE);
