@@ -1,7 +1,11 @@
 #ifndef TARQUIN_SESSION_INCLUDED
 #define TARQUIN_SESSION_INCLUDED
 
+// Q_MOC_RUN - workaround for a bug in Qt4 moc
+// https://bugreports.qt.io/browse/QTBUG-22829
+#ifndef Q_MOC_RUN
 #include "Workspace.hpp"
+#endif
 #include <QObject>
 #include <qwt_double_rect.h>
 #include "MRI.hpp"
