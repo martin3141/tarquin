@@ -957,6 +957,9 @@ bool tarquin::CBasis::ReadLCMBasis(std::string strBasisPath, const CFID& fidMatc
     double fs = 0;
     double ft = 0;
     double te = 0;
+    
+    pair_vec default_ref;
+    default_ref.push_back(std::make_pair(4.65, true));
 
     // read line by line 
     for( std::string strLine; getline(fin, strLine); )
@@ -1160,6 +1163,7 @@ bool tarquin::CBasis::ReadLCMBasis(std::string strBasisPath, const CFID& fidMatc
                 fid.SetSamplingFrequency(fs);
                 fid.SetTransmitterFrequency(ft);
                 fid.SetEchoTime(te);
+                fid.SetPPMRef(default_ref);
                 std::vector<CFID> fid_vec; 
                 fid_vec.push_back(fid);
                 CSignal signal;
@@ -1233,6 +1237,7 @@ bool tarquin::CBasis::ReadLCMBasis(std::string strBasisPath, const CFID& fidMatc
     fid.SetSamplingFrequency(fs);
     fid.SetTransmitterFrequency(ft);
     fid.SetEchoTime(te);
+    fid.SetPPMRef(default_ref);
     std::vector<CFID> fid_vec; 
     fid_vec.push_back(fid);
     CSignal signal;
