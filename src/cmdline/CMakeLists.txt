@@ -22,3 +22,5 @@ target_link_libraries(tarquin
 	${Boost_CHRONO_LIBRARY} 
 	${Boost_SYSTEM_LIBRARY} 
 )
+
+install(TARGETS tarquin DESTINATION bin)
