@@ -78,3 +78,5 @@ target_link_libraries(tarquingui
 	${Boost_CHRONO_LIBRARY} 
 	${Boost_SYSTEM_LIBRARY} 
 )
+
+install(TARGETS tarquingui DESTINATION bin)
