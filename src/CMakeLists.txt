@@ -215,3 +215,5 @@ add_subdirectory(cmdline)
 add_subdirectory(qtgui)
 add_subdirectory(unit_tests)
 add_subdirectory(generate_spectra)
+
+install(TARGETS tarquingui DESTINATION bin)
