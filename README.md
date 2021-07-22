@@ -1,6 +1,14 @@
-# TARQUIN compilation instructions
+# Linux installation
 
-## Ubuntu 18.04 and MX Linux 18
+The latest version of TARQUIN is available on the snap store.
+
+```
+sudo snap install tarquin
+```
+
+Use `tarquin` and `tarquingui` on the command line to run the command line and gui versions respectivly.
+
+# Compilation instructions for Ubuntu 18.04 and MX Linux 18
 
 ### install packages
 ```
